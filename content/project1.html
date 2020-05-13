@@ -1,0 +1,430 @@
+---
+title: "Project 1: Exploratory Data Analysis"
+author: "Michelle Mao mm87822"
+date: "3/15/2020"
+output: html_document
+---
+
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<div id="the-datasets-i-chose-for-this-project-are-two-datasets-documenting-the-covid-19-cases-around-the-world-one-dataset-records-cases-in-hubei-china-while-the-other-dataset-records-cases-outside-of-hubei-and-one-dataset-with-population-data-for-every-country.-the-covid-19-datasets-are-updated-live-as-new-cases-are-confirmed-but-for-this-project-i-am-using-data-on-the-cases-that-were-confirmed-between-12020-the-first-cases-that-appear-in-the-dataset-and-22920-the-date-i-procured-the-dataset.-these-datasets-contain-several-variables-including-various-identifiers-age-sex-location-dates-of-symptom-onset-admission-and-confirmation-of-the-virus-symptoms-any-relationships-with-wuhan-other-relevant-medical-issues-and-outcome-variables.-these-datasets-are-open-access-and-were-compiled-by-the-emergent-epidemics-lab-of-northeastern-university-they-can-be-found-at-the-following-link" class="section level5">
+<h5>The datasets I chose for this project are two datasets documenting the COVID-19 cases around the world (one dataset records cases in Hubei, China, while the other dataset records cases outside of Hubei), and one dataset with population data for every country. The COVID-19 datasets are updated live as new cases are confirmed, but for this project I am using data on the cases that were confirmed between 1/20/20 (the first cases that appear in the dataset) and 2/29/20 (the date I procured the dataset). These datasets contain several variables including various identifiers (age, sex, location); dates of symptom onset, admission, and confirmation of the virus; symptoms; any relationships with Wuhan; other relevant medical issues; and outcome variables. These datasets are open access and were compiled by the Emergent Epidemics Lab of Northeastern University; they can be found at the following link:</h5>
+<div id="httpsdoi.org10.1016s1473-30992030119-5" class="section level6">
+<h6><a href="https://doi.org/10.1016/S1473-3099(20)30119-5" class="uri">https://doi.org/10.1016/S1473-3099(20)30119-5</a></h6>
+<pre class="r"><code>library(tidyverse)
+setwd(&quot;C:/Users/Michelle/Desktop/Website/content&quot;)
+covidHubei &lt;- read.csv(&quot;COVID19_2020_open_line_list - Hubei.csv&quot;,stringsAsFactors = F)
+covidOut &lt;- read.csv(&quot;COVID19_2020_open_line_list - outside_Hubei.csv&quot;,stringsAsFactors = F)
+glimpse(covidHubei)</code></pre>
+<pre><code>## Observations: 21,241
+## Variables: 32
+## $ ID                       &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,...
+## $ age                      &lt;chr&gt; &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88...
+## $ sex                      &lt;chr&gt; &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;m...
+## $ city                     &lt;chr&gt; &quot;Wuhan City&quot;, &quot;Wuhan City&quot;, &quot;Wuhan City&quot;, ...
+## $ province                 &lt;chr&gt; &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei...
+## $ country                  &lt;chr&gt; &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China...
+## $ wuhan.0._not_wuhan.1.    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...
+## $ latitude                 &lt;dbl&gt; 30.59642, 30.59642, 30.59642, 30.59642, 30...
+## $ longitude                &lt;dbl&gt; 114.2798, 114.2798, 114.2798, 114.2798, 11...
+## $ geo_resolution           &lt;chr&gt; &quot;point&quot;, &quot;point&quot;, &quot;point&quot;, &quot;point&quot;, &quot;point...
+## $ date_onset_symptoms      &lt;chr&gt; &quot;pre 18.01.2020&quot;, &quot;pre 18.01.2020&quot;, &quot;pre 1...
+## $ date_admission_hospital  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_confirmation        &lt;chr&gt; &quot;20.01.2020&quot;, &quot;20.01.2020&quot;, &quot;20.01.2020&quot;, ...
+## $ symptoms                 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ lives_in_Wuhan           &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ travel_history_dates     &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_location  &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ reported_market_exposure &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ additional_information   &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ chronic_disease_binary   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ source                   &lt;chr&gt; &quot;http://wjw.wuhan.gov.cn/front/web/showDet...
+## $ sequence_available       &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ outcome                  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_death_or_discharge  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ notes_for_discussion     &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ location                 &lt;chr&gt; &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!...
+## $ admin3                   &lt;chr&gt; &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!...
+## $ admin2                   &lt;chr&gt; &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!...
+## $ admin1                   &lt;chr&gt; &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!...
+## $ country_new              &lt;chr&gt; &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!...
+## $ admin_id                 &lt;chr&gt; &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!&quot;, &quot;#REF!...</code></pre>
+<pre class="r"><code>glimpse(covidOut)</code></pre>
+<pre><code>## Observations: 13,174
+## Variables: 33
+## $ ID                       &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,...
+## $ age                      &lt;chr&gt; &quot;30&quot;, &quot;47&quot;, &quot;49&quot;, &quot;47&quot;, &quot;50&quot;, &quot;N/A&quot;, &quot;42&quot;,...
+## $ sex                      &lt;chr&gt; &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;female&quot;, &quot;female&quot;...
+## $ city                     &lt;chr&gt; &quot;Chaohu City, Hefei City&quot;, &quot;Baohe District...
+## $ province                 &lt;chr&gt; &quot;Anhui&quot;, &quot;Anhui&quot;, &quot;Anhui&quot;, &quot;Anhui&quot;, &quot;Anhui...
+## $ country                  &lt;chr&gt; &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China...
+## $ wuhan.0._not_wuhan.1.    &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+## $ latitude                 &lt;chr&gt; &quot;31.64696&quot;, &quot;31.77863&quot;, &quot;31.828313&quot;, &quot;31.8...
+## $ longitude                &lt;chr&gt; &quot;117.7166&quot;, &quot;117.3319&quot;, &quot;117.224844&quot;, &quot;117...
+## $ geo_resolution           &lt;chr&gt; &quot;admin3&quot;, &quot;admin3&quot;, &quot;point&quot;, &quot;point&quot;, &quot;adm...
+## $ date_onset_symptoms      &lt;chr&gt; &quot;18.01.2020&quot;, &quot;10.01.2020&quot;, &quot;15.01.2020&quot;, ...
+## $ date_admission_hospital  &lt;chr&gt; &quot;20.01.2020&quot;, &quot;21.01.2020&quot;, &quot;20.01.2020&quot;, ...
+## $ date_confirmation        &lt;chr&gt; &quot;22.01.2020&quot;, &quot;23.01.2020&quot;, &quot;23.01.2020&quot;, ...
+## $ symptoms                 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;pneumonia&quot;, &quot;fever&quot;, ...
+## $ lives_in_Wuhan           &lt;chr&gt; &quot;yes&quot;, &quot;no&quot;, &quot;no&quot;, &quot;no&quot;, &quot;no&quot;, &quot;&quot;, &quot;no&quot;, &quot;...
+## $ travel_history_dates     &lt;chr&gt; &quot;17.01.2020&quot;, &quot;10.01.2020&quot;, &quot;10.01.2020&quot;, ...
+## $ travel_history_location  &lt;chr&gt; &quot;Wuhan&quot;, &quot;Luzhou Hunan, via Wuhan&quot;, &quot;Yinzh...
+## $ reported_market_exposure &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ additional_information   &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;contacted with confirmed case...
+## $ chronic_disease_binary   &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ chronic_disease          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ source                   &lt;chr&gt; &quot;http://ah.people.com.cn/GB/n2/2020/0127/c...
+## $ sequence_available       &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ outcome                  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_death_or_discharge  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ notes_for_discussion     &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ location                 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;High-Tech Zone&quot;, &quot;High-Tech Zone&quot;...
+## $ admin3                   &lt;chr&gt; &quot;Chaohu City&quot;, &quot;Baohe District&quot;, &quot;Shushan ...
+## $ admin2                   &lt;chr&gt; &quot;Hefei City&quot;, &quot;Hefei City&quot;, &quot;Hefei City&quot;, ...
+## $ admin1                   &lt;chr&gt; &quot;Anhui&quot;, &quot;Anhui&quot;, &quot;Anhui&quot;, &quot;Anhui&quot;, &quot;Anhui...
+## $ country_new              &lt;chr&gt; &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China...
+## $ admin_id                 &lt;chr&gt; &quot;340181&quot;, &quot;340111&quot;, &quot;340104&quot;, &quot;340104&quot;, &quot;3...
+## $ data_moderator_initials  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...</code></pre>
+</div>
+</div>
+<div id="the-other-dataset-is-a-dataset-that-records-the-population-density-of-every-country-in-the-world-as-of-2019.-the-variables-in-this-dataset-are-rank-from-greatest-to-least-population-density-country-population-density-in-people-per-square-kilometer-population-density-in-people-per-square-mile-population-in-thousands-as-of-2019-and-area-in-square-kilometers.-this-dataset-can-be-found-at-the-following-link" class="section level5">
+<h5>The other dataset is a dataset that records the population density of every country in the world as of 2019. The variables in this dataset are rank (from greatest to least population density), country, population density in people per square kilometer, population density in people per square mile, population in thousands as of 2019, and area in square kilometers. This dataset can be found at the following link:</h5>
+<div id="httpsworldpopulationreview.comcountriescountries-by-density" class="section level6">
+<h6><a href="https://worldpopulationreview.com/countries/countries-by-density/" class="uri">https://worldpopulationreview.com/countries/countries-by-density/</a></h6>
+<pre class="r"><code>pop &lt;- read.csv(&quot;population density.csv&quot;)
+glimpse(pop)</code></pre>
+<pre><code>## Observations: 232
+## Variables: 6
+## $ rank      &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17...
+## $ name      &lt;fct&gt; Macau, Monaco, Singapore, Hong Kong, Gibraltar, Bahrain, ...
+## $ density   &lt;dbl&gt; 21644.5000, 19426.7327, 8239.9183, 6790.7437, 5615.1667, ...
+## $ densityMi &lt;dbl&gt; 56059.255, 50315.238, 21341.388, 17588.026, 14543.282, 57...
+## $ pop2019   &lt;dbl&gt; 640.445, 38.964, 5804.337, 7436.154, 33.701, 1641.172, 0....
+## $ area      &lt;dbl&gt; 30.00, 2.02, 710.00, 1104.00, 6.00, 765.00, 0.44, 300.00,...</code></pre>
+</div>
+</div>
+<div id="i-chose-these-datasets-because-i-am-interested-in-infectious-diseases-and-the-covid-19-coronavirus-outbreak-is-an-especially-salient-issue-as-of-late-that-is-currently-affecting-the-entire-world.-i-would-like-to-analyze-these-datasets-to-see-if-there-is-an-association-between-population-density-and-how-the-virus-has-spread-in-countries-around-the-world.-i-would-imagine-that-countries-with-a-higher-population-density-would-have-more-cases-or-be-at-higher-risk-of-the-virus-spreading-but-there-could-be-any-number-of-factors-that-influence-this-association-for-instance-population-density-is-often-not-uniform-and-human-migration-varies-from-country-to-country." class="section level5">
+<h5>I chose these datasets because I am interested in infectious diseases and the COVID-19 coronavirus outbreak is an especially salient issue as of late that is currently affecting the entire world. I would like to analyze these datasets to see if there is an association between population density and how the virus has spread in countries around the world. I would imagine that countries with a higher population density would have more cases or be at higher risk of the virus spreading, but there could be any number of factors that influence this association (for instance, population density is often not uniform, and human migration varies from country to country).</h5>
+</div>
+</div>
+<div id="joiningmerging" class="section level3">
+<h3>Joining/Merging</h3>
+<div id="because-the-two-covid-19-datasets-are-basically-the-same-dataset-separated-into-cases-in-and-outside-of-hubei-i-decided-to-combine-them-first-into-a-single-dataset-before-doing-any-joining.-first-i-cleaned-up-the-dataset-to-make-sure-all-empty-and-na-values-were-showing-up-as-na-i-also-converted-some-variables-to-different-variable-types-so-that-i-could-bind-rows-properly." class="section level5">
+<h5>Because the two COVID-19 datasets are basically the same dataset separated into cases in and outside of Hubei, I decided to combine them first into a single dataset before doing any joining. First, I cleaned up the dataset to make sure all empty and “N/A” values were showing up as NA; I also converted some variables to different variable types so that I could bind rows properly.</h5>
+<pre class="r"><code>covidOut&lt;-covidOut%&gt;%mutate_all(function(x)ifelse(x==&quot;&quot;|x==&quot;N/A&quot;,NA,x))
+covidHubei&lt;-covidHubei%&gt;%mutate_all(function(x)ifelse(x==&quot;&quot;|x==&quot;N/A&quot;,NA,x))
+
+covidOut$latitude &lt;- as.numeric(covidOut$latitude)
+covidOut$longitude &lt;- as.numeric(covidOut$longitude)
+covidOut$chronic_disease_binary &lt;- as.integer(covidOut$chronic_disease_binary)
+covidOut &lt;- covidOut %&gt;% select(-data_moderator_initials)
+
+covidHubei$travel_history_dates &lt;- as.factor(covidHubei$travel_history_dates)
+covidHubei$travel_history_location &lt;- as.factor(covidHubei$travel_history_location)
+covidHubei$notes_for_discussion &lt;- as.factor(covidHubei$notes_for_discussion)</code></pre>
+</div>
+<div id="then-i-combined-the-two-covid-datasets-into-a-single-dataset-and-named-it-covid19.-after-that-i-selected-the-variables-that-i-would-be-working-with-for-this-project-and-named-this-smaller-dataset-covid." class="section level5">
+<h5>Then, I combined the two “covid” datasets into a single dataset and named it “covid19.” After that, I selected the variables that I would be working with for this project and named this smaller dataset “covid.”</h5>
+<pre class="r"><code>covid19 &lt;- covidHubei %&gt;% bind_rows(covidOut)
+covid &lt;- covid19 %&gt;% select(-ID, -geo_resolution, -source, -sequence_available, -additional_information, -notes_for_discussion, -location, -admin1, -admin2, -admin3, -country_new, -admin_id)
+glimpse(covid)</code></pre>
+<pre><code>## Observations: 34,415
+## Variables: 20
+## $ age                      &lt;chr&gt; &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88...
+## $ sex                      &lt;chr&gt; &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;m...
+## $ city                     &lt;chr&gt; &quot;Wuhan City&quot;, &quot;Wuhan City&quot;, &quot;Wuhan City&quot;, ...
+## $ province                 &lt;chr&gt; &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei...
+## $ country                  &lt;chr&gt; &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China...
+## $ wuhan.0._not_wuhan.1.    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...
+## $ latitude                 &lt;dbl&gt; 30.59642, 30.59642, 30.59642, 30.59642, 30...
+## $ longitude                &lt;dbl&gt; 114.2798, 114.2798, 114.2798, 114.2798, 11...
+## $ date_onset_symptoms      &lt;chr&gt; &quot;pre 18.01.2020&quot;, &quot;pre 18.01.2020&quot;, &quot;pre 1...
+## $ date_admission_hospital  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ date_confirmation        &lt;chr&gt; &quot;20.01.2020&quot;, &quot;20.01.2020&quot;, &quot;20.01.2020&quot;, ...
+## $ symptoms                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ lives_in_Wuhan           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_dates     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_location  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ reported_market_exposure &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease_binary   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ outcome                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ date_death_or_discharge  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...</code></pre>
+</div>
+<div id="i-then-joined-the-covid-dataset-with-the-pop-dataset.-i-joined-the-two-datasets-by-country-which-was-the-variable-they-had-in-common.-i-chose-a-left-join-because-i-wanted-to-keep-all-the-data-in-the-covid-dataset-and-the-covid-dataset-did-not-contain-data-for-all-the-countries-in-the-world." class="section level5">
+<h5>I then joined the “covid” dataset with the “pop” dataset. I joined the two datasets by “country,” which was the variable they had in common. I chose a left join because I wanted to keep all the data in the “covid dataset”, and the “covid” dataset did not contain data for all the countries in the world.</h5>
+<pre class="r"><code>full &lt;- covid %&gt;% left_join(pop, by=c(&quot;country&quot;=&quot;name&quot;))
+length(setdiff(pop$name, covid$country))</code></pre>
+<pre><code>## [1] 182</code></pre>
+<pre class="r"><code>length(setdiff(covid$country, pop$name))</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>setdiff(covid$country, pop$name)</code></pre>
+<pre><code>## [1] NA                &quot;North Macedonia&quot;</code></pre>
+<pre class="r"><code>full &lt;- full %&gt;% mutate(country=ifelse(province==&quot;Taiwan&quot;, &quot;Taiwan&quot;, country)) %&gt;% mutate(country=ifelse(country==&quot;North Macedonia&quot;, &quot;Macedonia&quot;, country)) %&gt;% filter(country!=&quot;&quot;)
+
+glimpse(full)</code></pre>
+<pre><code>## Observations: 34,147
+## Variables: 25
+## $ age                      &lt;chr&gt; &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88&quot;, &quot;15-88...
+## $ sex                      &lt;chr&gt; &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;male&quot;, &quot;m...
+## $ city                     &lt;chr&gt; &quot;Wuhan City&quot;, &quot;Wuhan City&quot;, &quot;Wuhan City&quot;, ...
+## $ province                 &lt;chr&gt; &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei&quot;, &quot;Hubei...
+## $ country                  &lt;chr&gt; &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;China...
+## $ wuhan.0._not_wuhan.1.    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...
+## $ latitude                 &lt;dbl&gt; 30.59642, 30.59642, 30.59642, 30.59642, 30...
+## $ longitude                &lt;dbl&gt; 114.2798, 114.2798, 114.2798, 114.2798, 11...
+## $ date_onset_symptoms      &lt;chr&gt; &quot;pre 18.01.2020&quot;, &quot;pre 18.01.2020&quot;, &quot;pre 1...
+## $ date_admission_hospital  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ date_confirmation        &lt;chr&gt; &quot;20.01.2020&quot;, &quot;20.01.2020&quot;, &quot;20.01.2020&quot;, ...
+## $ symptoms                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ lives_in_Wuhan           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_dates     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_location  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ reported_market_exposure &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease_binary   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ outcome                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ date_death_or_discharge  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ rank                     &lt;int&gt; 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80...
+## $ density                  &lt;dbl&gt; 148.2775, 148.2775, 148.2775, 148.2775, 14...
+## $ densityMi                &lt;dbl&gt; 384.0387, 384.0387, 384.0387, 384.0387, 38...
+## $ pop2019                  &lt;dbl&gt; 1433784, 1433784, 1433784, 1433784, 143378...
+## $ area                     &lt;dbl&gt; 9706961, 9706961, 9706961, 9706961, 970696...</code></pre>
+</div>
+<div id="above-it-can-be-seen-that-there-are-182-countries-in-pop-that-do-not-appear-in-covid-so-these-were-dropped-when-the-datasets-were-joined.-there-are-also-apparently-two-countries-in-covid-that-do-not-appear-in-pop---one-is-north-macedonia-and-the-other-is-blank-because-a-country-was-not-added-for-cases-whose-province-was-listed-as-taiwan.-to-fix-this-for-the-purpose-of-this-project-i-used-mutate-to-set-taiwan-as-the-country-for-observations-where-the-province-was-taiwan-and-changed-north-macedonia-to-macedonia.-there-still-appeared-to-be-some-entries-where-a-country-was-not-listed-so-i-decided-to-exclude-those-from-my-analysis." class="section level5">
+<h5>Above, it can be seen that there are 182 countries in “pop” that do not appear in “covid,” so these were dropped when the datasets were joined. There are also apparently two countries in “covid” that do not appear in “pop” - one is North Macedonia, and the other is blank because a country was not added for cases whose province was listed as Taiwan. To fix this for the purpose of this project, I used mutate to set “Taiwan” as the country for observations where the province was Taiwan and changed North Macedonia to Macedonia. There still appeared to be some entries where a country was not listed, so I decided to exclude those from my analysis.</h5>
+</div>
+</div>
+<div id="wrangling-and-tidying" class="section level3">
+<h3>Wrangling and Tidying</h3>
+<div id="here-i-explore-the-full-dataset-by-generating-various-summary-statistics.-i-include-a-short-explanation-of-the-code-before-each-chunk-of-code-but-will-discuss-all-the-results-in-detail-at-the-end-of-this-section." class="section level5">
+<h5>Here, I explore the “full” dataset by generating various summary statistics. I include a short explanation of the code before each chunk of code, but will discuss all the results in detail at the end of this section.</h5>
+</div>
+<div id="first-i-cleaned-up-the-data-and-counted-the-number-of-cases-of-each-sex-in-each-country-then-arranged-by-descending-number-of-male-and-female-cases.-i-also-used-pivot_wider-here-to-rearrange-the-data-so-that-instead-of-having-two-rows-for-each-country-one-for-each-sex-i-now-have-one-row-for-each-country-with-two-columns-that-show-the-count-for-each-sex." class="section level5">
+<h5>First, I cleaned up the data and counted the number of cases of each sex in each country, then arranged by descending number of male and female cases. I also used pivot_wider here to rearrange the data so that instead of having two rows for each country (one for each sex), I now have one row for each country with two columns that show the count for each sex.</h5>
+<pre class="r"><code>full &lt;- full %&gt;% mutate(sex=ifelse(sex==&quot;Female&quot;,&quot;female&quot;,sex), sex=ifelse(sex==&quot;Male&quot;,&quot;male&quot;,sex),
+                        sex=ifelse(sex!=&quot;female&quot; &amp; sex!=&quot;male&quot;,NA,sex))
+full %&gt;% group_by(country,sex) %&gt;% filter(sex!=&quot;NA&quot;) %&gt;% summarize(n=n())</code></pre>
+<pre><code>## # A tibble: 44 x 3
+## # Groups:   country [27]
+##    country     sex        n
+##    &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+##  1 Afghanistan male       1
+##  2 Australia   female     6
+##  3 Australia   male       9
+##  4 Cambodia    male       1
+##  5 Canada      female     6
+##  6 Canada      male       4
+##  7 China       female   380
+##  8 China       male     455
+##  9 Ecuador     female     1
+## 10 Finland     female     2
+## # ... with 34 more rows</code></pre>
+<pre class="r"><code>full %&gt;% group_by(country,sex) %&gt;% filter(sex!=&quot;NA&quot;) %&gt;% summarize(n=n()) %&gt;% pivot_wider(names_from=&quot;sex&quot;,values_from=&quot;n&quot;) %&gt;% arrange(desc(male),desc(female))</code></pre>
+<pre><code>## # A tibble: 27 x 3
+## # Groups:   country [27]
+##    country      male female
+##    &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;
+##  1 China         455    380
+##  2 Japan         110     57
+##  3 Italy          13      8
+##  4 South Korea    13      8
+##  5 Germany        12      3
+##  6 Taiwan         11     11
+##  7 Australia       9      6
+##  8 Thailand        7      7
+##  9 France          7      4
+## 10 Malaysia        7      4
+## # ... with 17 more rows</code></pre>
+</div>
+<div id="summarizing-by-number-of-cases-per-country-joining-again-with-the-pop-dataset-adding-a-new-variable-propcase-that-shows-the-number-of-recorded-cases-in-a-country-divided-by-that-countrys-population-and-calculating-the-correlation-between-the-number-of-cases-in-each-country-proportion-of-cases-population-density-and-rank" class="section level5">
+<h5>Summarizing by number of cases per country, joining again with the “pop” dataset, adding a new variable “propcase” that shows the number of recorded cases in a country divided by that country’s population, and calculating the correlation between the number of cases in each country, proportion of cases, population density, and rank:</h5>
+<pre class="r"><code>fullcor &lt;- full %&gt;% group_by(country) %&gt;% summarize(n=n()) %&gt;% inner_join(pop,by=c(&quot;country&quot;=&quot;name&quot;)) %&gt;% mutate(propcase=n/pop2019) 
+fullcor %&gt;% filter(country!=&quot;China&quot;) %&gt;% select(n,propcase,density,rank) %&gt;% cor</code></pre>
+<pre><code>##                   n   propcase    density       rank
+## n         1.0000000  0.9422998  0.3441759 -0.3327501
+## propcase  0.9422998  1.0000000  0.3642139 -0.3117545
+## density   0.3441759  0.3642139  1.0000000 -0.8481052
+## rank     -0.3327501 -0.3117545 -0.8481052  1.0000000</code></pre>
+</div>
+<div id="cleaning-upreformatting-the-data-adding-a-new-variable-called-duration-that-shows-the-length-of-time-between-date-of-symptom-onset-and-date-of-outcome-and-calculating-summary-statistics" class="section level5">
+<h5>Cleaning up/reformatting the data, adding a new variable called “duration” that shows the length of time between date of symptom onset and date of outcome, and calculating summary statistics:</h5>
+<pre class="r"><code>durations &lt;- full %&gt;% filter(date_death_or_discharge!=&quot;discharge&quot;) %&gt;%
+  mutate(date_onset_symptoms=gsub(&quot;pre&quot;,&quot;&quot;,date_onset_symptoms),
+                date_onset_symptoms=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_onset_symptoms), format=&quot;%d-%m-%Y&quot;),
+                date_death_or_discharge=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_death_or_discharge),format=&quot;%d-%m-%Y&quot;),
+         date_admission_hospital=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_admission_hospital), format=&quot;%d-%m-%Y&quot;),
+         date_confirmation=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_confirmation), format=&quot;%d-%m-%Y&quot;),
+                duration=date_death_or_discharge-date_onset_symptoms
+                ) 
+
+durations %&gt;% filter(duration!=&quot;-5&quot;) %&gt;% summarize(mean_dur = mean(duration, na.rm=T), median_dur = median(duration, na.rm=T), max_dur = max(duration, na.rm=T), min_dur = min(duration,na.rm=T))</code></pre>
+<pre><code>##        mean_dur median_dur max_dur min_dur
+## 1 15.28814 days    14 days 41 days  3 days</code></pre>
+</div>
+<div id="calculating-the-proportion-of-cases-per-country-listed-as-having-a-chronic-disease" class="section level5">
+<h5>Calculating the proportion of cases per country listed as having a chronic disease:</h5>
+<pre class="r"><code>full %&gt;% group_by(country) %&gt;% summarize(propCD = mean(chronic_disease_binary==&quot;1&quot;, na.rm=T)) %&gt;% filter(propCD!=&quot;NaN&quot;)</code></pre>
+<pre><code>## # A tibble: 8 x 2
+##   country       propCD
+##   &lt;chr&gt;          &lt;dbl&gt;
+## 1 Canada          1   
+## 2 China           0.92
+## 3 Germany         0   
+## 4 Philippines     1   
+## 5 South Korea     1   
+## 6 Taiwan          1   
+## 7 United States   1   
+## 8 Vietnam         1</code></pre>
+</div>
+<div id="cleaning-up-the-data-and-calculating-mean-standard-deviation-and-median-age-for-each-outcome" class="section level5">
+<h5>Cleaning up the data and calculating mean, standard deviation, and median age for each outcome:</h5>
+<pre class="r"><code>full &lt;- full %&gt;% mutate(outcome=ifelse(outcome==&quot;discharge&quot;|outcome==&quot;Discharged&quot;,&quot;discharged&quot;,outcome),
+                        outcome=ifelse(outcome==&quot;death&quot;,&quot;died&quot;,outcome),
+                        outcome=ifelse(outcome!=&quot;discharged&quot; &amp; outcome!=&quot;died&quot; &amp; outcome!=&quot;recovered&quot; &amp; outcome!=&quot;stable&quot;,&quot;other&quot;,outcome))
+outcomes &lt;- full %&gt;% filter(outcome==&quot;discharged&quot;|outcome==&quot;died&quot;|outcome==&quot;recovered&quot;|outcome==&quot;stable&quot;|outcome==&quot;other&quot;,
+                            age!=&quot;15-88&quot;,age!=&quot;19-77&quot;,age!=&quot;21-72&quot;,age!=&quot;22-80&quot;,age!=&quot;38-68&quot;) %&gt;%
+  mutate(age=ifelse(age==&quot;20-29&quot;,25,age),age=ifelse(age==&quot;40-49&quot;,45,age),age=ifelse(age==&quot;50-59&quot;,55,age),
+         age=ifelse(age==&quot;60-69&quot;,25,age),age=ifelse(age==&quot;70-79&quot;,55,age),age=ifelse(age==&quot;80-89&quot;,85,age),
+         age=as.numeric(age))
+
+outcomes %&gt;% group_by(outcome) %&gt;% summarize(meanAge=mean(age),sdAge=sd(age),medianAge=median(age))</code></pre>
+<pre><code>## # A tibble: 5 x 4
+##   outcome    meanAge  sdAge medianAge
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+## 1 died          69.7  14.2       70  
+## 2 discharged    37.4  17.6       35.5
+## 3 other         51.7   5.77      55  
+## 4 recovered     25   NaN         25  
+## 5 stable        45.8  19.3       47</code></pre>
+</div>
+<div id="in-this-section-i-calculated-various-summary-statistics-regarding-the-full-dataset.-first-i-calculated-the-number-of-cases-per-sex-for-each-country.-it-appears-that-for-most-countries-there-are-more-male-than-female-cases-reported-in-this-dataset.-next-i-calculated-a-correlation-for-number-of-cases-in-each-country-proportion-of-cases-population-density-and-rank.-i-excluded-china-as-the-dataset-contains-a-disproportionately-large-amount-of-data-from-china.-i-found-that-the-number-and-proportion-of-cases-in-each-country-were-positively-correlated-with-population-density-meaning-that-countries-with-a-higher-population-density-are-likely-to-have-more-cases.-these-results-are-consistent-with-my-expectations-although-the-correlations-are-not-very-strong-0.344-between-number-of-cases-and-density-and-0.364-between-proportion-of-cases-and-density-however-this-could-be-due-to-a-lack-of-data-resulting-in-a-small-sample-size.-meanwhile-the-number-and-proportion-of-cases-in-each-country-were-negatively-correlated-with-that-countrys-population-density-rank-which-makes-sense-as-the-country-with-the-highest-population-density-was-ranked-1-and-countries-with-lower-population-densities-had-higher-values-for-their-rank.-for-the-next-few-summary-statistics-i-created-a-new-variable-called-duration-that-calculates-the-length-of-time-between-the-date-symptoms-began-to-appear-and-the-date-an-outcome-was-recorded.-duration-times-varied-widely---between-3-and-41-days---and-the-average-and-median-duration-times-were-15.3-days-and-14-days-respectively-so-it-seems-that-the-infection-takes-a-while-to-run-its-course.-next-i-wanted-to-calculate-the-proportion-of-cases-in-each-country-that-were-recording-as-having-a-chronic-disease-but-this-was-not-very-informative-as-there-was-very-little-data.-finally-i-gathered-the-outcomes-that-were-recorded-into-five-categories-died-discharged-left-the-hospital-recovered-stable-still-sick-but-not-getting-worse-and-other-notes-left-by-the-original-creators-of-the-covid-19-dataset-that-did-not-fit-into-any-of-the-other-categories.-i-then-calculated-the-mean-standard-deviation-and-median-of-the-ages-of-patients-for-each-outcome.-based-on-these-summary-statistics-patients-who-recovered-or-were-discharged-tended-to-be-significantly-younger-than-patients-who-died-or-remained-hospitalized-supporting-the-theory-that-the-coronavirus-is-more-dangerous-for-the-older-demographic." class="section level5">
+<h5>In this section, I calculated various summary statistics regarding the “full” dataset. First, I calculated the number of cases per sex for each country. It appears that for most countries, there are more male than female cases reported in this dataset. Next, I calculated a correlation for number of cases in each country, proportion of cases, population density, and rank. I excluded China as the dataset contains a disproportionately large amount of data from China. I found that the number and proportion of cases in each country were positively correlated with population density, meaning that countries with a higher population density are likely to have more cases. These results are consistent with my expectations, although the correlations are not very strong (0.344 between number of cases and density, and 0.364 between proportion of cases and density); however, this could be due to a lack of data resulting in a small sample size. Meanwhile, the number and proportion of cases in each country were negatively correlated with that country’s population density rank, which makes sense as the country with the highest population density was ranked 1, and countries with lower population densities had higher values for their rank. For the next few summary statistics, I created a new variable called “duration” that calculates the length of time between the date symptoms began to appear and the date an outcome was recorded. Duration times varied widely - between 3 and 41 days - and the average and median duration times were 15.3 days and 14 days respectively, so it seems that the infection takes a while to run its course. Next, I wanted to calculate the proportion of cases in each country that were recording as having a chronic disease, but this was not very informative as there was very little data. Finally, I gathered the outcomes that were recorded into five categories: died, discharged (left the hospital), recovered, stable (still sick but not getting worse), and other (notes left by the original creators of the COVID-19 dataset that did not fit into any of the other categories). I then calculated the mean, standard deviation, and median of the ages of patients for each outcome. Based on these summary statistics, patients who recovered or were discharged tended to be significantly younger than patients who died or remained hospitalized, supporting the theory that the coronavirus is more dangerous for the older demographic.</h5>
+</div>
+<div id="it-is-important-to-note-that-the-covid-19-datasets-i-am-using-only-cover-a-relatively-short-window-of-time-and-there-is-a-lot-of-data-missing-from-the-earlier-entries-because-it-is-only-recently-as-the-outbreak-is-spreading-and-worsening-that-people-are-starting-to-monitor-emergent-cases-more-closely.-in-addition-this-dataset-is-not-up-to-date-as-i-downloaded-it-on-22920-and-there-have-been-many-more-cases-confirmed-since-then.-furthermore-the-datasets-i-am-using-do-not-take-into-account-other-factors-that-could-affect-the-spread-of-covid-19-such-as-human-travel-and-migration-patterns.-as-such-there-may-not-be-enough-data-in-this-dataset-for-the-summary-statistics-i-computed-above-to-be-significant-or-accurately-represent-the-outbreak.-it-is-still-interesting-to-look-for-trends-in-the-data-however-and-see-if-these-trends-continue-as-the-situation-develops." class="section level5">
+<h5>It is important to note that the COVID-19 datasets I am using only cover a relatively short window of time, and there is a lot of data missing from the earlier entries because it is only recently, as the outbreak is spreading and worsening, that people are starting to monitor emergent cases more closely. In addition, this dataset is not up-to-date, as I downloaded it on 2/29/20 and there have been many more cases confirmed since then. Furthermore, the datasets I am using do not take into account other factors that could affect the spread of COVID-19, such as human travel and migration patterns. As such, there may not be enough data in this dataset for the summary statistics I computed above to be significant or accurately represent the outbreak. It is still interesting to look for trends in the data, however, and see if these trends continue as the situation develops.</h5>
+</div>
+</div>
+<div id="visualization" class="section level3">
+<h3>Visualization</h3>
+<div id="this-section-consists-of-various-plots-that-visualize-the-data." class="section level5">
+<h5>This section consists of various plots that visualize the data.</h5>
+</div>
+<div id="correlation-heatmap" class="section level4">
+<h4>Correlation Heatmap</h4>
+<pre class="r"><code>fullcor1 &lt;- fullcor %&gt;% filter(country!=&quot;China&quot;) %&gt;% select_if(is.numeric) 
+cor(fullcor1)</code></pre>
+<pre><code>##                     n       rank    density  densityMi     pop2019       area
+## n          1.00000000 -0.3327501  0.3441759  0.3441759 -0.04536718 -0.1332458
+## rank      -0.33275009  1.0000000 -0.8481052 -0.8481053 -0.21826992  0.6199877
+## density    0.34417593 -0.8481052  1.0000000  1.0000000  0.22142252 -0.3571334
+## densityMi  0.34417590 -0.8481053  1.0000000  1.0000000  0.22142252 -0.3571335
+## pop2019   -0.04536718 -0.2182699  0.2214225  0.2214225  1.00000000  0.1825656
+## area      -0.13324577  0.6199877 -0.3571334 -0.3571335  0.18256556  1.0000000
+## propcase   0.94229976 -0.3117545  0.3642139  0.3642139 -0.07068631 -0.1330908
+##              propcase
+## n          0.94229976
+## rank      -0.31175449
+## density    0.36421392
+## densityMi  0.36421388
+## pop2019   -0.07068631
+## area      -0.13309082
+## propcase   1.00000000</code></pre>
+<pre class="r"><code>tidycor &lt;- cor(fullcor1) %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;% pivot_longer(-1,names_to=&quot;name&quot;,values_to=&quot;correlation&quot;)
+
+tidycor %&gt;% ggplot(aes(rowname,name,fill=correlation)) + geom_tile() + geom_text(aes(label=round(correlation,2))) +
+  xlab(&quot;&quot;) + ylab(&quot;&quot;) + ggtitle(&quot;Correlations of COVID-19 Count with Population Data by Country&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="above-is-a-heatmap-depicting-the-correlations-between-number-and-proportion-of-covid-19-cases-per-country-and-population-data-per-country.-for-this-correlation-heatmap-i-used-the-smaller-dataset-fullcor1-that-i-created-in-the-previous-section-i-chose-this-dataset-over-the-full-dataset-as-i-felt-that-the-results-would-be-more-meaningful-correlations-between-numbersproportions-of-cases-and-population-data-are-more-meaningful-than-correlations-between-agelatitudelongitude-and-population-data.-as-before-i-excluded-china-because-there-is-a-disproportionately-large-amount-of-data-from-china-due-to-it-being-the-origin-of-the-pandemic." class="section level5">
+<h5>Above is a heatmap depicting the correlations between number and proportion of COVID-19 cases per country and population data per country. For this correlation heatmap, I used the smaller dataset “fullcor1” that I created in the previous section; I chose this dataset over the full dataset as I felt that the results would be more meaningful (correlations between numbers/proportions of cases and population data are more meaningful than correlations between age/latitude/longitude and population data). As before, I excluded China because there is a disproportionately large amount of data from China due to it being the origin of the pandemic.</h5>
+</div>
+<div id="besides-all-variables-being-perfectly-correlated-with-themselves-there-is-also-a-perfect-positive-correlation-between-density-and-densitymi-due-to-those-variables-containing-the-same-data-with-different-units-density-is-measured-in-people-per-square-km-while-densitymi-is-people-per-square-mi.-the-strong-negative-correlation-between-rank-and-population-density-also-makes-sense-due-to-rank-being-a-function-of-how-the-data-is-arranged-i.e.-the-country-with-the-highest-population-density-has-the-lowest-rank-rank-1.-similarly-n-is-strongly-correlated-with-propcase-and-pop2019-as-it-should-be-because-propcase-as-a-variable-was-created-by-dividing-n-the-number-of-cases-recorded-for-a-country-by-that-countrys-population.-the-most-interesting-result-is-the-correlation-between-n-and-population-density-and-similarly-between-propcase-and-population-density-the-two-are-positively-correlated-suggesting-that-there-are-more-cases-of-covid-19-recorded-for-countries-with-higher-population-densities-but-the-correlation-is-somewhat-weak.-again-this-could-be-due-to-the-dataset-being-outdated-not-containing-sufficient-data-or-not-taking-into-account-other-factors-such-as-migration." class="section level5">
+<h5>Besides all variables being perfectly correlated with themselves, there is also a perfect positive correlation between “density” and “densityMi” due to those variables containing the same data with different units (“density” is measured in people per square km, while “densityMi” is people per square mi). The strong negative correlation between “rank” and population density also makes sense due to rank being a function of how the data is arranged i.e. the country with the highest population density has the lowest rank (rank 1). Similarly, “n” is strongly correlated with “propcase” and “pop2019” as it should be because “propcase” as a variable was created by dividing “n,” the number of cases recorded for a country, by that country’s population. The most interesting result is the correlation between “n” and population density (and, similarly, between “propcase” and population density): the two are positively correlated, suggesting that there are more cases of COVID-19 recorded for countries with higher population densities, but the correlation is somewhat weak. Again, this could be due to the dataset being outdated, not containing sufficient data, or not taking into account other factors such as migration.</h5>
+</div>
+</div>
+<div id="histogram" class="section level4">
+<h4>Histogram</h4>
+<pre class="r"><code>outcomes %&gt;% filter(sex!=&quot;NA&quot;) %&gt;% ggplot(aes(age,fill=sex)) + geom_histogram(color=&quot;white&quot;) + facet_grid(outcome~sex) +
+  scale_fill_brewer(palette=&quot;Pastel1&quot;) + theme_dark() + scale_x_continuous(breaks=seq(0,100,10)) +
+  ggtitle(&quot;Distribution of Ages of Male and Female Patients per Outcome&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="above-is-a-histogram-showing-the-distributions-of-ages-for-each-outcome-separated-by-sex.-the-distributions-appear-to-be-similar-for-both-sexes.-the-age-distribution-is-older-for-the-patients-who-died-reflecting-that-the-elderly-are-more-susceptible-to-the-virus-as-their-immune-systems-have-declined-with-age.-for-the-same-reason-the-age-distribution-of-the-patients-who-were-discharged-lies-more-toward-the-younger-end.-most-of-the-data-is-quite-spread-out-especially-for-patients-whose-outcome-is-listed-as-stable-showing-that-people-of-all-ages-are-affected-by-the-pandemic." class="section level5">
+<h5>Above is a histogram showing the distributions of ages for each outcome, separated by sex. The distributions appear to be similar for both sexes. The age distribution is older for the patients who died, reflecting that the elderly are more susceptible to the virus as their immune systems have declined with age. For the same reason, the age distribution of the patients who were discharged lies more toward the younger end. Most of the data is quite spread out, especially for patients whose outcome is listed as “stable,” showing that people of all ages are affected by the pandemic.</h5>
+</div>
+</div>
+<div id="bar-chart" class="section level4">
+<h4>Bar Chart</h4>
+<pre class="r"><code>outcomes %&gt;% filter(sex!=&quot;NA&quot;) %&gt;% ggplot(aes(outcome,age,fill=sex)) +
+  geom_bar(stat=&quot;summary&quot;,fun.y=&quot;mean&quot;,position=&quot;dodge&quot;) + 
+  geom_errorbar(stat=&quot;summary&quot;,position=&quot;dodge&quot;,size=1) +
+  scale_fill_brewer(palette=&quot;Pastel1&quot;) + xlab(&quot;Outcome&quot;) + ylab(&quot;Mean Age&quot;) +
+  ggtitle(&quot;Mean Age of Male and Female Patients by Outcome&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="this-bar-chart-is-another-way-of-visualizing-the-age-distribution-for-the-different-outcomes.-it-shows-the-mean-ages-and-standard-error-for-male-and-female-patients-of-each-outcome.-the-bar-chart-supports-the-trends-previously-seen-in-the-histogram-male-and-female-patients-had-generally-similar-outcomes-and-those-who-died-tended-to-be-older-on-average-than-those-who-were-discharged-or-remained-stable." class="section level5">
+<h5>This bar chart is another way of visualizing the age distribution for the different outcomes. It shows the mean ages and standard error for male and female patients of each outcome. The bar chart supports the trends previously seen in the histogram: male and female patients had generally similar outcomes, and those who died tended to be older on average than those who were discharged or remained stable.</h5>
+</div>
+</div>
+<div id="duration-plot" class="section level4">
+<h4>Duration Plot</h4>
+<pre class="r"><code>durations %&gt;% select(date_onset_symptoms,date_death_or_discharge,age,country) %&gt;% na.omit %&gt;%
+  ggplot(aes(date_onset_symptoms,age)) +
+  geom_segment(aes(xend=date_death_or_discharge,yend=age,color=country),size=2,alpha=0.5) +
+  scale_y_discrete(breaks=seq(0,90,10)) + xlab(&quot;Date&quot;) + ylab(&quot;Age&quot;) +
+  ggtitle(&quot;Duration of Illness by Age per Country&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="here-i-have-plotted-the-durations-of-illnesses-for-patients-of-all-ages-as-segments-spanning-a-timeline-colored-by-country.-the-relationship-between-age-and-duration-of-illness-seems-to-be-complicated-as-there-are-short-and-long-durations-for-all-ages.-it-does-appear-that-durations-are-shorter-for-both-the-youngest-and-the-oldest-patients-one-possibility-could-be-that-younger-patients-had-a-shorter-duration-of-illness-as-they-recovered-more-quickly-and-older-patients-had-a-shorter-duration-of-illness-as-they-were-more-likely-to-die-from-the-virus.-the-earliest-cases-are-almost-all-from-china-while-later-cases-begin-appearing-in-other-countries-this-reflects-the-spread-of-the-virus-across-borders-as-well-as-an-increase-in-international-cases-resulting-from-increased-awareness-about-the-virus-and-subsequent-testing-for-it." class="section level5">
+<h5>Here, I have plotted the durations of illnesses for patients of all ages as segments spanning a timeline, colored by country. The relationship between age and duration of illness seems to be complicated, as there are short and long durations for all ages. It does appear that durations are shorter for both the youngest and the oldest patients; one possibility could be that younger patients had a shorter duration of illness as they recovered more quickly, and older patients had a shorter duration of illness as they were more likely to die from the virus. The earliest cases are almost all from China, while later cases begin appearing in other countries; this reflects the spread of the virus across borders, as well as an increase in international cases resulting from increased awareness about the virus and subsequent testing for it.</h5>
+</div>
+</div>
+</div>
+<div id="pam-clustering" class="section level3">
+<h3>PAM Clustering</h3>
+<div id="i-will-be-using-the-fullcor-dataset-for-clustering.-first-i-deselected-densitymi-as-it-contains-redundant-information-and-scaled-the-numeric-variables.-i-also-removed-the-row-for-china-again-as-it-is-overrepresented-in-the-dataset.-then-i-created-a-silhouette-width-plot-to-determine-the-number-of-clusters-to-use." class="section level5">
+<h5>I will be using the “fullcor” dataset for clustering. First, I deselected “densityMi,” as it contains redundant information, and scaled the numeric variables. I also removed the row for China again, as it is overrepresented in the dataset. Then, I created a silhouette width plot to determine the number of clusters to use.</h5>
+<pre class="r"><code>library(cluster)
+pam_dat &lt;- fullcor %&gt;% filter(country!=&quot;China&quot;) %&gt;% select(-densityMi) %&gt;% select_if(is.numeric) %&gt;% scale
+sil_width&lt;-vector()
+for(i in 2:10){
+pam_fit &lt;- pam(pam_dat, k = i)
+sil_width[i] &lt;- pam_fit$silinfo$avg.width
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name=&quot;k&quot;,breaks=1:10) + ggtitle(&quot;Silhouette Width Plot for PAM&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-silhouette-width-appears-to-be-greatest-when-k6-or-7-indicating-that-i-should-use-6-or-7-clusters.-next-i-performed-pam-using-6-clusters-and-added-the-cluster-variable-to-my-final-dataset." class="section level5">
+<h5>The silhouette width appears to be greatest when k=6 or 7, indicating that I should use 6 or 7 clusters. Next, I performed PAM using 6 clusters and added the “cluster” variable to my final dataset.</h5>
+<pre class="r"><code>pam1 &lt;- pam_dat %&gt;% pam(6)
+pam1</code></pre>
+<pre><code>## Medoids:
+##      ID          n       rank     density     pop2019       area    propcase
+## [1,] 13 -0.3283336  0.2838928 -0.54562336 -0.29040022 -0.3642987 -0.31221393
+## [2,]  5 -0.3062548  1.9279756 -1.04168119 -0.29817678  2.0988771 -0.27424047
+## [3,] 31 -0.2841759 -0.8927546  0.59391628 -0.05632427 -0.3919343 -0.30454186
+## [4,] 11 -0.3371651 -1.1828868  1.30359472  5.14497039  0.3708784 -0.34609298
+## [5,] 14  2.2460581 -0.5220301  0.06823507 -0.20340740 -0.3996429  2.28531448
+## [6,] 26 -0.2400183 -1.3763083  2.64704308 -0.35402987 -0.4680559 -0.06167569
+## Clustering vector:
+##  [1] 1 2 1 1 2 1 1 1 3 1 4 1 1 5 5 6 1 3 3 3 1 2 5 1 3 6 1 1 3 2 3
+## Objective function:
+##     build      swap 
+## 0.5714473 0.5623613 
+## 
+## Available components:
+##  [1] &quot;medoids&quot;    &quot;id.med&quot;     &quot;clustering&quot; &quot;objective&quot;  &quot;isolation&quot; 
+##  [6] &quot;clusinfo&quot;   &quot;silinfo&quot;    &quot;diss&quot;       &quot;call&quot;       &quot;data&quot;</code></pre>
+<pre class="r"><code>final &lt;- fullcor %&gt;% filter(country!=&quot;China&quot;) %&gt;% mutate(cluster=as.factor(pam1$clustering)) %&gt;% mutate_if(is.numeric,scale)</code></pre>
+</div>
+<div id="finally-i-visualized-the-clusters." class="section level5">
+<h5>Finally, I visualized the clusters.</h5>
+<pre class="r"><code>final %&gt;% ggplot(aes(x=n,y=density, color=cluster))+geom_point() + ggtitle(&quot;PAM Clusters for Number of Cases and Population Density per Country&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(pam1,which=2)</code></pre>
+<p><img src="/project1_files/figure-html/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-clusters-do-not-appear-to-map-onto-any-variables-although-they-do-appear-to-be-somewhat-distinct-from-each-other.-there-are-several-clusters-that-map-onto-various-densities-but-the-same-n-this-does-not-support-any-correlation-between-number-of-cases-and-population-density.-the-three-points-that-make-up-cluster-5-are-italy-japan-and-south-korea-and-they-are-far-from-the-other-clusters-but-also-from-each-other.-cluster-5-does-show-a-positive-correlation-between-number-of-cases-and-population-density-but-it-only-consists-of-three-countries-which-is-too-small-of-a-sample-size-to-be-significant-and-fails-to-take-into-account-the-influence-of-geographic-distance-and-migration-on-the-data-for-japan-and-south-korea-based-on-the-silhouette-plot-this-cluster-solution-is-not-the-strongest-average-silhouette-width-0.56-but-it-is-still-reasonable.-in-general-i-believe-that-sample-size-and-outside-factors-not-accounted-for-in-the-data-could-have-contributed-to-this-result." class="section level5">
+<h5>The clusters do not appear to map onto any variables, although they do appear to be somewhat distinct from each other. There are several clusters that map onto various densities but the same n; this does not support any correlation between number of cases and population density. The three points that make up cluster 5 are Italy, Japan, and South Korea, and they are far from the other clusters, but also from each other. Cluster 5 does show a positive correlation between number of cases and population density, but it only consists of three countries, which is too small of a sample size to be significant (and fails to take into account the influence of geographic distance and migration on the data for Japan and South Korea) Based on the silhouette plot, this cluster solution is not the strongest (average silhouette width = 0.56), but it is still reasonable. In general, I believe that sample size and outside factors not accounted for in the data could have contributed to this result.</h5>
+</div>
+</div>

@@ -1,0 +1,236 @@
+---
+title: "Project 1: Exploratory Data Analysis"
+author: "Michelle Mao mm87822"
+date: "3/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+### Introduction
+
+##### The datasets I chose for this project are two datasets documenting the COVID-19 cases around the world (one dataset records cases in Hubei, China, while the other dataset records cases outside of Hubei), and one dataset with population data for every country. The COVID-19 datasets are updated live as new cases are confirmed, but for this project I am using data on the cases that were confirmed between 1/20/20 (the first cases that appear in the dataset) and 2/29/20 (the date I procured the dataset). These datasets contain several variables including various identifiers (age, sex, location); dates of symptom onset, admission, and confirmation of the virus; symptoms; any relationships with Wuhan; other relevant medical issues; and outcome variables. These datasets are open access and were compiled by the Emergent Epidemics Lab of Northeastern University; they can be found at the following link:
+
+###### https://doi.org/10.1016/S1473-3099(20)30119-5
+
+```{R}
+library(tidyverse)
+setwd("C:/Users/Michelle/Desktop/Website/content")
+covidHubei <- read.csv("COVID19_2020_open_line_list - Hubei.csv",stringsAsFactors = F)
+covidOut <- read.csv("COVID19_2020_open_line_list - outside_Hubei.csv",stringsAsFactors = F)
+glimpse(covidHubei)
+glimpse(covidOut)
+```
+
+##### The other dataset is a dataset that records the population density of every country in the world as of 2019. The variables in this dataset are rank (from greatest to least population density), country, population density in people per square kilometer, population density in people per square mile, population in thousands as of 2019, and area in square kilometers. This dataset can be found at the following link:
+
+###### https://worldpopulationreview.com/countries/countries-by-density/
+
+```{R}
+pop <- read.csv("population density.csv")
+glimpse(pop)
+```
+
+##### I chose these datasets because I am interested in infectious diseases and the COVID-19 coronavirus outbreak is an especially salient issue as of late that is currently affecting the entire world. I would like to analyze these datasets to see if there is an association between population density and how the virus has spread in countries around the world. I would imagine that countries with a higher population density would have more cases or be at higher risk of the virus spreading, but there could be any number of factors that influence this association (for instance, population density is often not uniform, and human migration varies from country to country).
+
+
+
+### Joining/Merging
+
+##### Because the two COVID-19 datasets are basically the same dataset separated into cases in and outside of Hubei, I decided to combine them first into a single dataset before doing any joining. First, I cleaned up the dataset to make sure all empty and "N/A" values were showing up as NA; I also converted some variables to different variable types so that I could bind rows properly.
+
+```{R}
+covidOut<-covidOut%>%mutate_all(function(x)ifelse(x==""|x=="N/A",NA,x))
+covidHubei<-covidHubei%>%mutate_all(function(x)ifelse(x==""|x=="N/A",NA,x))
+
+covidOut$latitude <- as.numeric(covidOut$latitude)
+covidOut$longitude <- as.numeric(covidOut$longitude)
+covidOut$chronic_disease_binary <- as.integer(covidOut$chronic_disease_binary)
+covidOut <- covidOut %>% select(-data_moderator_initials)
+
+covidHubei$travel_history_dates <- as.factor(covidHubei$travel_history_dates)
+covidHubei$travel_history_location <- as.factor(covidHubei$travel_history_location)
+covidHubei$notes_for_discussion <- as.factor(covidHubei$notes_for_discussion)
+```
+
+##### Then, I combined the two "covid" datasets into a single dataset and named it "covid19." After that, I selected the variables that I would be working with for this project and named this smaller dataset "covid."
+
+```{R}
+covid19 <- covidHubei %>% bind_rows(covidOut)
+covid <- covid19 %>% select(-ID, -geo_resolution, -source, -sequence_available, -additional_information, -notes_for_discussion, -location, -admin1, -admin2, -admin3, -country_new, -admin_id)
+glimpse(covid)
+```
+
+##### I then joined the "covid" dataset with the "pop" dataset. I joined the two datasets by "country," which was the variable they had in common. I chose a left join because I wanted to keep all the data in the "covid dataset", and the "covid" dataset did not contain data for all the countries in the world.
+
+```{R}
+full <- covid %>% left_join(pop, by=c("country"="name"))
+length(setdiff(pop$name, covid$country))
+length(setdiff(covid$country, pop$name))
+setdiff(covid$country, pop$name)
+full <- full %>% mutate(country=ifelse(province=="Taiwan", "Taiwan", country)) %>% mutate(country=ifelse(country=="North Macedonia", "Macedonia", country)) %>% filter(country!="")
+
+glimpse(full)
+```
+
+##### Above, it can be seen that there are 182 countries in "pop" that do not appear in "covid," so these were dropped when the datasets were joined. There are also apparently two countries in "covid" that do not appear in "pop" - one is North Macedonia, and the other is blank because a country was not added for cases whose province was listed as Taiwan. To fix this for the purpose of this project, I used mutate to set "Taiwan" as the country for observations where the province was Taiwan and changed North Macedonia to Macedonia. There still appeared to be some entries where a country was not listed, so I decided to exclude those from my analysis.
+
+
+
+### Wrangling and Tidying
+
+##### Here, I explore the "full" dataset by generating various summary statistics. I include a short explanation of the code before each chunk of code, but will discuss all the results in detail at the end of this section.
+
+##### First, I cleaned up the data and counted the number of cases of each sex in each country, then arranged by descending number of male and female cases. I also used pivot_wider here to rearrange the data so that instead of having two rows for each country (one for each sex), I now have one row for each country with two columns that show the count for each sex.
+
+```{R}
+full <- full %>% mutate(sex=ifelse(sex=="Female","female",sex), sex=ifelse(sex=="Male","male",sex),
+                        sex=ifelse(sex!="female" & sex!="male",NA,sex))
+full %>% group_by(country,sex) %>% filter(sex!="NA") %>% summarize(n=n())
+
+full %>% group_by(country,sex) %>% filter(sex!="NA") %>% summarize(n=n()) %>% pivot_wider(names_from="sex",values_from="n") %>% arrange(desc(male),desc(female))
+```
+
+##### Summarizing by number of cases per country, joining again with the "pop" dataset, adding a new variable "propcase" that shows the number of recorded cases in a country divided by that country's population, and calculating the correlation between the number of cases in each country, proportion of cases, population density, and rank:
+
+```{R}
+fullcor <- full %>% group_by(country) %>% summarize(n=n()) %>% inner_join(pop,by=c("country"="name")) %>% mutate(propcase=n/pop2019) 
+fullcor %>% filter(country!="China") %>% select(n,propcase,density,rank) %>% cor
+```
+
+##### Cleaning up/reformatting the data, adding a new variable called "duration" that shows the length of time between date of symptom onset and date of outcome, and calculating summary statistics:
+
+```{R}
+durations <- full %>% filter(date_death_or_discharge!="discharge") %>%
+  mutate(date_onset_symptoms=gsub("pre","",date_onset_symptoms),
+                date_onset_symptoms=as.Date(gsub("[.]","-",date_onset_symptoms), format="%d-%m-%Y"),
+                date_death_or_discharge=as.Date(gsub("[.]","-",date_death_or_discharge),format="%d-%m-%Y"),
+         date_admission_hospital=as.Date(gsub("[.]","-",date_admission_hospital), format="%d-%m-%Y"),
+         date_confirmation=as.Date(gsub("[.]","-",date_confirmation), format="%d-%m-%Y"),
+                duration=date_death_or_discharge-date_onset_symptoms
+                ) 
+
+durations %>% filter(duration!="-5") %>% summarize(mean_dur = mean(duration, na.rm=T), median_dur = median(duration, na.rm=T), max_dur = max(duration, na.rm=T), min_dur = min(duration,na.rm=T))
+```
+
+##### Calculating the proportion of cases per country listed as having a chronic disease:
+
+```{R}
+full %>% group_by(country) %>% summarize(propCD = mean(chronic_disease_binary=="1", na.rm=T)) %>% filter(propCD!="NaN")
+```
+
+##### Cleaning up the data and calculating mean, standard deviation, and median age for each outcome:
+
+```{R}
+full <- full %>% mutate(outcome=ifelse(outcome=="discharge"|outcome=="Discharged","discharged",outcome),
+                        outcome=ifelse(outcome=="death","died",outcome),
+                        outcome=ifelse(outcome!="discharged" & outcome!="died" & outcome!="recovered" & outcome!="stable","other",outcome))
+outcomes <- full %>% filter(outcome=="discharged"|outcome=="died"|outcome=="recovered"|outcome=="stable"|outcome=="other",
+                            age!="15-88",age!="19-77",age!="21-72",age!="22-80",age!="38-68") %>%
+  mutate(age=ifelse(age=="20-29",25,age),age=ifelse(age=="40-49",45,age),age=ifelse(age=="50-59",55,age),
+         age=ifelse(age=="60-69",25,age),age=ifelse(age=="70-79",55,age),age=ifelse(age=="80-89",85,age),
+         age=as.numeric(age))
+
+outcomes %>% group_by(outcome) %>% summarize(meanAge=mean(age),sdAge=sd(age),medianAge=median(age))
+```
+
+##### In this section, I calculated various summary statistics regarding the "full" dataset. First, I calculated the number of cases per sex for each country. It appears that for most countries, there are more male than female cases reported in this dataset. Next, I calculated a correlation for number of cases in each country, proportion of cases, population density, and rank. I excluded China as the dataset contains a disproportionately large amount of data from China. I found that the number and proportion of cases in each country were positively correlated with population density, meaning that countries with a higher population density are likely to have more cases. These results are consistent with my expectations, although the correlations are not very strong (0.344 between number of cases and density, and 0.364 between proportion of cases and density); however, this could be due to a lack of data resulting in a small sample size. Meanwhile, the number and proportion of cases in each country were negatively correlated with that country's population density rank, which makes sense as the country with the highest population density was ranked 1, and countries with lower population densities had higher values for their rank. For the next few summary statistics, I created a new variable called "duration" that calculates the length of time between the date symptoms began to appear and the date an outcome was recorded. Duration times varied widely - between 3 and 41 days - and the average and median duration times were 15.3 days and 14 days respectively, so it seems that the infection takes a while to run its course. Next, I wanted to calculate the proportion of cases in each country that were recording as having a chronic disease, but this was not very informative as there was very little data. Finally, I gathered the outcomes that were recorded into five categories: died, discharged (left the hospital), recovered, stable (still sick but not getting worse), and other (notes left by the original creators of the COVID-19 dataset that did not fit into any of the other categories). I then calculated the mean, standard deviation, and median of the ages of patients for each outcome. Based on these summary statistics, patients who recovered or were discharged tended to be significantly younger than patients who died or remained hospitalized, supporting the theory that the coronavirus is more dangerous for the older demographic.
+
+##### It is important to note that the COVID-19 datasets I am using only cover a relatively short window of time, and there is a lot of data missing from the earlier entries because it is only recently, as the outbreak is spreading and worsening, that people are starting to monitor emergent cases more closely. In addition, this dataset is not up-to-date, as I downloaded it on 2/29/20 and there have been many more cases confirmed since then. Furthermore, the datasets I am using do not take into account other factors that could affect the spread of COVID-19, such as human travel and migration patterns. As such, there may not be enough data in this dataset for the summary statistics I computed above to be significant or accurately represent the outbreak. It is still interesting to look for trends in the data, however, and see if these trends continue as the situation develops.
+
+
+
+### Visualization
+
+##### This section consists of various plots that visualize the data.
+
+#### Correlation Heatmap
+
+```{R}
+fullcor1 <- fullcor %>% filter(country!="China") %>% select_if(is.numeric) 
+cor(fullcor1)
+
+tidycor <- cor(fullcor1) %>% as.data.frame %>% rownames_to_column %>% pivot_longer(-1,names_to="name",values_to="correlation")
+
+tidycor %>% ggplot(aes(rowname,name,fill=correlation)) + geom_tile() + geom_text(aes(label=round(correlation,2))) +
+  xlab("") + ylab("") + ggtitle("Correlations of COVID-19 Count with Population Data by Country")
+```
+
+##### Above is a heatmap depicting the correlations between number and proportion of COVID-19 cases per country and population data per country. For this correlation heatmap, I used the smaller dataset "fullcor1" that I created in the previous section; I chose this dataset over the full dataset as I felt that the results would be more meaningful (correlations between numbers/proportions of cases and population data are more meaningful than correlations between age/latitude/longitude and population data). As before, I excluded China because there is a disproportionately large amount of data from China due to it being the origin of the pandemic. 
+
+##### Besides all variables being perfectly correlated with themselves, there is also a perfect positive correlation between "density" and "densityMi" due to those variables containing the same data with different units ("density" is measured in people per square km, while "densityMi" is people per square mi). The strong negative correlation between "rank" and population density also makes sense due to rank being a function of how the data is arranged i.e. the country with the highest population density has the lowest rank (rank 1). Similarly, "n" is strongly correlated with "propcase" and "pop2019" as it should be because "propcase" as a variable was created by dividing "n," the number of cases recorded for a country, by that country's population. The most interesting result is the correlation between "n" and population density (and, similarly, between "propcase" and population density): the two are positively correlated, suggesting that there are more cases of COVID-19 recorded for countries with higher population densities, but the correlation is somewhat weak. Again, this could be due to the dataset being outdated, not containing sufficient data, or not taking into account other factors such as migration.
+
+
+#### Histogram
+
+```{R}
+outcomes %>% filter(sex!="NA") %>% ggplot(aes(age,fill=sex)) + geom_histogram(color="white") + facet_grid(outcome~sex) +
+  scale_fill_brewer(palette="Pastel1") + theme_dark() + scale_x_continuous(breaks=seq(0,100,10)) +
+  ggtitle("Distribution of Ages of Male and Female Patients per Outcome")
+```
+
+##### Above is a histogram showing the distributions of ages for each outcome, separated by sex. The distributions appear to be similar for both sexes. The age distribution is older for the patients who died, reflecting that the elderly are more susceptible to the virus as their immune systems have declined with age. For the same reason, the age distribution of the patients who were discharged lies more toward the younger end. Most of the data is quite spread out, especially for patients whose outcome is listed as "stable," showing that people of all ages are affected by the pandemic.
+
+
+#### Bar Chart
+
+```{R}
+outcomes %>% filter(sex!="NA") %>% ggplot(aes(outcome,age,fill=sex)) +
+  geom_bar(stat="summary",fun.y="mean",position="dodge") + 
+  geom_errorbar(stat="summary",position="dodge",size=1) +
+  scale_fill_brewer(palette="Pastel1") + xlab("Outcome") + ylab("Mean Age") +
+  ggtitle("Mean Age of Male and Female Patients by Outcome")
+```
+
+##### This bar chart is another way of visualizing the age distribution for the different outcomes. It shows the mean ages and standard error for male and female patients of each outcome. The bar chart supports the trends previously seen in the histogram: male and female patients had generally similar outcomes, and those who died tended to be older on average than those who were discharged or remained stable.
+
+
+#### Duration Plot
+
+```{R}
+durations %>% select(date_onset_symptoms,date_death_or_discharge,age,country) %>% na.omit %>%
+  ggplot(aes(date_onset_symptoms,age)) +
+  geom_segment(aes(xend=date_death_or_discharge,yend=age,color=country),size=2,alpha=0.5) +
+  scale_y_discrete(breaks=seq(0,90,10)) + xlab("Date") + ylab("Age") +
+  ggtitle("Duration of Illness by Age per Country")
+```
+
+##### Here, I have plotted the durations of illnesses for patients of all ages as segments spanning a timeline, colored by country. The relationship between age and duration of illness seems to be complicated, as there are short and long durations for all ages. It does appear that durations are shorter for both the youngest and the oldest patients; one possibility could be that younger patients had a shorter duration of illness as they recovered more quickly, and older patients had a shorter duration of illness as they were more likely to die from the virus. The earliest cases are almost all from China, while later cases begin appearing in other countries; this reflects the spread of the virus across borders, as well as an increase in international cases resulting from increased awareness about the virus and subsequent testing for it.
+
+
+
+### PAM Clustering
+
+##### I will be using the "fullcor" dataset for clustering. First, I deselected "densityMi," as it contains redundant information, and scaled the numeric variables. I also removed the row for China again, as it is overrepresented in the dataset. Then, I created a silhouette width plot to determine the number of clusters to use.
+
+```{R}
+library(cluster)
+pam_dat <- fullcor %>% filter(country!="China") %>% select(-densityMi) %>% select_if(is.numeric) %>% scale
+sil_width<-vector()
+for(i in 2:10){
+pam_fit <- pam(pam_dat, k = i)
+sil_width[i] <- pam_fit$silinfo$avg.width
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10) + ggtitle("Silhouette Width Plot for PAM")
+```
+
+##### The silhouette width appears to be greatest when k=6 or 7, indicating that I should use 6 or 7 clusters. Next, I performed PAM using 6 clusters and added the "cluster" variable to my final dataset.
+
+```{R}
+pam1 <- pam_dat %>% pam(6)
+pam1
+final <- fullcor %>% filter(country!="China") %>% mutate(cluster=as.factor(pam1$clustering)) %>% mutate_if(is.numeric,scale)
+```
+
+##### Finally, I visualized the clusters.
+
+```{R}
+final %>% ggplot(aes(x=n,y=density, color=cluster))+geom_point() + ggtitle("PAM Clusters for Number of Cases and Population Density per Country")
+
+plot(pam1,which=2)
+```
+
+##### The clusters do not appear to map onto any variables, although they do appear to be somewhat distinct from each other. There are several clusters that map onto various densities but the same n; this does not support any correlation between number of cases and population density. The three points that make up cluster 5 are Italy, Japan, and South Korea, and they are far from the other clusters, but also from each other. Cluster 5 does show a positive correlation between number of cases and population density, but it only consists of three countries, which is too small of a sample size to be significant (and fails to take into account the influence of geographic distance and migration on the data for Japan and South Korea) Based on the silhouette plot, this cluster solution is not the strongest (average silhouette width = 0.56), but it is still reasonable. In general, I believe that sample size and outside factors not accounted for in the data could have contributed to this result.

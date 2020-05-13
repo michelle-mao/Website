@@ -1,0 +1,638 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "Michelle Mao mm87822"
+date: "5/1/2020"
+output: html_document
+---
+
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<div id="for-this-project-i-am-using-an-updated-version-of-the-covid-19-dataset-that-i-used-for-project-1.-this-is-an-open-access-dataset-by-the-emergent-epidemics-lab-of-northeastern-university-that-documents-individual-confirmed-cases-of-covid-19.-it-was-originally-updated-as-new-cases-were-confirmed-but-the-researchers-appear-to-have-stopped-recording-on-33120-perhaps-because-it-was-no-longer-realistic-to-attempt-to-document-every-single-case-in-the-world-once-covid-19-became-a-pandemic.-this-data-originally-constituted-two-datasets-one-for-cases-inside-hubei-province-and-one-for-cases-outside-of-it-but-because-so-much-data-has-been-added-in-the-last-two-months-the-original-creators-have-migrated-it-to-github-and-i-can-no-longer-find-the-dataset-for-hubei-province.-thus-the-dataset-i-am-using-in-this-project-is-the-dataset-for-cases-outside-of-hubei-province.-as-this-dataset-has-become-very-large-since-the-last-time-i-accessed-it-i-cleaned-up-the-original-file-slightly-by-removing-all-observations-where-the-age-was-blank-or-entered-incorrectly-e.g.-2000-yrs-old-before-reading-it-in.-the-resulting-dataset-contains-cases-that-were-confirmed-between-2120-and-33120-and-contains-several-variables-including-including-various-identifiers-age-sex-location-dates-of-symptom-onset-admission-and-confirmation-of-the-virus-symptoms-any-relationships-with-wuhan-other-relevant-medical-issues-and-outcome-variables.-access-to-the-dataset-can-be-obtained-through-the-following-link" class="section level5">
+<h5>For this project, I am using an updated version of the COVID-19 dataset that I used for Project 1. This is an open-access dataset by the Emergent Epidemics Lab of Northeastern University that documents individual confirmed cases of COVID-19. It was originally updated as new cases were confirmed, but the researchers appear to have stopped recording on 3/31/20 (perhaps because it was no longer realistic to attempt to document every single case in the world once COVID-19 became a pandemic). This data originally constituted two datasets, one for cases inside Hubei Province and one for cases outside of it, but because so much data has been added in the last two months, the original creators have migrated it to Github and I can no longer find the dataset for Hubei Province. Thus, the dataset I am using in this project is the dataset for cases outside of Hubei Province. As this dataset has become very large since the last time I accessed it, I cleaned up the original file slightly by removing all observations where the age was blank or entered incorrectly (e.g. 2000+ yrs old) before reading it in. The resulting dataset contains cases that were confirmed between 2/1/20 and 3/31/20, and contains several variables including including various identifiers (age, sex, location); dates of symptom onset, admission, and confirmation of the virus; symptoms; any relationships with Wuhan; other relevant medical issues; and outcome variables. Access to the dataset can be obtained through the following link:</h5>
+<div id="httpsdoi.org10.1016s1473-30992030119-5" class="section level6">
+<h6><a href="https://doi.org/10.1016/S1473-3099(20)30119-5" class="uri">https://doi.org/10.1016/S1473-3099(20)30119-5</a></h6>
+<pre class="r"><code>library(tidyverse)
+setwd(&quot;C:/Users/Michelle/Desktop/Website/content&quot;)
+covid &lt;- read.csv(&quot;covid_nwu1.csv&quot;,stringsAsFactors = F)
+glimpse(covid)</code></pre>
+<pre><code>## Observations: 15,945
+## Variables: 33
+## $ ï..ID &lt;chr&gt; &quot;000-1-10&quot;, &quot;000-1-100&quot;, &quot;000-1-10021&quot;,
+&quot;000-1-10022&quot;, &quot;000-1-...
+## $ age &lt;chr&gt; &quot;78&quot;, &quot;61&quot;, &quot;66&quot;, &quot;27&quot;, &quot;17&quot;, &quot;51&quot;, &quot;68&quot;,
+&quot;26&quot;, &quot;30&quot;, &quot;53&quot;, &quot;3...
+## $ sex &lt;chr&gt; &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;,
+&quot;female&quot;, &quot;male&quot;, ...
+## $ city &lt;chr&gt; &quot;Vo Euganeo&quot;, &quot;&quot;, &quot;Zhenlai County, Baicheng
+City&quot;, &quot;Longshan D...
+## $ province &lt;chr&gt; &quot;Veneto&quot;, &quot;&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;,
+&quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Ji...
+## $ country &lt;chr&gt; &quot;Italy&quot;, &quot;Singapore&quot;, &quot;China&quot;, &quot;China&quot;,
+&quot;China&quot;, &quot;China&quot;, &quot;Chi...
+## $ latitude &lt;dbl&gt; 45.297748, 1.353460, 45.948140,
+42.858020, 43.783530, 43.78353...
+## $ longitude &lt;dbl&gt; 11.65838, 103.81510, 123.43960,
+125.15210, 124.67290, 124.6729...
+## $ geo_resolution &lt;chr&gt; &quot;point&quot;, &quot;admin0&quot;, &quot;admin3&quot;,
+&quot;admin3&quot;, &quot;admin3&quot;, &quot;admin3&quot;, &quot;ad...
+## $ date_onset_symptoms &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_admission_hospital &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_confirmation &lt;chr&gt; &quot;21.02.2020&quot;, &quot;14.02.2020&quot;,
+&quot;07.02.2020&quot;, &quot;07.02.2020&quot;, &quot;07.02...
+## $ symptoms &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ lives_in_Wuhan &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ travel_history_dates &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;16.01.2020 - 23.02.2020&quot;, &quot;28.01.2020...
+## $ travel_history_location &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;Harbin&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;Thailand&quot;, &quot;Vietnam&quot;, &quot;&quot;, &quot;&quot;, &quot;...
+## $ reported_market_exposure &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ additional_information &lt;chr&gt; &quot;Hospitalized on
+12.02.2020 for other reasons&quot;, &quot;Case 65; fami...
+## $ chronic_disease_binary &lt;lgl&gt; FALSE, FALSE, FALSE,
+FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...
+## $ chronic_disease &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ source &lt;chr&gt;
+&quot;https://www.corriere.it/cronache/20_febbraio_21/coronavirus-i...
+## $ sequence_available &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ outcome &lt;chr&gt; &quot;death&quot;, &quot;discharge&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, ...
+## $ date_death_or_discharge &lt;chr&gt; &quot;22.02.2020&quot;,
+&quot;17.02.2020&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ notes_for_discussion &lt;chr&gt; &quot;&quot;, &quot;&quot;,
+&quot;https://www.google.com/maps/place/Zhenlai+County,+Bai...
+## $ location &lt;chr&gt; &quot;Vo&#39; Euganeo&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,...
+## $ admin3 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;Zhenlai County&quot;, &quot;Longshan
+District&quot;, &quot;Gongzhuling Ci...
+## $ admin2 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;Baicheng City&quot;, &quot;Liaoyuan City&quot;,
+&quot;Siping City&quot;, &quot;Sipi...
+## $ admin1 &lt;chr&gt; &quot;Veneto&quot;, &quot;&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;,
+&quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Ji...
+## $ country_new &lt;chr&gt; &quot;Italy&quot;, &quot;Singapore&quot;, &quot;China&quot;,
+&quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;Chi...
+## $ admin_id &lt;int&gt; 8978, 201, 10120, 5694, 3653, 3653,
+2070, 2070, 2070, 2070, 20...
+## $ data_moderator_initials &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ travel_history_binary &lt;lgl&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...</code></pre>
+</div>
+</div>
+<div id="the-covid-dataset-that-i-have-just-read-in-has-15945-observations-and-33-variables.-it-will-require-some-clean-up-as-it-did-last-time.-here-i-make-sure-all-the-nas-are-listed-as-such-and-remove-variables-that-will-be-irrelevant-to-this-project.-i-then-set-the-variable-type-for-the-date-variables-to-date-and-add-the-variable-duration-which-calculates-the-length-of-time-between-date-of-symptom-onset-and-date-of-outcome-as-in-the-previous-project." class="section level5">
+<h5>The “covid” dataset that I have just read in has 15,945 observations and 33 variables. It will require some clean-up as it did last time. Here, I make sure all the NAs are listed as such and remove variables that will be irrelevant to this project. I then set the variable type for the date variables to “date” and add the variable “duration”, which calculates the length of time between date of symptom onset and date of outcome, as in the previous project.</h5>
+<pre class="r"><code>covid &lt;- covid %&gt;% mutate_all(function(x)ifelse(x==&quot;&quot;|x==&quot;N/A&quot;,NA,x)) %&gt;% 
+  select(-ï..ID, -geo_resolution, -source,-sequence_available, -additional_information, -notes_for_discussion,
+         -location, -admin1, -admin2, -admin3, -country_new, -admin_id,-data_moderator_initials)
+
+covid &lt;- covid %&gt;% mutate(date_onset_symptoms=gsub(&quot;pre&quot;,&quot;&quot;,date_onset_symptoms),
+                date_onset_symptoms=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_onset_symptoms), format=&quot;%d-%m-%Y&quot;),
+                date_death_or_discharge=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_death_or_discharge),format=&quot;%d-%m-%Y&quot;),
+         date_admission_hospital=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_admission_hospital), format=&quot;%d-%m-%Y&quot;),
+         date_confirmation=as.Date(gsub(&quot;[.]&quot;,&quot;-&quot;,date_confirmation), format=&quot;%d-%m-%Y&quot;),
+                duration=date_death_or_discharge-date_onset_symptoms)
+
+glimpse(covid)</code></pre>
+<pre><code>## Observations: 15,945
+## Variables: 21
+## $ age &lt;chr&gt; &quot;78&quot;, &quot;61&quot;, &quot;66&quot;, &quot;27&quot;, &quot;17&quot;, &quot;51&quot;, &quot;68&quot;,
+&quot;26&quot;, &quot;30&quot;, &quot;53&quot;, &quot;3...
+## $ sex &lt;chr&gt; &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;,
+&quot;female&quot;, &quot;male&quot;, ...
+## $ city &lt;chr&gt; &quot;Vo Euganeo&quot;, NA, &quot;Zhenlai County, Baicheng
+City&quot;, &quot;Longshan D...
+## $ province &lt;chr&gt; &quot;Veneto&quot;, NA, &quot;Jilin&quot;, &quot;Jilin&quot;,
+&quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Ji...
+## $ country &lt;chr&gt; &quot;Italy&quot;, &quot;Singapore&quot;, &quot;China&quot;, &quot;China&quot;,
+&quot;China&quot;, &quot;China&quot;, &quot;Chi...
+## $ latitude &lt;dbl&gt; 45.297748, 1.353460, 45.948140,
+42.858020, 43.783530, 43.78353...
+## $ longitude &lt;dbl&gt; 11.65838, 103.81510, 123.43960,
+125.15210, 124.67290, 124.6729...
+## $ date_onset_symptoms &lt;date&gt; NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ date_admission_hospital &lt;date&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ date_confirmation &lt;date&gt; 2020-02-21, 2020-02-14,
+2020-02-07, 2020-02-07, 2020-02-07, 2...
+## $ symptoms &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA...
+## $ lives_in_Wuhan &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_dates &lt;chr&gt; NA, NA, NA, NA, NA, NA,
+&quot;16.01.2020 - 23.02.2020&quot;, &quot;28.01.2020...
+## $ travel_history_location &lt;chr&gt; NA, NA, &quot;Harbin&quot;, NA,
+NA, NA, &quot;Thailand&quot;, &quot;Vietnam&quot;, NA, NA, N...
+## $ reported_market_exposure &lt;chr&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease_binary &lt;lgl&gt; FALSE, FALSE, FALSE,
+FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...
+## $ chronic_disease &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA...
+## $ outcome &lt;chr&gt; &quot;death&quot;, &quot;discharge&quot;, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, ...
+## $ date_death_or_discharge &lt;date&gt; 2020-02-22, 2020-02-17,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ travel_history_binary &lt;lgl&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ duration &lt;drtn&gt; NA days, NA days, NA days, NA days, NA
+days, NA days, NA days...</code></pre>
+</div>
+</div>
+<div id="manova" class="section level3">
+<h3>MANOVA</h3>
+<div id="here-i-perform-a-manova-to-test-whether-the-numeric-variables-age-latitude-longitude-duration-show-a-mean-difference-across-outcome.-first-i-cleaned-up-the-age-variable-so-that-all-ages-were-listed-as-a-number-and-large-ranges-of-ages-were-removed-as-they-were-not-informative-and-saved-this-as-tidyage.-then-i-organized-the-outcome-variable-so-that-the-outcome-was-listed-as-either-discharged-died-recovered-stable-or-other.-i-saved-this-final-dataset-as-outcomes." class="section level5">
+<h5>Here, I perform a MANOVA to test whether the numeric variables (age, latitude, longitude, duration) show a mean difference across outcome. First, I cleaned up the “age” variable so that all ages were listed as a number and large ranges of ages were removed (as they were not informative), and saved this as “tidyage”. Then, I organized the “outcome” variable so that the outcome was listed as either “discharged,” “died,” “recovered,” “stable,” or “other.” I saved this final dataset as “outcomes.”</h5>
+<pre class="r"><code>covid &lt;- covid %&gt;% mutate(age=ifelse(age==&quot;13 month&quot;,1.08333,age),
+                          age=ifelse(age==&quot;18 month&quot;,1.5,age),
+                          age=ifelse(age==&quot;5 month&quot;|age==&quot;5 months&quot;,0.41667,age),
+                          age=ifelse(age==&quot;6 months&quot;,0.5,age),
+                          age=ifelse(age==&quot;6 weeks&quot;,0.1154,age),
+                          age=ifelse(age==&quot;8 month&quot;,0.666666667,age),
+                          age=ifelse(age==&quot;9 month&quot;,0.75,age)) 
+
+covid1 &lt;- covid %&gt;% filter(age!=&quot;0-60&quot;, age!=&quot;13-69&quot;, age!=&quot;15-88&quot;, age!=&quot;16-80&quot;, age!=&quot;17-66&quot;, age!=&quot;18-49&quot;, 
+                           age!=&quot;18-50&quot;, age!=&quot;18-60&quot;, age!=&quot;18-65&quot;, age!=&quot;18-99&quot;, age!=&quot;18 - 100&quot;, age!=&quot;19-65&quot;,
+                           age!=&quot;19-77&quot;, age!=&quot;20-57&quot;, age!=&quot;20-69&quot;, age!=&quot;20-70&quot;, age!=&quot;21-&quot;, age!=&quot;21-72&quot;,
+                           age!=&quot;22-66&quot;, age!=&quot;22-80&quot;, age!=&quot;23-71&quot;, age!=&quot;23-72&quot;, age!=&quot;23-84&quot;, age!=&quot;25-59&quot;, 
+                           age!=&quot;25-89&quot;, age!=&quot;27-40&quot;, age!=&quot;27-58&quot;, age!=&quot;30-60&quot;, age!=&quot;30-61&quot;, age!=&quot;30-69&quot;,
+                           age!=&quot;30-70&quot;, age!=&quot;33-78&quot;, age!=&quot;34-66&quot;, age!=&quot;39-77&quot;, age!=&quot;40-69&quot;, age!=&quot;40-89&quot;,
+                           age!=&quot;50-100&quot;, age!=&quot;50-99&quot;, age!=&quot;60-100&quot;, age!=&quot;60-99&quot;, age!=&quot;65-99&quot;, age!=&quot;70-100&quot;)
+
+tidyage &lt;- covid1 %&gt;% mutate(age=ifelse(age==&quot;0-10&quot;,5,age), age=ifelse(age==&quot;0-6&quot;,3,age),age=ifelse(age==&quot;0-9&quot;,4.5,age), 
+                            age=ifelse(age==&quot;0-18&quot;|age==&quot;0-19&quot;|age==&quot;0-20&quot;,10,age),
+                            age=ifelse(age==&quot;13-19&quot;|age==&quot;14-18&quot;,16,age), age=ifelse(age==&quot;16-17&quot;,16.5,age),
+                            age=ifelse(age==&quot;18-20&quot;,19,age), age=ifelse(age==&quot;20-39&quot;|age==&quot;21-39&quot;,30,age),
+                            age=ifelse(age==&quot;22-23&quot;,22.5,age), age=ifelse(age==&quot;23-24&quot;,23.5,age),
+                            age=ifelse(age==&quot;26-27&quot;,26.5,age), age=ifelse(age==&quot;27-29&quot;,28,age),
+                            age=ifelse(age==&quot;30-35&quot;,32.5,age), age=ifelse(age==&quot;30-39&quot;|age==&quot;30-40&quot;,35,age),
+                            age=ifelse(age==&quot;34-44&quot;,39,age), age=ifelse(age==&quot;36-45&quot;,40.5,age),
+                            age=ifelse(age==&quot;37-38&quot;,37.5,age), age=ifelse(age==&quot;40-41&quot;,40.5,age),
+                            age=ifelse(age==&quot;40-45&quot;,42.5,age), age=ifelse(age==&quot;41-60&quot;,50,age),
+                            age=ifelse(age==&quot;47-48&quot;,47.5,age), age=ifelse(age==&quot;48-49&quot;,48.5,age),
+                            age=ifelse(age==&quot;20-29&quot;|age==&quot;20-30&quot;,25,age), age=ifelse(age==&quot;40-49&quot;|age==&quot;40-50&quot;,45,age),
+                            age=ifelse(age==&quot;50-59&quot;|age==&quot;50-60&quot;,55,age), age=ifelse(age==&quot;60-69&quot;,25,age),
+                            age=ifelse(age==&quot;50-69&quot;,60,age), age=ifelse(age==&quot;54-56&quot;,55,age),
+                            age=ifelse(age==&quot;55-74&quot;|age==&quot;60-69&quot;|age==&quot;60-70&quot;,65,age),
+                            age=ifelse(age==&quot;61-80&quot;,70,age), age=ifelse(age==&quot;74-76&quot;,75,age),
+                            age=ifelse(age==&quot;80-80&quot;,80,age), age=ifelse(age==&quot;87-88&quot;,87.5,age),
+                            age=ifelse(age==&quot;70-79&quot;|age==&quot;70-82&quot;,75,age), age=ifelse(age==&quot;80-89&quot;,85,age),
+                            age=ifelse(age==&quot;90-99&quot;,95,age), age=ifelse(age==&quot;35-54&quot;,45,age),
+                            age=as.numeric(age))
+
+outcomes &lt;- tidyage %&gt;% mutate(outcome=ifelse(outcome==&quot;discharge&quot;|outcome==&quot;Discharged&quot;|
+                                              outcome==&quot;released from quarantine&quot;,&quot;discharged&quot;,outcome),
+                        outcome=ifelse(outcome==&quot;death&quot;|outcome==&quot;dead&quot;|outcome==&quot;Dead&quot;|outcome==&quot;Death&quot;|
+                                         outcome==&quot;Deceased&quot;|outcome==&quot;Died&quot;,&quot;died&quot;,outcome),
+                        outcome=ifelse(outcome==&quot;Recovered&quot;,&quot;recovered&quot;,outcome),
+                        outcome=ifelse(outcome==&quot;Stable&quot;|outcome==&quot;stable condition&quot;,&quot;stable&quot;,outcome),
+                        outcome=ifelse(outcome!=&quot;discharged&quot; &amp; outcome!=&quot;died&quot; &amp; outcome!=&quot;recovered&quot; &amp;
+                                         outcome!=&quot;stable&quot;,&quot;other&quot;,outcome)) %&gt;%
+  mutate(duration=as.numeric(duration)) </code></pre>
+</div>
+<div id="performing-the-manova-univariate-anovas-and-post-hoc-t-tests" class="section level5">
+<h5>Performing the MANOVA, univariate ANOVAs, and post-hoc t-tests:</h5>
+<pre class="r"><code>outcomes1 &lt;- outcomes %&gt;% filter(duration!=&quot;NA&quot;)
+man &lt;- manova(cbind(age,latitude,longitude,duration)~outcome, data=outcomes1)
+summary(man)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## outcome 2 0.58388 22.986 8 446 &lt; 2.2e-16 ***
+## Residuals 225
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(man)</code></pre>
+<pre><code>## Response age :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 29864 14931.8 60.283 &lt; 2.2e-16 ***
+## Residuals 225 55731 247.7
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response latitude :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 11621 5810.6 46.075 &lt; 2.2e-16 ***
+## Residuals 225 28375 126.1
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response longitude :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 9110 4554.9 5.0578 0.007102 **
+## Residuals 225 202627 900.6
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response duration :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 777 388.48 8.6397 0.0002426 ***
+## Residuals 225 10117 44.96
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## 5 observations deleted due to missingness</code></pre>
+<pre class="r"><code>pairwise.t.test(outcomes1$age,outcomes1$outcome,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$age and outcomes1$outcome 
+## 
+##            died    discharged
+## discharged &lt; 2e-16 -         
+## recovered  5.1e-13 0.16      
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(outcomes1$latitude,outcomes1$outcome,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$latitude and outcomes1$outcome 
+## 
+##            died    discharged
+## discharged &lt; 2e-16 -         
+## recovered  8.2e-08 0.007     
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(outcomes1$longitude,outcomes1$outcome,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$longitude and outcomes1$outcome 
+## 
+##            died   discharged
+## discharged 0.0045 -         
+## recovered  0.6055 0.0331    
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(outcomes1$duration,outcomes1$outcome,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$duration and outcomes1$outcome 
+## 
+##            died    discharged
+## discharged 4.8e-05 -         
+## recovered  0.0098  0.3530    
+## 
+## P value adjustment method: none</code></pre>
+</div>
+<div id="there-was-no-duration-data-for-observations-with-outcomes-of-either-stable-or-other-so-analysis-was-only-done-on-the-died-discharged-and-recovered-outcomes.-overall-at-least-one-of-the-numeric-variables-shows-a-mean-difference-by-outcome-with-a-p-value-of-2.2e-16.-univariate-anovas-show-that-there-is-a-significant-mean-difference-in-outcome-for-all-four-variables-when-using-an-unadjusted-significance-level.-a-total-of-17-tests-1-manova-4-anovas-12-t-tests-were-performed-meaning-the-probability-of-at-least-one-type-i-error-is-1---0.9517-0.5818797-if-unadjusted.-the-bonferroni-adjustment-puts-the-new-significance-level-at-0.0517-0.002941176." class="section level5">
+<h5>There was no duration data for observations with outcomes of either “stable” or “other,” so analysis was only done on the “died,” “discharged,” and “recovered” outcomes. Overall, at least one of the numeric variables shows a mean difference by outcome with a p-value of &lt; 2.2e-16. Univariate ANOVAs show that there is a significant mean difference in outcome for all four variables when using an unadjusted significance level. A total of 17 tests (1 MANOVA, 4 ANOVAs, 12 t-tests) were performed, meaning the probability of at least one type I error is 1 - 0.95^17 = 0.5818797 if unadjusted. The Bonferroni adjustment puts the new significance level at 0.05/17 = 0.002941176.</h5>
+</div>
+<div id="after-adjusting-the-significance-level-all-numeric-variables-except-longitude-show-a-significant-mean-difference-across-outcomes-based-on-the-univariate-anovas.-the-post-hoc-t-tests-show-that-there-is-a-significant-mean-difference-in-both-age-and-latitude-across-between-patients-who-died-and-patients-who-were-discharged-as-well-as-between-patients-who-died-and-patients-who-recovered.-the-mean-difference-in-longitude-is-not-significant-for-any-combination-of-outcomes.-there-is-a-significant-mean-difference-in-duration-between-patients-who-died-and-patients-who-were-discharged." class="section level5">
+<h5>After adjusting the significance level, all numeric variables except longitude show a significant mean difference across outcomes based on the univariate ANOVAs. The post-hoc t-tests show that there is a significant mean difference in both age and latitude across between patients who died and patients who were discharged, as well as between patients who died and patients who recovered. The mean difference in longitude is not significant for any combination of outcomes. There is a significant mean difference in duration between patients who died and patients who were discharged.</h5>
+</div>
+<div id="manova-is-performed-under-several-assumptions-multivariate-normal-distribution-same-variancecovariance-for-all-groups-sensitivity-to-multicollinearity-more-samples-than-variables-and-sensitivity-to-zeroes-and-outliers.-my-data-meets-the-assumption-of-having-more-samples-than-variables-and-is-probably-not-collinear-but-it-is-possible-that-it-violates-the-assumptions-of-a-multivariate-normal-distribution-equal-variancecovariance-and-zeroesoutliers." class="section level5">
+<h5>MANOVA is performed under several assumptions: multivariate normal distribution, same variance/covariance for all groups, sensitivity to multicollinearity, more samples than variables, and sensitivity to zeroes and outliers. My data meets the assumption of having more samples than variables and is probably not collinear, but it is possible that it violates the assumptions of a multivariate normal distribution, equal variance/covariance, and zeroes/outliers.</h5>
+</div>
+</div>
+<div id="randomization-test" class="section level3">
+<h3>Randomization Test</h3>
+<div id="here-i-perform-a-randomization-test-to-see-if-there-is-a-significant-mean-difference-in-age-across-the-chronic-disease-binary-true-if-the-patient-has-a-chronic-disease-and-false-if-they-do-not.-the-null-hypothesis-is-that-there-is-no-difference-between-the-means-of-the-ages-of-patients-who-have-a-chronic-disease-and-patients-who-do-not-have-a-chronic-disease.-the-alternative-hypothesis-is-that-there-is-a-difference-between-the-means-of-the-ages-of-patients-who-have-a-chronic-disease-and-patients-who-do-not-have-a-chronic-disease." class="section level5">
+<h5>Here, I perform a randomization test to see if there is a significant mean difference in age across the chronic disease binary (TRUE if the patient has a chronic disease and FALSE if they do not). The null hypothesis is that there is no difference between the means of the ages of patients who have a chronic disease and patients who do not have a chronic disease. The alternative hypothesis is that there is a difference between the means of the ages of patients who have a chronic disease and patients who do not have a chronic disease.</h5>
+<pre class="r"><code>tidyage %&gt;% group_by(chronic_disease_binary) %&gt;% summarize(meansage=mean(age)) %&gt;% summarize(mean_diff=diff(meansage))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1      5.47</code></pre>
+<pre class="r"><code>rand_age &lt;- vector()
+for(i in 1:5000){
+new &lt;- data.frame(age=sample(tidyage$age), cdb=tidyage$chronic_disease_binary) 
+rand_age[i]&lt;-mean(new[new$cdb==&quot;FALSE&quot;,]$age)-mean(new[new$cdb==&quot;TRUE&quot;,]$age)}
+
+mean(rand_age &gt; 5.465774)*2</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>hist(rand_age,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = 5.465774,col=&quot;red&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-p-value-is-0-therefore-the-null-hypothesis-is-rejected-there-is-0-chance-of-a-mean-difference-being-as-extreme-as-5.465774-under-the-assumption-of-no-association-between-age-and-chronic-disease.-in-other-words-there-is-a-significant-difference-between-the-ages-of-people-who-do-and-do-not-have-a-chronic-disease.-for-this-reason-the-line-marking-the-actual-mean-difference-does-not-show-up-on-the-histogram-showing-distributions-of-randomized-mean-differences." class="section level5">
+<h5>The p-value is 0, therefore the null hypothesis is rejected; there is 0% chance of a mean difference being as extreme as 5.465774 under the assumption of no association between age and chronic disease. In other words, there is a significant difference between the ages of people who do and do not have a chronic disease. For this reason, the line marking the actual mean difference does not show up on the histogram showing distributions of randomized mean differences.</h5>
+</div>
+</div>
+<div id="linear-regression" class="section level3">
+<h3>Linear Regression</h3>
+<div id="here-i-perform-a-linear-regression-predicting-duration-from-age-and-chronic-disease-binary.-first-i-mean-centered-age-as-it-is-a-numeric-variable.-then-i-performed-the-linear-regression." class="section level5">
+<h5>Here, I perform a linear regression predicting duration from age and chronic disease binary. First, I mean-centered age as it is a numeric variable. Then, I performed the linear regression.</h5>
+<pre class="r"><code>tidyage_c &lt;- tidyage %&gt;% mutate(age_c=age-mean(age,na.rm=T)) %&gt;% filter(duration!=&quot;NA&quot;) %&gt;%
+  mutate(duration=as.numeric(duration))
+fit1 &lt;- lm(duration ~ age_c * chronic_disease_binary, data=tidyage_c)
+summary(fit1)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = duration ~ age_c * chronic_disease_binary,
+data = tidyage_c)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -15.848 -3.850 -1.033 4.883 23.587
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 19.47356 0.51749 37.631 &lt;2e-16 ***
+## age_c 0.04809 0.02997 1.605 0.1100
+## chronic_disease_binaryTRUE -1.98093 1.54218 -1.284
+0.2003
+## age_c:chronic_disease_binaryTRUE -0.14375 0.06406 -2.244
+0.0258 *
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 6.856 on 229 degrees of freedom
+## Multiple R-squared: 0.07219, Adjusted R-squared: 0.06004
+## F-statistic: 5.939 on 3 and 229 DF, p-value: 0.000644</code></pre>
+</div>
+<div id="the-intercept-shows-that-controlling-for-all-other-variables-patients-without-a-chronic-disease-and-with-an-age-equal-to-the-mean-age-are-spend-an-average-of-19.47356-days-between-being-confirmed-and-having-an-outcome-recorded.-controlling-for-all-other-variables-for-every-one-year-increase-in-age-the-duration-increases-by-0.04809-days.-controlling-for-all-other-variables-patients-who-have-a-chronic-disease-have-a-duration-that-is-on-average-1.98093-days-less-than-those-who-do-not-have-a-chronic-disease.-controlling-for-all-other-variables-the-slope-for-age-on-duration-is-0.14375-lower-for-patients-with-a-chronic-disease-compared-to-patients-who-do-not-have-a-chronic-disease." class="section level5">
+<h5>The intercept shows that, controlling for all other variables, patients without a chronic disease and with an age equal to the mean age are spend an average of 19.47356 days between being confirmed and having an outcome recorded. Controlling for all other variables, for every one year increase in age, the duration increases by 0.04809 days. Controlling for all other variables, patients who have a chronic disease have a duration that is on average 1.98093 days less than those who do not have a chronic disease. Controlling for all other variables, the slope for age on duration is 0.14375 lower for patients with a chronic disease compared to patients who do not have a chronic disease.</h5>
+</div>
+<div id="below-i-test-the-assumptions-of-linearity-normality-and-homoskedasticity-for-this-model." class="section level5">
+<h5>Below, I test the assumptions of linearity, normality, and homoskedasticity for this model.</h5>
+<pre class="r"><code>library(lmtest)
+library(sandwich)
+
+resids &lt;- fit1$residuals
+fitvals &lt;- fit1$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col=&quot;red&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>bptest(fit1)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit1
+## BP = 6.0062, df = 3, p-value = 0.1113</code></pre>
+<pre class="r"><code>ggplot()+geom_qq(aes(sample=resids))+geom_qq_line(aes(sample=resids), color=&#39;red&#39;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-7-2.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-data-appears-to-be-linear-and-homoskedastic-when-eyeballing-and-this-is-confirmed-by-the-breusch-pagan-test-p0.1113-retain-null-hypothesis-of-homoskedasticity.-the-qq-plot-shows-the-data-to-meet-the-assumption-of-normality." class="section level5">
+<h5>The data appears to be linear and homoskedastic when eyeballing, and this is confirmed by the Breusch-Pagan test (p=0.1113, retain null hypothesis of homoskedasticity). The qq-plot shows the data to meet the assumption of normality.</h5>
+</div>
+<div id="recomputing-regression-results-with-robust-standard-errors" class="section level5">
+<h5>Recomputing regression results with robust standard errors:</h5>
+<pre class="r"><code>coeftest(fit1, vcov = vcovHC(fit1))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 19.473564 0.528243 36.8648 &lt; 2e-16 ***
+## age_c 0.048086 0.030392 1.5822 0.11498
+## chronic_disease_binaryTRUE -1.980929 1.891295 -1.0474
+0.29602
+## age_c:chronic_disease_binaryTRUE -0.143745 0.068632
+-2.0944 0.03732 *
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+</div>
+<div id="after-using-robust-standard-errors-the-standard-errors-have-increased-for-every-coefficient-and-the-p-values-have-also-increased-although-the-significant-p-values-remain-significant-and-the-non-significant-p-values-remain-non-significant.-my-model-explains-only-0.07219-or-7-of-the-data-0.06004-or-6-when-adjusted." class="section level5">
+<h5>After using robust standard errors, the standard errors have increased for every coefficient, and the p-values have also increased, although the significant p-values remain significant and the non-significant p-values remain non-significant. My model explains only 0.07219, or 7%, of the data (0.06004 or 6% when adjusted).</h5>
+</div>
+</div>
+<div id="bootstrapped-standard-errors" class="section level3">
+<h3>Bootstrapped Standard Errors</h3>
+<div id="here-i-compute-bootstrapped-standard-errors-on-my-linear-regression-model-above-by-resampling-the-residuals." class="section level5">
+<h5>Here, I compute bootstrapped standard errors on my linear regression model above by resampling the residuals.</h5>
+<pre class="r"><code>resid_boot &lt;- replicate(5000,{
+new_resids &lt;- sample(resids,replace=TRUE)
+tidyage_c$new_y &lt;- fitvals + new_resids 
+fit1 &lt;- lm(new_y~age_c*chronic_disease_binary,data=tidyage_c) 
+coef(fit1) 
+})
+
+resid_boot %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) age_c chronic_disease_binaryTRUE
+age_c:chronic_disease_binaryTRUE
+## 1 0.5144807 0.02942298 1.530192 0.06307216</code></pre>
+</div>
+<div id="after-bootstrapping-the-standard-errors-for-all-coefficients-decreased-compared-to-the-standard-errors-in-the-original-model.-this-means-that-they-are-even-further-from-the-robust-standard-errors-than-the-original-standard-errors-are.-the-decreases-in-standard-error-that-result-from-bootstrapping-are-of-a-very-small-magnitude-so-the-p-values-would-not-be-expected-to-change-much-either-and-would-follow-the-trend-of-the-standard-errors.-the-p-values-that-are-significant-would-remain-significant-and-the-p-values-that-are-non-significant-would-remain-non-significant." class="section level5">
+<h5>After bootstrapping, the standard errors for all coefficients decreased compared to the standard errors in the original model. This means that they are even further from the robust standard errors than the original standard errors are. The decreases in standard error that result from bootstrapping are of a very small magnitude, so the p-values would not be expected to change much either and would follow the trend of the standard errors. The p-values that are significant would remain significant, and the p-values that are non-significant would remain non-significant.</h5>
+</div>
+</div>
+<div id="logistic-regression" class="section level3">
+<h3>Logistic Regression</h3>
+<div id="here-i-predict-outcome-from-age-and-chronic-disease-using-a-logistic-regression.-i-expect-that-these-variables-will-have-some-significant-impact-on-the-outcome-of-the-patient-as-older-patients-tend-to-have-weaker-immune-systems-and-chronic-diseases-tend-to-exacerbate-other-illnesses.-first-i-changed-the-outcome-variable-into-a-binary-where-1-represents-death-and-0-represents-survival-and-then-i-performed-the-regression-and-exponentiated-the-coefficients" class="section level5">
+<h5>Here, I predict outcome from age and chronic disease using a logistic regression. I expect that these variables will have some significant impact on the outcome of the patient, as older patients tend to have weaker immune systems and chronic diseases tend to exacerbate other illnesses. First, I changed the “outcome” variable into a binary where 1 represents death and 0 represents survival, and then I performed the regression and exponentiated the coefficients:</h5>
+<pre class="r"><code>outcomes2 &lt;- outcomes %&gt;% mutate(outcome=ifelse(outcome==&quot;died&quot;,1,0)) %&gt;%
+  filter(outcome!=&quot;NA&quot;,age!=&quot;NA&quot;,chronic_disease_binary!=&quot;NA&quot;)
+
+logfit1 &lt;- glm(outcome ~ age+chronic_disease_binary,data=outcomes2,family=&quot;binomial&quot;)
+summary(logfit1)</code></pre>
+<pre><code>##
+## Call:
+## glm(formula = outcome ~ age + chronic_disease_binary,
+family = &quot;binomial&quot;,
+## data = outcomes2)
+##
+## Deviance Residuals:
+## Min 1Q Median 3Q Max
+## -2.9606 -0.4597 -0.2067 0.3046 2.8094
+##
+## Coefficients:
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -6.662437 0.528972 -12.595 &lt; 2e-16 ***
+## age 0.091189 0.008257 11.044 &lt; 2e-16 ***
+## chronic_disease_binaryTRUE 2.460706 0.305171 8.063
+7.42e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## (Dispersion parameter for binomial family taken to be 1)
+##
+## Null deviance: 826.02 on 690 degrees of freedom
+## Residual deviance: 425.15 on 688 degrees of freedom
+## AIC: 431.15
+##
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(logfit1))%&gt;%round(4)%&gt;%t</code></pre>
+<pre><code>##      (Intercept)    age chronic_disease_binaryTRUE
+## [1,]      0.0013 1.0955                    11.7131</code></pre>
+</div>
+<div id="controlling-for-other-factors-the-predicted-odds-of-death-is-0.0013-for-a-patient-who-is-0-years-old-and-does-not-have-a-chronic-disease.-the-odds-of-death-are-multiplied-by-1.0955-for-every-one-year-increase-in-age.-the-odds-of-death-for-patients-who-have-a-chronic-disease-are-11.7131-times-the-odds-of-death-for-patients-who-do-not." class="section level5">
+<h5>Controlling for other factors, the predicted odds of death is 0.0013 for a patient who is 0 years old and does not have a chronic disease. The odds of death are multiplied by 1.0955 for every one-year increase in age. The odds of death for patients who have a chronic disease are 11.7131 times the odds of death for patients who do not.</h5>
+</div>
+<div id="here-i-create-a-confusion-matrix-for-the-logistic-regression." class="section level5">
+<h5>Here, I create a confusion matrix for the logistic regression.</h5>
+<pre class="r"><code>probs1 &lt;- predict(logfit1,type=&quot;response&quot;) 
+table(predict=as.numeric(probs1&gt;.5),truth=outcomes2$outcome) %&gt;% addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0   460  48 508
+##     1    34 149 183
+##     Sum 494 197 691</code></pre>
+</div>
+<div id="the-accuracy-is-460-149691-0.8813314-the-sensitivity-is-149197-0.7563452-the-specificity-is-460494-0.9311741-and-the-recall-is-149183-0.8142077.-overall-the-88-accuracy-means-the-model-does-a-decent-but-not-stellar-job-of-predicting-whether-the-patient-died.-it-does-a-better-job-of-predicting-patients-who-did-not-die-93-than-patients-who-did-die-76.-the-recall-81-shows-that-there-are-a-few-patients-that-the-model-classified-as-having-died-when-they-actually-survived." class="section level5">
+<h5>The accuracy is (460 + 149)/691 = 0.8813314; the sensitivity is 149/197 = 0.7563452; the specificity is 460/494 = 0.9311741; and the recall is 149/183 = 0.8142077. Overall, the 88% accuracy means the model does a decent, but not stellar, job of predicting whether the patient died. It does a better job of predicting patients who did not die (93%) than patients who did die (76%). The recall (81%) shows that there are a few patients that the model classified as having died when they actually survived.</h5>
+</div>
+<div id="below-is-a-density-plot-of-the-log-odds-by-outcome." class="section level5">
+<h5>Below is a density plot of the log-odds by outcome.</h5>
+<pre class="r"><code>outcomes2$logit &lt;- predict(logfit1,type=&quot;link&quot;) 
+
+outcomes2 %&gt;% ggplot() + geom_density(aes(logit,fill=as.factor(outcome)), alpha=.4) +
+  theme(legend.position=c(.9,.9)) + geom_vline(xintercept=0) + xlab(&quot;logit (log-odds)&quot;) +
+  geom_rug(aes(logit,color=as.factor(outcome))) +
+  geom_text(x=-3,y=0.1,label=&quot;TN = 460&quot;) +
+  geom_text(x=-1.75,y=.008,label=&quot;FN = 48&quot;) +
+  geom_text(x=1,y=.006,label=&quot;FP = 34&quot;) +
+  geom_text(x=2,y=0.1,label=&quot;TP = 149&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="below-is-a-plot-of-the-roc-curve-for-the-regression." class="section level5">
+<h5>Below is a plot of the ROC curve for the regression.</h5>
+<pre class="r"><code>library(plotROC) 
+outcomes2$probs1 &lt;- predict(logfit1,type=&quot;response&quot;)
+ROC1 &lt;- ggplot(outcomes2) + geom_roc(aes(d=outcome,m=probs1), n.cuts=0)
+ROC1</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROC1)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.9275879</code></pre>
+</div>
+<div id="the-roc-curve-is-nearly-a-right-angle-and-the-auc-is-0.9275879-which-means-that-the-model-does-a-great-job-overall-of-predicting-whether-the-patient-died-or-survived-based-on-their-age-and-whether-they-have-a-chronic-disease." class="section level5">
+<h5>The ROC curve is nearly a right angle and the AUC is 0.9275879, which means that the model does a great job overall of predicting whether the patient died or survived based on their age and whether they have a chronic disease.</h5>
+</div>
+<div id="below-i-perform-a-10-fold-cross-validation-to-see-how-my-model-will-perform-on-data-outside-of-what-it-has-been-trained-on." class="section level5">
+<h5>Below, I perform a 10-fold cross-validation to see how my model will perform on data outside of what it has been trained on.</h5>
+<pre class="r"><code># Classification diagnostics function
+class_diag&lt;-function(probs,truth){
+  
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+  
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  prediction&lt;-ifelse(probs&gt;.5,1,0)
+  acc=mean(truth==prediction)
+  sens=mean(prediction[truth==1]==1)
+  spec=mean(prediction[truth==0]==0)
+  ppv=mean(truth[prediction==1]==1)
+  
+  #CALCULATE EXACT AUC
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+
+# 10-fold CV
+
+k=10
+
+data1 &lt;- outcomes2[sample(nrow(outcomes2)),] 
+folds &lt;- cut(seq(1:nrow(outcomes2)),breaks=k,labels=F) 
+
+diags &lt;- NULL
+for(i in 1:k){ 
+  train&lt;-data1[folds!=i,] 
+  test&lt;-data1[folds==i,] 
+  
+  truth&lt;-test$outcome
+  
+  fit&lt;- glm(outcome ~ age+chronic_disease_binary, data=train, family=&quot;binomial&quot;)
+  probs&lt;- predict(fit,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth)) 
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc      sens     spec       ppv       auc
+## 1 0.8813458 0.7550152 0.928613 0.8179499 0.9269814</code></pre>
+</div>
+<div id="the-auc-from-the-cross-validation-is-0.9247086-meaning-that-my-model-did-very-nearly-as-well-predicting-new-data-as-it-did-on-the-data-on-which-it-was-trained.-there-is-nearly-no-overfitting.-the-sensitivity-is-0.7628949-while-the-specificity-is-0.9308911-these-are-very-close-to-the-numbers-from-the-original-logistic-regression." class="section level5">
+<h5>The AUC from the cross-validation is 0.9247086, meaning that my model did very nearly as well predicting new data as it did on the data on which it was trained. There is nearly no overfitting. The sensitivity is 0.7628949, while the specificity is 0.9308911; these are very close to the numbers from the original logistic regression.</h5>
+</div>
+</div>
+<div id="lasso" class="section level3">
+<h3>LASSO</h3>
+<div id="to-see-which-variables-are-most-important-in-predicting-patient-outcome-i-performed-a-lasso-regression.-i-removed-the-following-variables-from-my-lasso-the-date-variables-as-it-would-not-make-sense-to-include-them-due-to-their-format-symptoms-travel_history_location-and-chronic_disease-as-they-are-not-standardized-travel_history_binary-as-it-is-uncertain-what-it-is-recording-reported_market_exposure-as-it-does-not-contain-enough-data-and-city-province-and-lives_in_wuhan-because-if-i-had-included-them-there-would-not-have-been-enough-data-to-create-a-reasonable-model-and-i-felt-that-country-as-a-location-related-predictor-would-be-sufficient-for-the-purposes-of-this-project." class="section level5">
+<h5>To see which variables are most important in predicting patient outcome, I performed a LASSO regression. I removed the following variables from my LASSO: the date variables, as it would not make sense to include them due to their format; “symptoms”, “travel_history_location”, and “chronic_disease”, as they are not standardized; “travel_history_binary”, as it is uncertain what it is recording; “reported_market_exposure”, as it does not contain enough data; and “city”, “province”, and “lives_in_Wuhan” because if I had included them, there would not have been enough data to create a reasonable model and I felt that “country” as a location-related predictor would be sufficient for the purposes of this project.</h5>
+<pre class="r"><code>library(glmnet)
+
+outcomes3 &lt;- outcomes2 %&gt;%
+  select(-logit,-probs1,-date_onset_symptoms,-date_admission_hospital,-date_confirmation,
+         -date_death_or_discharge,-symptoms,travel_history_dates,-travel_history_binary,
+         -reported_market_exposure,-chronic_disease,-travel_history_dates,
+         -travel_history_location,-city,-province,-lives_in_Wuhan) %&gt;% na.omit()
+
+logfit2 &lt;- glm(outcome ~ .,data=outcomes3,family=&quot;binomial&quot;)
+
+x &lt;- model.matrix(logfit2)
+x &lt;- scale(x)
+y &lt;- as.matrix(outcomes3$outcome)
+
+cv1 &lt;- cv.glmnet(x[,-1],y,family=&#39;binomial&#39;)
+lasso1 &lt;- glmnet(x[,-1],y,family=&#39;binomial&#39;,lambda=cv1$lambda.1se)
+coef(lasso1)</code></pre>
+<pre><code>## 18 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                     s0
+## (Intercept)                -2.11658796
+## age                         1.39419348
+## sexmale                     .         
+## countryChina                1.01240896
+## countryFrance               .         
+## countryGambia               0.06242068
+## countryGermany              .         
+## countryJapan                0.10304732
+## countryNepal                .         
+## countryPhilippines          .         
+## countrySingapore           -0.16733278
+## countrySouth Korea          .         
+## countryThailand             .         
+## countryVietnam             -0.05811056
+## latitude                    0.24120836
+## longitude                   .         
+## chronic_disease_binaryTRUE  0.21501957
+## duration                   -0.03272580</code></pre>
+</div>
+<div id="the-lasso-results-show-that-the-most-significant-predictors-of-the-patients-outcome-are-their-age-whether-they-have-a-chronic-disease-the-latitude-of-their-location-whether-they-are-from-china-and-whether-they-are-from-gambia.-latitude-is-probably-related-to-the-country-predictors-and-the-presence-of-china-as-a-predictor-may-be-due-to-its-overrepresentation-in-the-dataset.-using-the-variables-lasso-selected-i-then-performed-a-10-fold-cv-on-a-new-logistic-regression" class="section level5">
+<h5>The LASSO results show that the most significant predictors of the patient’s outcome are their age, whether they have a chronic disease, the latitude of their location, whether they are from China, and whether they are from Gambia. Latitude is probably related to the country predictors, and the presence of China as a predictor may be due to its overrepresentation in the dataset. Using the variables LASSO selected, I then performed a 10-fold CV on a new logistic regression:</h5>
+<pre class="r"><code>outcomes3 &lt;- outcomes3 %&gt;% mutate(China=ifelse(country==&quot;China&quot;,1,0),Gambia=ifelse(country==&quot;Gambia&quot;,1,0))
+
+k=10
+
+data1 &lt;- outcomes3[sample(nrow(outcomes3)),] 
+folds &lt;- cut(seq(1:nrow(outcomes3)),breaks=k,labels=F) 
+
+diags &lt;- NULL
+for(i in 1:k){ 
+  train&lt;-data1[folds!=i,] 
+  test&lt;-data1[folds==i,] 
+  
+  truth&lt;-test$outcome
+  
+  fit&lt;- glm(outcome ~ age+chronic_disease_binary+latitude+China+Gambia, data=train, family=&quot;binomial&quot;)
+  probs&lt;- predict(fit,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth)) 
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc     sens      spec       ppv       auc
+## 1 0.9470356 0.854881 0.9829313 0.9407143 0.9717565</code></pre>
+</div>
+<div id="the-auc-for-the-new-model-using-the-variables-from-lasso-is-0.9678614-which-is-higher-than-the-auc-from-my-previous-model-that-used-only-age-and-the-chronic-disease-binary-as-predictors.-while-this-model-is-more-flexible-it-also-does-a-better-job-of-predicting-based-on-out-of-sample-data." class="section level5">
+<h5>The AUC for the new model using the variables from LASSO is 0.9678614, which is higher than the AUC from my previous model that used only age and the chronic disease binary as predictors. While this model is more flexible, it also does a better job of predicting based on out-of-sample data.</h5>
+</div>
+<div id="it-is-worth-noting-that-all-models-and-analyses-in-this-project-are-limited-by-the-original-covid-19-dataset-in-which-cases-from-china-where-the-focus-was-at-the-beginning-of-the-pandemic-are-overrepresented-and-there-are-many-incomplete-entries.-however-it-is-not-surprising-that-my-results-show-age-and-chronic-disease-to-be-significant-predictors-of-outcome-it-would-be-interesting-to-see-how-this-model-would-perform-on-more-current-data." class="section level5">
+<h5>It is worth noting that all models and analyses in this project are limited by the original COVID-19 dataset, in which cases from China, where the focus was at the beginning of the pandemic, are overrepresented, and there are many incomplete entries. However, it is not surprising that my results show age and chronic disease to be significant predictors of outcome; it would be interesting to see how this model would perform on more current data.</h5>
+</div>
+</div>

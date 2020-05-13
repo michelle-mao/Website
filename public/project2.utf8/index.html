@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Michelle Mao" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project2.utf8/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <h3 id="introduction">Introduction</h3>
+<h5 id="for-this-project-i-am-using-an-updated-version-of-the-covid-19-dataset-that-i-used-for-project-1-this-is-an-open-access-dataset-by-the-emergent-epidemics-lab-of-northeastern-university-that-documents-individual-confirmed-cases-of-covid-19-it-was-originally-updated-as-new-cases-were-confirmed-but-the-researchers-appear-to-have-stopped-recording-on-33120-perhaps-because-it-was-no-longer-realistic-to-attempt-to-document-every-single-case-in-the-world-once-covid-19-became-a-pandemic-this-data-originally-constituted-two-datasets-one-for-cases-inside-hubei-province-and-one-for-cases-outside-of-it-but-because-so-much-data-has-been-added-in-the-last-two-months-the-original-creators-have-migrated-it-to-github-and-i-can-no-longer-find-the-dataset-for-hubei-province-thus-the-dataset-i-am-using-in-this-project-is-the-dataset-for-cases-outside-of-hubei-province-as-this-dataset-has-become-very-large-since-the-last-time-i-accessed-it-i-cleaned-up-the-original-file-slightly-by-removing-all-observations-where-the-age-was-blank-or-entered-incorrectly-eg-2000-yrs-old-before-reading-it-in-the-resulting-dataset-contains-cases-that-were-confirmed-between-2120-and-33120-and-contains-several-variables-including-including-various-identifiers-age-sex-location-dates-of-symptom-onset-admission-and-confirmation-of-the-virus-symptoms-any-relationships-with-wuhan-other-relevant-medical-issues-and-outcome-variables-access-to-the-dataset-can-be-obtained-through-the-following-link">For this project, I am using an updated version of the COVID-19 dataset that I used for Project 1. This is an open-access dataset by the Emergent Epidemics Lab of Northeastern University that documents individual confirmed cases of COVID-19. It was originally updated as new cases were confirmed, but the researchers appear to have stopped recording on 3/31/20 (perhaps because it was no longer realistic to attempt to document every single case in the world once COVID-19 became a pandemic). This data originally constituted two datasets, one for cases inside Hubei Province and one for cases outside of it, but because so much data has been added in the last two months, the original creators have migrated it to Github and I can no longer find the dataset for Hubei Province. Thus, the dataset I am using in this project is the dataset for cases outside of Hubei Province. As this dataset has become very large since the last time I accessed it, I cleaned up the original file slightly by removing all observations where the age was blank or entered incorrectly (e.g. 2000+ yrs old) before reading it in. The resulting dataset contains cases that were confirmed between 2/1/20 and 3/31/20, and contains several variables including including various identifiers (age, sex, location); dates of symptom onset, admission, and confirmation of the virus; symptoms; any relationships with Wuhan; other relevant medical issues; and outcome variables. Access to the dataset can be obtained through the following link:</h5>
+<h6 id="httpsdoiorg101016s1473-30992030119-5"><a href="https://doi.org/10.1016/S1473-3099(20)30119-5">https://doi.org/10.1016/S1473-3099(20)30119-5</a></h6>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(tidyverse)
+<span style="color:#a6e22e">setwd</span>(<span style="color:#e6db74">&#34;C:/Users/Michelle/Desktop/Website/content&#34;</span>)
+covid <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read.csv</span>(<span style="color:#e6db74">&#34;covid_nwu1.csv&#34;</span>,stringsAsFactors <span style="color:#f92672">=</span> F)
+<span style="color:#a6e22e">glimpse</span>(covid)
+</code></pre></div><pre><code>## Observations: 15,945
+## Variables: 33
+## $ ï..ID &lt;chr&gt; &quot;000-1-10&quot;, &quot;000-1-100&quot;, &quot;000-1-10021&quot;,
+&quot;000-1-10022&quot;, &quot;000-1-...
+## $ age &lt;chr&gt; &quot;78&quot;, &quot;61&quot;, &quot;66&quot;, &quot;27&quot;, &quot;17&quot;, &quot;51&quot;, &quot;68&quot;,
+&quot;26&quot;, &quot;30&quot;, &quot;53&quot;, &quot;3...
+## $ sex &lt;chr&gt; &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;,
+&quot;female&quot;, &quot;male&quot;, ...
+## $ city &lt;chr&gt; &quot;Vo Euganeo&quot;, &quot;&quot;, &quot;Zhenlai County, Baicheng
+City&quot;, &quot;Longshan D...
+## $ province &lt;chr&gt; &quot;Veneto&quot;, &quot;&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;,
+&quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Ji...
+## $ country &lt;chr&gt; &quot;Italy&quot;, &quot;Singapore&quot;, &quot;China&quot;, &quot;China&quot;,
+&quot;China&quot;, &quot;China&quot;, &quot;Chi...
+## $ latitude &lt;dbl&gt; 45.297748, 1.353460, 45.948140,
+42.858020, 43.783530, 43.78353...
+## $ longitude &lt;dbl&gt; 11.65838, 103.81510, 123.43960,
+125.15210, 124.67290, 124.6729...
+## $ geo_resolution &lt;chr&gt; &quot;point&quot;, &quot;admin0&quot;, &quot;admin3&quot;,
+&quot;admin3&quot;, &quot;admin3&quot;, &quot;admin3&quot;, &quot;ad...
+## $ date_onset_symptoms &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_admission_hospital &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ date_confirmation &lt;chr&gt; &quot;21.02.2020&quot;, &quot;14.02.2020&quot;,
+&quot;07.02.2020&quot;, &quot;07.02.2020&quot;, &quot;07.02...
+## $ symptoms &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ lives_in_Wuhan &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ travel_history_dates &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;16.01.2020 - 23.02.2020&quot;, &quot;28.01.2020...
+## $ travel_history_location &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;Harbin&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;Thailand&quot;, &quot;Vietnam&quot;, &quot;&quot;, &quot;&quot;, &quot;...
+## $ reported_market_exposure &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ additional_information &lt;chr&gt; &quot;Hospitalized on
+12.02.2020 for other reasons&quot;, &quot;Case 65; fami...
+## $ chronic_disease_binary &lt;lgl&gt; FALSE, FALSE, FALSE,
+FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...
+## $ chronic_disease &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ source &lt;chr&gt;
+&quot;https://www.corriere.it/cronache/20_febbraio_21/coronavirus-i...
+## $ sequence_available &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ outcome &lt;chr&gt; &quot;death&quot;, &quot;discharge&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, ...
+## $ date_death_or_discharge &lt;chr&gt; &quot;22.02.2020&quot;,
+&quot;17.02.2020&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ notes_for_discussion &lt;chr&gt; &quot;&quot;, &quot;&quot;,
+&quot;https://www.google.com/maps/place/Zhenlai+County,+Bai...
+## $ location &lt;chr&gt; &quot;Vo' Euganeo&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,...
+## $ admin3 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;Zhenlai County&quot;, &quot;Longshan
+District&quot;, &quot;Gongzhuling Ci...
+## $ admin2 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;Baicheng City&quot;, &quot;Liaoyuan City&quot;,
+&quot;Siping City&quot;, &quot;Sipi...
+## $ admin1 &lt;chr&gt; &quot;Veneto&quot;, &quot;&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;,
+&quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Ji...
+## $ country_new &lt;chr&gt; &quot;Italy&quot;, &quot;Singapore&quot;, &quot;China&quot;,
+&quot;China&quot;, &quot;China&quot;, &quot;China&quot;, &quot;Chi...
+## $ admin_id &lt;int&gt; 8978, 201, 10120, 5694, 3653, 3653,
+2070, 2070, 2070, 2070, 20...
+## $ data_moderator_initials &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,
+&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;...
+## $ travel_history_binary &lt;lgl&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+</code></pre><h5 id="the-covid-dataset-that-i-have-just-read-in-has-15945-observations-and-33-variables-it-will-require-some-clean-up-as-it-did-last-time-here-i-make-sure-all-the-nas-are-listed-as-such-and-remove-variables-that-will-be-irrelevant-to-this-project-i-then-set-the-variable-type-for-the-date-variables-to-date-and-add-the-variable-duration-which-calculates-the-length-of-time-between-date-of-symptom-onset-and-date-of-outcome-as-in-the-previous-project">The &ldquo;covid&rdquo; dataset that I have just read in has 15,945 observations and 33 variables. It will require some clean-up as it did last time. Here, I make sure all the NAs are listed as such and remove variables that will be irrelevant to this project. I then set the variable type for the date variables to &ldquo;date&rdquo; and add the variable &ldquo;duration&rdquo;, which calculates the length of time between date of symptom onset and date of outcome, as in the previous project.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">covid <span style="color:#f92672">&lt;-</span> covid <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate_all</span>(<span style="color:#a6e22e">function</span>(x)<span style="color:#a6e22e">ifelse</span>(x<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">|</span>x<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;N/A&#34;</span>,<span style="color:#66d9ef">NA</span>,x)) <span style="color:#f92672">%&gt;%</span> 
+  <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span>ï..ID, <span style="color:#f92672">-</span>geo_resolution, <span style="color:#f92672">-</span>source,<span style="color:#f92672">-</span>sequence_available, <span style="color:#f92672">-</span>additional_information, <span style="color:#f92672">-</span>notes_for_discussion,
+         <span style="color:#f92672">-</span>location, <span style="color:#f92672">-</span>admin1, <span style="color:#f92672">-</span>admin2, <span style="color:#f92672">-</span>admin3, <span style="color:#f92672">-</span>country_new, <span style="color:#f92672">-</span>admin_id,<span style="color:#f92672">-</span>data_moderator_initials)
+
+covid <span style="color:#f92672">&lt;-</span> covid <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(date_onset_symptoms<span style="color:#f92672">=</span><span style="color:#a6e22e">gsub</span>(<span style="color:#e6db74">&#34;pre&#34;</span>,<span style="color:#e6db74">&#34;&#34;</span>,date_onset_symptoms),
+                date_onset_symptoms<span style="color:#f92672">=</span><span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">gsub</span>(<span style="color:#e6db74">&#34;[.]&#34;</span>,<span style="color:#e6db74">&#34;-&#34;</span>,date_onset_symptoms), format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%d-%m-%Y&#34;</span>),
+                date_death_or_discharge<span style="color:#f92672">=</span><span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">gsub</span>(<span style="color:#e6db74">&#34;[.]&#34;</span>,<span style="color:#e6db74">&#34;-&#34;</span>,date_death_or_discharge),format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%d-%m-%Y&#34;</span>),
+         date_admission_hospital<span style="color:#f92672">=</span><span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">gsub</span>(<span style="color:#e6db74">&#34;[.]&#34;</span>,<span style="color:#e6db74">&#34;-&#34;</span>,date_admission_hospital), format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%d-%m-%Y&#34;</span>),
+         date_confirmation<span style="color:#f92672">=</span><span style="color:#a6e22e">as.Date</span>(<span style="color:#a6e22e">gsub</span>(<span style="color:#e6db74">&#34;[.]&#34;</span>,<span style="color:#e6db74">&#34;-&#34;</span>,date_confirmation), format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;%d-%m-%Y&#34;</span>),
+                duration<span style="color:#f92672">=</span>date_death_or_discharge<span style="color:#f92672">-</span>date_onset_symptoms)
+
+<span style="color:#a6e22e">glimpse</span>(covid)
+</code></pre></div><pre><code>## Observations: 15,945
+## Variables: 21
+## $ age &lt;chr&gt; &quot;78&quot;, &quot;61&quot;, &quot;66&quot;, &quot;27&quot;, &quot;17&quot;, &quot;51&quot;, &quot;68&quot;,
+&quot;26&quot;, &quot;30&quot;, &quot;53&quot;, &quot;3...
+## $ sex &lt;chr&gt; &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;,
+&quot;female&quot;, &quot;male&quot;, ...
+## $ city &lt;chr&gt; &quot;Vo Euganeo&quot;, NA, &quot;Zhenlai County, Baicheng
+City&quot;, &quot;Longshan D...
+## $ province &lt;chr&gt; &quot;Veneto&quot;, NA, &quot;Jilin&quot;, &quot;Jilin&quot;,
+&quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Jilin&quot;, &quot;Ji...
+## $ country &lt;chr&gt; &quot;Italy&quot;, &quot;Singapore&quot;, &quot;China&quot;, &quot;China&quot;,
+&quot;China&quot;, &quot;China&quot;, &quot;Chi...
+## $ latitude &lt;dbl&gt; 45.297748, 1.353460, 45.948140,
+42.858020, 43.783530, 43.78353...
+## $ longitude &lt;dbl&gt; 11.65838, 103.81510, 123.43960,
+125.15210, 124.67290, 124.6729...
+## $ date_onset_symptoms &lt;date&gt; NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ date_admission_hospital &lt;date&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ date_confirmation &lt;date&gt; 2020-02-21, 2020-02-14,
+2020-02-07, 2020-02-07, 2020-02-07, 2...
+## $ symptoms &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA...
+## $ lives_in_Wuhan &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA...
+## $ travel_history_dates &lt;chr&gt; NA, NA, NA, NA, NA, NA,
+&quot;16.01.2020 - 23.02.2020&quot;, &quot;28.01.2020...
+## $ travel_history_location &lt;chr&gt; NA, NA, &quot;Harbin&quot;, NA,
+NA, NA, &quot;Thailand&quot;, &quot;Vietnam&quot;, NA, NA, N...
+## $ reported_market_exposure &lt;chr&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ chronic_disease_binary &lt;lgl&gt; FALSE, FALSE, FALSE,
+FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...
+## $ chronic_disease &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA...
+## $ outcome &lt;chr&gt; &quot;death&quot;, &quot;discharge&quot;, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, ...
+## $ date_death_or_discharge &lt;date&gt; 2020-02-22, 2020-02-17,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ travel_history_binary &lt;lgl&gt; NA, NA, NA, NA, NA, NA,
+NA, NA, NA, NA, NA, NA, NA, NA, NA, NA...
+## $ duration &lt;drtn&gt; NA days, NA days, NA days, NA days, NA
+days, NA days, NA days...
+</code></pre><h3 id="manova">MANOVA</h3>
+<h5 id="here-i-perform-a-manova-to-test-whether-the-numeric-variables-age-latitude-longitude-duration-show-a-mean-difference-across-outcome-first-i-cleaned-up-the-age-variable-so-that-all-ages-were-listed-as-a-number-and-large-ranges-of-ages-were-removed-as-they-were-not-informative-and-saved-this-as-tidyage-then-i-organized-the-outcome-variable-so-that-the-outcome-was-listed-as-either-discharged-died-recovered-stable-or-other-i-saved-this-final-dataset-as-outcomes">Here, I perform a MANOVA to test whether the numeric variables (age, latitude, longitude, duration) show a mean difference across outcome. First, I cleaned up the &ldquo;age&rdquo; variable so that all ages were listed as a number and large ranges of ages were removed (as they were not informative), and saved this as &ldquo;tidyage&rdquo;. Then, I organized the &ldquo;outcome&rdquo; variable so that the outcome was listed as either &ldquo;discharged,&rdquo; &ldquo;died,&rdquo; &ldquo;recovered,&rdquo; &ldquo;stable,&rdquo; or &ldquo;other.&rdquo; I saved this final dataset as &ldquo;outcomes.&rdquo;</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">covid <span style="color:#f92672">&lt;-</span> covid <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;13 month&#34;</span>,<span style="color:#ae81ff">1.08333</span>,age),
+                          age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;18 month&#34;</span>,<span style="color:#ae81ff">1.5</span>,age),
+                          age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;5 month&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;5 months&#34;</span>,<span style="color:#ae81ff">0.41667</span>,age),
+                          age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;6 months&#34;</span>,<span style="color:#ae81ff">0.5</span>,age),
+                          age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;6 weeks&#34;</span>,<span style="color:#ae81ff">0.1154</span>,age),
+                          age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;8 month&#34;</span>,<span style="color:#ae81ff">0.666666667</span>,age),
+                          age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;9 month&#34;</span>,<span style="color:#ae81ff">0.75</span>,age)) 
+
+covid1 <span style="color:#f92672">&lt;-</span> covid <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;0-60&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;13-69&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;15-88&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;16-80&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;17-66&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;18-49&#34;</span>, 
+                           age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;18-50&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;18-60&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;18-65&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;18-99&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;18 - 100&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;19-65&#34;</span>,
+                           age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;19-77&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;20-57&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;20-69&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;20-70&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;21-&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;21-72&#34;</span>,
+                           age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;22-66&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;22-80&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;23-71&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;23-72&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;23-84&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;25-59&#34;</span>, 
+                           age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;25-89&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;27-40&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;27-58&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;30-60&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;30-61&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;30-69&#34;</span>,
+                           age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;30-70&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;33-78&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;34-66&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;39-77&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;40-69&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;40-89&#34;</span>,
+                           age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;50-100&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;50-99&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;60-100&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;60-99&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;65-99&#34;</span>, age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;70-100&#34;</span>)
+
+tidyage <span style="color:#f92672">&lt;-</span> covid1 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;0-10&#34;</span>,<span style="color:#ae81ff">5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;0-6&#34;</span>,<span style="color:#ae81ff">3</span>,age),age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;0-9&#34;</span>,<span style="color:#ae81ff">4.5</span>,age), 
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;0-18&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;0-19&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;0-20&#34;</span>,<span style="color:#ae81ff">10</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;13-19&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;14-18&#34;</span>,<span style="color:#ae81ff">16</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;16-17&#34;</span>,<span style="color:#ae81ff">16.5</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;18-20&#34;</span>,<span style="color:#ae81ff">19</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;20-39&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;21-39&#34;</span>,<span style="color:#ae81ff">30</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;22-23&#34;</span>,<span style="color:#ae81ff">22.5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;23-24&#34;</span>,<span style="color:#ae81ff">23.5</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;26-27&#34;</span>,<span style="color:#ae81ff">26.5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;27-29&#34;</span>,<span style="color:#ae81ff">28</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;30-35&#34;</span>,<span style="color:#ae81ff">32.5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;30-39&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;30-40&#34;</span>,<span style="color:#ae81ff">35</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;34-44&#34;</span>,<span style="color:#ae81ff">39</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;36-45&#34;</span>,<span style="color:#ae81ff">40.5</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;37-38&#34;</span>,<span style="color:#ae81ff">37.5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;40-41&#34;</span>,<span style="color:#ae81ff">40.5</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;40-45&#34;</span>,<span style="color:#ae81ff">42.5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;41-60&#34;</span>,<span style="color:#ae81ff">50</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;47-48&#34;</span>,<span style="color:#ae81ff">47.5</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;48-49&#34;</span>,<span style="color:#ae81ff">48.5</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;20-29&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;20-30&#34;</span>,<span style="color:#ae81ff">25</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;40-49&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;40-50&#34;</span>,<span style="color:#ae81ff">45</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;50-59&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;50-60&#34;</span>,<span style="color:#ae81ff">55</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;60-69&#34;</span>,<span style="color:#ae81ff">25</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;50-69&#34;</span>,<span style="color:#ae81ff">60</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;54-56&#34;</span>,<span style="color:#ae81ff">55</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;55-74&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;60-69&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;60-70&#34;</span>,<span style="color:#ae81ff">65</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;61-80&#34;</span>,<span style="color:#ae81ff">70</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;74-76&#34;</span>,<span style="color:#ae81ff">75</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;80-80&#34;</span>,<span style="color:#ae81ff">80</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;87-88&#34;</span>,<span style="color:#ae81ff">87.5</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;70-79&#34;</span><span style="color:#f92672">|</span>age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;70-82&#34;</span>,<span style="color:#ae81ff">75</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;80-89&#34;</span>,<span style="color:#ae81ff">85</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;90-99&#34;</span>,<span style="color:#ae81ff">95</span>,age), age<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(age<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;35-54&#34;</span>,<span style="color:#ae81ff">45</span>,age),
+                            age<span style="color:#f92672">=</span><span style="color:#a6e22e">as.numeric</span>(age))
+
+outcomes <span style="color:#f92672">&lt;-</span> tidyage <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(outcome<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;discharge&#34;</span><span style="color:#f92672">|</span>outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Discharged&#34;</span><span style="color:#f92672">|</span>
+                                              outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;released from quarantine&#34;</span>,<span style="color:#e6db74">&#34;discharged&#34;</span>,outcome),
+                        outcome<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;death&#34;</span><span style="color:#f92672">|</span>outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;dead&#34;</span><span style="color:#f92672">|</span>outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Dead&#34;</span><span style="color:#f92672">|</span>outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Death&#34;</span><span style="color:#f92672">|</span>
+                                         outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Deceased&#34;</span><span style="color:#f92672">|</span>outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Died&#34;</span>,<span style="color:#e6db74">&#34;died&#34;</span>,outcome),
+                        outcome<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Recovered&#34;</span>,<span style="color:#e6db74">&#34;recovered&#34;</span>,outcome),
+                        outcome<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Stable&#34;</span><span style="color:#f92672">|</span>outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;stable condition&#34;</span>,<span style="color:#e6db74">&#34;stable&#34;</span>,outcome),
+                        outcome<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(outcome<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;discharged&#34;</span> <span style="color:#f92672">&amp;</span> outcome<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;died&#34;</span> <span style="color:#f92672">&amp;</span> outcome<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;recovered&#34;</span> <span style="color:#f92672">&amp;</span>
+                                         outcome<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;stable&#34;</span>,<span style="color:#e6db74">&#34;other&#34;</span>,outcome)) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">mutate</span>(duration<span style="color:#f92672">=</span><span style="color:#a6e22e">as.numeric</span>(duration)) 
+</code></pre></div><h5 id="performing-the-manova-univariate-anovas-and-post-hoc-t-tests">Performing the MANOVA, univariate ANOVAs, and post-hoc t-tests:</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">outcomes1 <span style="color:#f92672">&lt;-</span> outcomes <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(duration<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;NA&#34;</span>)
+man <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">manova</span>(<span style="color:#a6e22e">cbind</span>(age,latitude,longitude,duration)<span style="color:#f92672">~</span>outcome, data<span style="color:#f92672">=</span>outcomes1)
+<span style="color:#a6e22e">summary</span>(man)
+</code></pre></div><pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## outcome 2 0.58388 22.986 8 446 &lt; 2.2e-16 ***
+## Residuals 225
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">summary.aov</span>(man)
+</code></pre></div><pre><code>## Response age :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 29864 14931.8 60.283 &lt; 2.2e-16 ***
+## Residuals 225 55731 247.7
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+##
+## Response latitude :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 11621 5810.6 46.075 &lt; 2.2e-16 ***
+## Residuals 225 28375 126.1
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+##
+## Response longitude :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 9110 4554.9 5.0578 0.007102 **
+## Residuals 225 202627 900.6
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+##
+## Response duration :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## outcome 2 777 388.48 8.6397 0.0002426 ***
+## Residuals 225 10117 44.96
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+##
+## 5 observations deleted due to missingness
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pairwise.t.test</span>(outcomes1<span style="color:#f92672">$</span>age,outcomes1<span style="color:#f92672">$</span>outcome,p.adj<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>)
+</code></pre></div><pre><code>## 
+## 	Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$age and outcomes1$outcome 
+## 
+##            died    discharged
+## discharged &lt; 2e-16 -         
+## recovered  5.1e-13 0.16      
+## 
+## P value adjustment method: none
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pairwise.t.test</span>(outcomes1<span style="color:#f92672">$</span>latitude,outcomes1<span style="color:#f92672">$</span>outcome,p.adj<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>)
+</code></pre></div><pre><code>## 
+## 	Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$latitude and outcomes1$outcome 
+## 
+##            died    discharged
+## discharged &lt; 2e-16 -         
+## recovered  8.2e-08 0.007     
+## 
+## P value adjustment method: none
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pairwise.t.test</span>(outcomes1<span style="color:#f92672">$</span>longitude,outcomes1<span style="color:#f92672">$</span>outcome,p.adj<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>)
+</code></pre></div><pre><code>## 
+## 	Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$longitude and outcomes1$outcome 
+## 
+##            died   discharged
+## discharged 0.0045 -         
+## recovered  0.6055 0.0331    
+## 
+## P value adjustment method: none
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pairwise.t.test</span>(outcomes1<span style="color:#f92672">$</span>duration,outcomes1<span style="color:#f92672">$</span>outcome,p.adj<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>)
+</code></pre></div><pre><code>## 
+## 	Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  outcomes1$duration and outcomes1$outcome 
+## 
+##            died    discharged
+## discharged 4.8e-05 -         
+## recovered  0.0098  0.3530    
+## 
+## P value adjustment method: none
+</code></pre><h5 id="there-was-no-duration-data-for-observations-with-outcomes-of-either-stable-or-other-so-analysis-was-only-done-on-the-died-discharged-and-recovered-outcomes-overall-at-least-one-of-the-numeric-variables-shows-a-mean-difference-by-outcome-with-a-p-value-of--22e-16-univariate-anovas-show-that-there-is-a-significant-mean-difference-in-outcome-for-all-four-variables-when-using-an-unadjusted-significance-level-a-total-of-17-tests-1-manova-4-anovas-12-t-tests-were-performed-meaning-the-probability-of-at-least-one-type-i-error-is-1---09517--05818797-if-unadjusted-the-bonferroni-adjustment-puts-the-new-significance-level-at-00517--0002941176">There was no duration data for observations with outcomes of either &ldquo;stable&rdquo; or &ldquo;other,&rdquo; so analysis was only done on the &ldquo;died,&rdquo; &ldquo;discharged,&rdquo; and &ldquo;recovered&rdquo; outcomes. Overall, at least one of the numeric variables shows a mean difference by outcome with a p-value of &lt; 2.2e-16. Univariate ANOVAs show that there is a significant mean difference in outcome for all four variables when using an unadjusted significance level. A total of 17 tests (1 MANOVA, 4 ANOVAs, 12 t-tests) were performed, meaning the probability of at least one type I error is 1 - 0.95^17 = 0.5818797 if unadjusted. The Bonferroni adjustment puts the new significance level at 0.05/17 = 0.002941176.</h5>
+<h5 id="after-adjusting-the-significance-level-all-numeric-variables-except-longitude-show-a-significant-mean-difference-across-outcomes-based-on-the-univariate-anovas-the-post-hoc-t-tests-show-that-there-is-a-significant-mean-difference-in-both-age-and-latitude-across-between-patients-who-died-and-patients-who-were-discharged-as-well-as-between-patients-who-died-and-patients-who-recovered-the-mean-difference-in-longitude-is-not-significant-for-any-combination-of-outcomes-there-is-a-significant-mean-difference-in-duration-between-patients-who-died-and-patients-who-were-discharged">After adjusting the significance level, all numeric variables except longitude show a significant mean difference across outcomes based on the univariate ANOVAs. The post-hoc t-tests show that there is a significant mean difference in both age and latitude across between patients who died and patients who were discharged, as well as between patients who died and patients who recovered. The mean difference in longitude is not significant for any combination of outcomes. There is a significant mean difference in duration between patients who died and patients who were discharged.</h5>
+<h5 id="manova-is-performed-under-several-assumptions-multivariate-normal-distribution-same-variancecovariance-for-all-groups-sensitivity-to-multicollinearity-more-samples-than-variables-and-sensitivity-to-zeroes-and-outliers-my-data-meets-the-assumption-of-having-more-samples-than-variables-and-is-probably-not-collinear-but-it-is-possible-that-it-violates-the-assumptions-of-a-multivariate-normal-distribution-equal-variancecovariance-and-zeroesoutliers">MANOVA is performed under several assumptions: multivariate normal distribution, same variance/covariance for all groups, sensitivity to multicollinearity, more samples than variables, and sensitivity to zeroes and outliers. My data meets the assumption of having more samples than variables and is probably not collinear, but it is possible that it violates the assumptions of a multivariate normal distribution, equal variance/covariance, and zeroes/outliers.</h5>
+<h3 id="randomization-test">Randomization Test</h3>
+<h5 id="here-i-perform-a-randomization-test-to-see-if-there-is-a-significant-mean-difference-in-age-across-the-chronic-disease-binary-true-if-the-patient-has-a-chronic-disease-and-false-if-they-do-not-the-null-hypothesis-is-that-there-is-no-difference-between-the-means-of-the-ages-of-patients-who-have-a-chronic-disease-and-patients-who-do-not-have-a-chronic-disease-the-alternative-hypothesis-is-that-there-is-a-difference-between-the-means-of-the-ages-of-patients-who-have-a-chronic-disease-and-patients-who-do-not-have-a-chronic-disease">Here, I perform a randomization test to see if there is a significant mean difference in age across the chronic disease binary (TRUE if the patient has a chronic disease and FALSE if they do not). The null hypothesis is that there is no difference between the means of the ages of patients who have a chronic disease and patients who do not have a chronic disease. The alternative hypothesis is that there is a difference between the means of the ages of patients who have a chronic disease and patients who do not have a chronic disease.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">tidyage <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">group_by</span>(chronic_disease_binary) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">summarize</span>(meansage<span style="color:#f92672">=</span><span style="color:#a6e22e">mean</span>(age)) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">summarize</span>(mean_diff<span style="color:#f92672">=</span><span style="color:#a6e22e">diff</span>(meansage))
+</code></pre></div><pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1      5.47
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">rand_age <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">vector</span>()
+<span style="color:#a6e22e">for</span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">5000</span>){
+new <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">data.frame</span>(age<span style="color:#f92672">=</span><span style="color:#a6e22e">sample</span>(tidyage<span style="color:#f92672">$</span>age), cdb<span style="color:#f92672">=</span>tidyage<span style="color:#f92672">$</span>chronic_disease_binary) 
+rand_age[i]<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">mean</span>(new[new<span style="color:#f92672">$</span>cdb<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;FALSE&#34;</span>,]<span style="color:#f92672">$</span>age)<span style="color:#f92672">-</span><span style="color:#a6e22e">mean</span>(new[new<span style="color:#f92672">$</span>cdb<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;TRUE&#34;</span>,]<span style="color:#f92672">$</span>age)}
+
+<span style="color:#a6e22e">mean</span>(rand_age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">5.465774</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>
+</code></pre></div><pre><code>## [1] 0
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">hist</span>(rand_age,main<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>,ylab<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>); <span style="color:#a6e22e">abline</span>(v <span style="color:#f92672">=</span> <span style="color:#ae81ff">5.465774</span>,col<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;red&#34;</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<h5 id="the-p-value-is-0-therefore-the-null-hypothesis-is-rejected-there-is-0-chance-of-a-mean-difference-being-as-extreme-as-5465774-under-the-assumption-of-no-association-between-age-and-chronic-disease-in-other-words-there-is-a-significant-difference-between-the-ages-of-people-who-do-and-do-not-have-a-chronic-disease-for-this-reason-the-line-marking-the-actual-mean-difference-does-not-show-up-on-the-histogram-showing-distributions-of-randomized-mean-differences">The p-value is 0, therefore the null hypothesis is rejected; there is 0% chance of a mean difference being as extreme as 5.465774 under the assumption of no association between age and chronic disease. In other words, there is a significant difference between the ages of people who do and do not have a chronic disease. For this reason, the line marking the actual mean difference does not show up on the histogram showing distributions of randomized mean differences.</h5>
+<h3 id="linear-regression">Linear Regression</h3>
+<h5 id="here-i-perform-a-linear-regression-predicting-duration-from-age-and-chronic-disease-binary-first-i-mean-centered-age-as-it-is-a-numeric-variable-then-i-performed-the-linear-regression">Here, I perform a linear regression predicting duration from age and chronic disease binary. First, I mean-centered age as it is a numeric variable. Then, I performed the linear regression.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">tidyage_c <span style="color:#f92672">&lt;-</span> tidyage <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(age_c<span style="color:#f92672">=</span>age<span style="color:#f92672">-</span><span style="color:#a6e22e">mean</span>(age,na.rm<span style="color:#f92672">=</span>T)) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(duration<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;NA&#34;</span>) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">mutate</span>(duration<span style="color:#f92672">=</span><span style="color:#a6e22e">as.numeric</span>(duration))
+fit1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(duration <span style="color:#f92672">~</span> age_c <span style="color:#f92672">*</span> chronic_disease_binary, data<span style="color:#f92672">=</span>tidyage_c)
+<span style="color:#a6e22e">summary</span>(fit1)
+</code></pre></div><pre><code>##
+## Call:
+## lm(formula = duration ~ age_c * chronic_disease_binary,
+data = tidyage_c)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -15.848 -3.850 -1.033 4.883 23.587
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 19.47356 0.51749 37.631 &lt;2e-16 ***
+## age_c 0.04809 0.02997 1.605 0.1100
+## chronic_disease_binaryTRUE -1.98093 1.54218 -1.284
+0.2003
+## age_c:chronic_disease_binaryTRUE -0.14375 0.06406 -2.244
+0.0258 *
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+##
+## Residual standard error: 6.856 on 229 degrees of freedom
+## Multiple R-squared: 0.07219, Adjusted R-squared: 0.06004
+## F-statistic: 5.939 on 3 and 229 DF, p-value: 0.000644
+</code></pre><h5 id="the-intercept-shows-that-controlling-for-all-other-variables-patients-without-a-chronic-disease-and-with-an-age-equal-to-the-mean-age-are-spend-an-average-of-1947356-days-between-being-confirmed-and-having-an-outcome-recorded-controlling-for-all-other-variables-for-every-one-year-increase-in-age-the-duration-increases-by-004809-days-controlling-for-all-other-variables-patients-who-have-a-chronic-disease-have-a-duration-that-is-on-average-198093-days-less-than-those-who-do-not-have-a-chronic-disease-controlling-for-all-other-variables-the-slope-for-age-on-duration-is-014375-lower-for-patients-with-a-chronic-disease-compared-to-patients-who-do-not-have-a-chronic-disease">The intercept shows that, controlling for all other variables, patients without a chronic disease and with an age equal to the mean age are spend an average of 19.47356 days between being confirmed and having an outcome recorded. Controlling for all other variables, for every one year increase in age, the duration increases by 0.04809 days. Controlling for all other variables, patients who have a chronic disease have a duration that is on average 1.98093 days less than those who do not have a chronic disease. Controlling for all other variables, the slope for age on duration is 0.14375 lower for patients with a chronic disease compared to patients who do not have a chronic disease.</h5>
+<h5 id="below-i-test-the-assumptions-of-linearity-normality-and-homoskedasticity-for-this-model">Below, I test the assumptions of linearity, normality, and homoskedasticity for this model.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(lmtest)
+<span style="color:#a6e22e">library</span>(sandwich)
+
+resids <span style="color:#f92672">&lt;-</span> fit1<span style="color:#f92672">$</span>residuals
+fitvals <span style="color:#f92672">&lt;-</span> fit1<span style="color:#f92672">$</span>fitted.values
+<span style="color:#a6e22e">ggplot</span>()<span style="color:#f92672">+</span><span style="color:#a6e22e">geom_point</span>(<span style="color:#a6e22e">aes</span>(fitvals,resids))<span style="color:#f92672">+</span><span style="color:#a6e22e">geom_hline</span>(yintercept<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, col<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;red&#34;</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">bptest</span>(fit1)
+</code></pre></div><pre><code>## 
+## 	studentized Breusch-Pagan test
+## 
+## data:  fit1
+## BP = 6.0062, df = 3, p-value = 0.1113
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>()<span style="color:#f92672">+</span><span style="color:#a6e22e">geom_qq</span>(<span style="color:#a6e22e">aes</span>(sample<span style="color:#f92672">=</span>resids))<span style="color:#f92672">+</span><span style="color:#a6e22e">geom_qq_line</span>(<span style="color:#a6e22e">aes</span>(sample<span style="color:#f92672">=</span>resids), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;red&#39;</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<h5 id="the-data-appears-to-be-linear-and-homoskedastic-when-eyeballing-and-this-is-confirmed-by-the-breusch-pagan-test-p01113-retain-null-hypothesis-of-homoskedasticity-the-qq-plot-shows-the-data-to-meet-the-assumption-of-normality">The data appears to be linear and homoskedastic when eyeballing, and this is confirmed by the Breusch-Pagan test (p=0.1113, retain null hypothesis of homoskedasticity). The qq-plot shows the data to meet the assumption of normality.</h5>
+<h5 id="recomputing-regression-results-with-robust-standard-errors">Recomputing regression results with robust standard errors:</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">coeftest</span>(fit1, vcov <span style="color:#f92672">=</span> <span style="color:#a6e22e">vcovHC</span>(fit1))
+</code></pre></div><pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 19.473564 0.528243 36.8648 &lt; 2e-16 ***
+## age_c 0.048086 0.030392 1.5822 0.11498
+## chronic_disease_binaryTRUE -1.980929 1.891295 -1.0474
+0.29602
+## age_c:chronic_disease_binaryTRUE -0.143745 0.068632
+-2.0944 0.03732 *
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+</code></pre><h5 id="after-using-robust-standard-errors-the-standard-errors-have-increased-for-every-coefficient-and-the-p-values-have-also-increased-although-the-significant-p-values-remain-significant-and-the-non-significant-p-values-remain-non-significant-my-model-explains-only-007219-or-7-of-the-data-006004-or-6-when-adjusted">After using robust standard errors, the standard errors have increased for every coefficient, and the p-values have also increased, although the significant p-values remain significant and the non-significant p-values remain non-significant. My model explains only 0.07219, or 7%, of the data (0.06004 or 6% when adjusted).</h5>
+<h3 id="bootstrapped-standard-errors">Bootstrapped Standard Errors</h3>
+<h5 id="here-i-compute-bootstrapped-standard-errors-on-my-linear-regression-model-above-by-resampling-the-residuals">Here, I compute bootstrapped standard errors on my linear regression model above by resampling the residuals.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">resid_boot <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">replicate</span>(<span style="color:#ae81ff">5000</span>,{
+new_resids <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sample</span>(resids,replace<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>)
+tidyage_c<span style="color:#f92672">$</span>new_y <span style="color:#f92672">&lt;-</span> fitvals <span style="color:#f92672">+</span> new_resids 
+fit1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">lm</span>(new_y<span style="color:#f92672">~</span>age_c<span style="color:#f92672">*</span>chronic_disease_binary,data<span style="color:#f92672">=</span>tidyage_c) 
+<span style="color:#a6e22e">coef</span>(fit1) 
+})
+
+resid_boot <span style="color:#f92672">%&gt;%</span> t <span style="color:#f92672">%&gt;%</span> as.data.frame <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">summarize_all</span>(sd)
+</code></pre></div><pre><code>## (Intercept) age_c chronic_disease_binaryTRUE
+age_c:chronic_disease_binaryTRUE
+## 1 0.5105718 0.02970046 1.529873 0.06286048
+</code></pre><h5 id="after-bootstrapping-the-standard-errors-for-all-coefficients-decreased-compared-to-the-standard-errors-in-the-original-model-this-means-that-they-are-even-further-from-the-robust-standard-errors-than-the-original-standard-errors-are-the-decreases-in-standard-error-that-result-from-bootstrapping-are-of-a-very-small-magnitude-so-the-p-values-would-not-be-expected-to-change-much-either-and-would-follow-the-trend-of-the-standard-errors-the-p-values-that-are-significant-would-remain-significant-and-the-p-values-that-are-non-significant-would-remain-non-significant">After bootstrapping, the standard errors for all coefficients decreased compared to the standard errors in the original model. This means that they are even further from the robust standard errors than the original standard errors are. The decreases in standard error that result from bootstrapping are of a very small magnitude, so the p-values would not be expected to change much either and would follow the trend of the standard errors. The p-values that are significant would remain significant, and the p-values that are non-significant would remain non-significant.</h5>
+<h3 id="logistic-regression">Logistic Regression</h3>
+<h5 id="here-i-predict-outcome-from-age-and-chronic-disease-using-a-logistic-regression-i-expect-that-these-variables-will-have-some-significant-impact-on-the-outcome-of-the-patient-as-older-patients-tend-to-have-weaker-immune-systems-and-chronic-diseases-tend-to-exacerbate-other-illnesses-first-i-changed-the-outcome-variable-into-a-binary-where-1-represents-death-and-0-represents-survival-and-then-i-performed-the-regression-and-exponentiated-the-coefficients">Here, I predict outcome from age and chronic disease using a logistic regression. I expect that these variables will have some significant impact on the outcome of the patient, as older patients tend to have weaker immune systems and chronic diseases tend to exacerbate other illnesses. First, I changed the &ldquo;outcome&rdquo; variable into a binary where 1 represents death and 0 represents survival, and then I performed the regression and exponentiated the coefficients:</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">outcomes2 <span style="color:#f92672">&lt;-</span> outcomes <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(outcome<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(outcome<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;died&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>)) <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">filter</span>(outcome<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;NA&#34;</span>,age<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;NA&#34;</span>,chronic_disease_binary<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;NA&#34;</span>)
+
+logfit1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">glm</span>(outcome <span style="color:#f92672">~</span> age<span style="color:#f92672">+</span>chronic_disease_binary,data<span style="color:#f92672">=</span>outcomes2,family<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;binomial&#34;</span>)
+<span style="color:#a6e22e">summary</span>(logfit1)
+</code></pre></div><pre><code>##
+## Call:
+## glm(formula = outcome ~ age + chronic_disease_binary,
+family = &quot;binomial&quot;,
+## data = outcomes2)
+##
+## Deviance Residuals:
+## Min 1Q Median 3Q Max
+## -2.9606 -0.4597 -0.2067 0.3046 2.8094
+##
+## Coefficients:
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -6.662437 0.528972 -12.595 &lt; 2e-16 ***
+## age 0.091189 0.008257 11.044 &lt; 2e-16 ***
+## chronic_disease_binaryTRUE 2.460706 0.305171 8.063
+7.42e-16 ***
+## ---
+## Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1
+' ' 1
+##
+## (Dispersion parameter for binomial family taken to be 1)
+##
+## Null deviance: 826.02 on 690 degrees of freedom
+## Residual deviance: 425.15 on 688 degrees of freedom
+## AIC: 431.15
+##
+## Number of Fisher Scoring iterations: 6
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">exp</span>(<span style="color:#a6e22e">coef</span>(logfit1))<span style="color:#f92672">%&gt;%</span><span style="color:#a6e22e">round</span>(<span style="color:#ae81ff">4</span>)<span style="color:#f92672">%&gt;%</span>t
+</code></pre></div><pre><code>##      (Intercept)    age chronic_disease_binaryTRUE
+## [1,]      0.0013 1.0955                    11.7131
+</code></pre><h5 id="controlling-for-other-factors-the-predicted-odds-of-death-is-00013-for-a-patient-who-is-0-years-old-and-does-not-have-a-chronic-disease-the-odds-of-death-are-multiplied-by-10955-for-every-one-year-increase-in-age-the-odds-of-death-for-patients-who-have-a-chronic-disease-are-117131-times-the-odds-of-death-for-patients-who-do-not">Controlling for other factors, the predicted odds of death is 0.0013 for a patient who is 0 years old and does not have a chronic disease. The odds of death are multiplied by 1.0955 for every one-year increase in age. The odds of death for patients who have a chronic disease are 11.7131 times the odds of death for patients who do not.</h5>
+<h5 id="here-i-create-a-confusion-matrix-for-the-logistic-regression">Here, I create a confusion matrix for the logistic regression.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">probs1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(logfit1,type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;response&#34;</span>) 
+<span style="color:#a6e22e">table</span>(predict<span style="color:#f92672">=</span><span style="color:#a6e22e">as.numeric</span>(probs1<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">.5</span>),truth<span style="color:#f92672">=</span>outcomes2<span style="color:#f92672">$</span>outcome) <span style="color:#f92672">%&gt;%</span> addmargins
+</code></pre></div><pre><code>##        truth
+## predict   0   1 Sum
+##     0   460  48 508
+##     1    34 149 183
+##     Sum 494 197 691
+</code></pre><h5 id="the-accuracy-is-460--149691--08813314-the-sensitivity-is-149197--07563452-the-specificity-is-460494--09311741-and-the-recall-is-149183--08142077-overall-the-88-accuracy-means-the-model-does-a-decent-but-not-stellar-job-of-predicting-whether-the-patient-died-it-does-a-better-job-of-predicting-patients-who-did-not-die-93-than-patients-who-did-die-76-the-recall-81-shows-that-there-are-a-few-patients-that-the-model-classified-as-having-died-when-they-actually-survived">The accuracy is (460 + 149)/691 = 0.8813314; the sensitivity is 149/197 = 0.7563452; the specificity is 460/494 = 0.9311741; and the recall is 149/183 = 0.8142077. Overall, the 88% accuracy means the model does a decent, but not stellar, job of predicting whether the patient died. It does a better job of predicting patients who did not die (93%) than patients who did die (76%). The recall (81%) shows that there are a few patients that the model classified as having died when they actually survived.</h5>
+<h5 id="below-is-a-density-plot-of-the-log-odds-by-outcome">Below is a density plot of the log-odds by outcome.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">outcomes2<span style="color:#f92672">$</span>logit <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(logfit1,type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;link&#34;</span>) 
+
+outcomes2 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">ggplot</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_density</span>(<span style="color:#a6e22e">aes</span>(logit,fill<span style="color:#f92672">=</span><span style="color:#a6e22e">as.factor</span>(outcome)), alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">.4</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">theme</span>(legend.position<span style="color:#f92672">=</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">.9</span>,<span style="color:#ae81ff">.9</span>)) <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_vline</span>(xintercept<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">xlab</span>(<span style="color:#e6db74">&#34;logit (log-odds)&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_rug</span>(<span style="color:#a6e22e">aes</span>(logit,color<span style="color:#f92672">=</span><span style="color:#a6e22e">as.factor</span>(outcome))) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text</span>(x<span style="color:#f92672">=</span><span style="color:#ae81ff">-3</span>,y<span style="color:#f92672">=</span><span style="color:#ae81ff">0.1</span>,label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;TN = 460&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text</span>(x<span style="color:#f92672">=</span><span style="color:#ae81ff">-1.75</span>,y<span style="color:#f92672">=</span><span style="color:#ae81ff">.008</span>,label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;FN = 48&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text</span>(x<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,y<span style="color:#f92672">=</span><span style="color:#ae81ff">.006</span>,label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;FP = 34&#34;</span>) <span style="color:#f92672">+</span>
+  <span style="color:#a6e22e">geom_text</span>(x<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,y<span style="color:#f92672">=</span><span style="color:#ae81ff">0.1</span>,label<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;TP = 149&#34;</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<h5 id="below-is-a-plot-of-the-roc-curve-for-the-regression">Below is a plot of the ROC curve for the regression.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(plotROC) 
+outcomes2<span style="color:#f92672">$</span>probs1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(logfit1,type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;response&#34;</span>)
+ROC1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(outcomes2) <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_roc</span>(<span style="color:#a6e22e">aes</span>(d<span style="color:#f92672">=</span>outcome,m<span style="color:#f92672">=</span>probs1), n.cuts<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+ROC1
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">calc_auc</span>(ROC1)
+</code></pre></div><pre><code>##   PANEL group       AUC
+## 1     1    -1 0.9275879
+</code></pre><h5 id="the-roc-curve-is-nearly-a-right-angle-and-the-auc-is-09275879-which-means-that-the-model-does-a-great-job-overall-of-predicting-whether-the-patient-died-or-survived-based-on-their-age-and-whether-they-have-a-chronic-disease">The ROC curve is nearly a right angle and the AUC is 0.9275879, which means that the model does a great job overall of predicting whether the patient died or survived based on their age and whether they have a chronic disease.</h5>
+<h5 id="below-i-perform-a-10-fold-cross-validation-to-see-how-my-model-will-perform-on-data-outside-of-what-it-has-been-trained-on">Below, I perform a 10-fold cross-validation to see how my model will perform on data outside of what it has been trained on.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Classification diagnostics function</span>
+class_diag<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">function</span>(probs,truth){
+  
+  <span style="color:#a6e22e">if</span>(<span style="color:#a6e22e">is.numeric</span>(truth)<span style="color:#f92672">==</span><span style="color:#66d9ef">FALSE</span> <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">is.logical</span>(truth)<span style="color:#f92672">==</span><span style="color:#66d9ef">FALSE</span>) truth<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">as.numeric</span>(truth)<span style="color:#ae81ff">-1</span>
+  
+  tab<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">table</span>(<span style="color:#a6e22e">factor</span>(probs<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">.5</span>,levels<span style="color:#f92672">=</span><span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;FALSE&#34;</span>,<span style="color:#e6db74">&#34;TRUE&#34;</span>)),truth)
+  prediction<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ifelse</span>(probs<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">.5</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>)
+  acc<span style="color:#f92672">=</span><span style="color:#a6e22e">mean</span>(truth<span style="color:#f92672">==</span>prediction)
+  sens<span style="color:#f92672">=</span><span style="color:#a6e22e">mean</span>(prediction[truth<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>)
+  spec<span style="color:#f92672">=</span><span style="color:#a6e22e">mean</span>(prediction[truth<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>)
+  ppv<span style="color:#f92672">=</span><span style="color:#a6e22e">mean</span>(truth[prediction<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>)
+  
+  <span style="color:#75715e">#CALCULATE EXACT AUC</span>
+  ord<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">order</span>(probs, decreasing<span style="color:#f92672">=</span><span style="color:#66d9ef">TRUE</span>)
+  probs <span style="color:#f92672">&lt;-</span> probs[ord]; truth <span style="color:#f92672">&lt;-</span> truth[ord]
+  
+  TPR<span style="color:#f92672">=</span><span style="color:#a6e22e">cumsum</span>(truth)<span style="color:#f92672">/</span><span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">1</span>,<span style="color:#a6e22e">sum</span>(truth)) 
+  FPR<span style="color:#f92672">=</span><span style="color:#a6e22e">cumsum</span>(<span style="color:#f92672">!</span>truth)<span style="color:#f92672">/</span><span style="color:#a6e22e">max</span>(<span style="color:#ae81ff">1</span>,<span style="color:#a6e22e">sum</span>(<span style="color:#f92672">!</span>truth))
+  
+  dup<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>(probs[<span style="color:#ae81ff">-1</span>]<span style="color:#f92672">&gt;=</span>probs[<span style="color:#f92672">-</span><span style="color:#a6e22e">length</span>(probs)], <span style="color:#66d9ef">FALSE</span>)
+  TPR<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>,TPR[<span style="color:#f92672">!</span>dup],<span style="color:#ae81ff">1</span>); FPR<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>,FPR[<span style="color:#f92672">!</span>dup],<span style="color:#ae81ff">1</span>)
+  
+  n <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">length</span>(TPR)
+  auc<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sum</span>( ((TPR[<span style="color:#ae81ff">-1</span>]<span style="color:#f92672">+</span>TPR[<span style="color:#f92672">-</span>n])<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">*</span> (FPR[<span style="color:#ae81ff">-1</span>]<span style="color:#f92672">-</span>FPR[<span style="color:#f92672">-</span>n]) )
+
+  <span style="color:#a6e22e">data.frame</span>(acc,sens,spec,ppv,auc)
+}
+
+
+<span style="color:#75715e"># 10-fold CV</span>
+
+k<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+
+data1 <span style="color:#f92672">&lt;-</span> outcomes2<span style="color:#a6e22e">[sample</span>(<span style="color:#a6e22e">nrow</span>(outcomes2)),] 
+folds <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cut</span>(<span style="color:#a6e22e">seq</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#a6e22e">nrow</span>(outcomes2)),breaks<span style="color:#f92672">=</span>k,labels<span style="color:#f92672">=</span>F) 
+
+diags <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NULL</span>
+<span style="color:#a6e22e">for</span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>k){ 
+  train<span style="color:#f92672">&lt;-</span>data1[folds<span style="color:#f92672">!=</span>i,] 
+  test<span style="color:#f92672">&lt;-</span>data1[folds<span style="color:#f92672">==</span>i,] 
+  
+  truth<span style="color:#f92672">&lt;-</span>test<span style="color:#f92672">$</span>outcome
+  
+  fit<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">glm</span>(outcome <span style="color:#f92672">~</span> age<span style="color:#f92672">+</span>chronic_disease_binary, data<span style="color:#f92672">=</span>train, family<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;binomial&#34;</span>)
+  probs<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(fit,newdata <span style="color:#f92672">=</span> test,type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;response&#34;</span>)
+  
+  diags<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">rbind</span>(diags,<span style="color:#a6e22e">class_diag</span>(probs,truth)) 
+}
+
+<span style="color:#a6e22e">summarize_all</span>(diags,mean)
+</code></pre></div><pre><code>##         acc      sens     spec       ppv       auc
+## 1 0.8827743 0.7584128 0.931265 0.8166367 0.9257256
+</code></pre><h5 id="the-auc-from-the-cross-validation-is-09247086-meaning-that-my-model-did-very-nearly-as-well-predicting-new-data-as-it-did-on-the-data-on-which-it-was-trained-there-is-nearly-no-overfitting-the-sensitivity-is-07628949-while-the-specificity-is-09308911-these-are-very-close-to-the-numbers-from-the-original-logistic-regression">The AUC from the cross-validation is 0.9247086, meaning that my model did very nearly as well predicting new data as it did on the data on which it was trained. There is nearly no overfitting. The sensitivity is 0.7628949, while the specificity is 0.9308911; these are very close to the numbers from the original logistic regression.</h5>
+<h3 id="lasso">LASSO</h3>
+<h5 id="to-see-which-variables-are-most-important-in-predicting-patient-outcome-i-performed-a-lasso-regression-i-removed-the-following-variables-from-my-lasso-the-date-variables-as-it-would-not-make-sense-to-include-them-due-to-their-format-symptoms-travel_history_location-and-chronic_disease-as-they-are-not-standardized-travel_history_binary-as-it-is-uncertain-what-it-is-recording-reported_market_exposure-as-it-does-not-contain-enough-data-and-city-province-and-lives_in_wuhan-because-if-i-had-included-them-there-would-not-have-been-enough-data-to-create-a-reasonable-model-and-i-felt-that-country-as-a-location-related-predictor-would-be-sufficient-for-the-purposes-of-this-project">To see which variables are most important in predicting patient outcome, I performed a LASSO regression. I removed the following variables from my LASSO: the date variables, as it would not make sense to include them due to their format; &ldquo;symptoms&rdquo;, &ldquo;travel_history_location&rdquo;, and &ldquo;chronic_disease&rdquo;, as they are not standardized; &ldquo;travel_history_binary&rdquo;, as it is uncertain what it is recording; &ldquo;reported_market_exposure&rdquo;, as it does not contain enough data; and &ldquo;city&rdquo;, &ldquo;province&rdquo;, and &ldquo;lives_in_Wuhan&rdquo; because if I had included them, there would not have been enough data to create a reasonable model and I felt that &ldquo;country&rdquo; as a location-related predictor would be sufficient for the purposes of this project.</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(glmnet)
+
+outcomes3 <span style="color:#f92672">&lt;-</span> outcomes2 <span style="color:#f92672">%&gt;%</span>
+  <span style="color:#a6e22e">select</span>(<span style="color:#f92672">-</span>logit,<span style="color:#f92672">-</span>probs1,<span style="color:#f92672">-</span>date_onset_symptoms,<span style="color:#f92672">-</span>date_admission_hospital,<span style="color:#f92672">-</span>date_confirmation,
+         <span style="color:#f92672">-</span>date_death_or_discharge,<span style="color:#f92672">-</span>symptoms,travel_history_dates,<span style="color:#f92672">-</span>travel_history_binary,
+         <span style="color:#f92672">-</span>reported_market_exposure,<span style="color:#f92672">-</span>chronic_disease,<span style="color:#f92672">-</span>travel_history_dates,
+         <span style="color:#f92672">-</span>travel_history_location,<span style="color:#f92672">-</span>city,<span style="color:#f92672">-</span>province,<span style="color:#f92672">-</span>lives_in_Wuhan) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">na.omit</span>()
+
+logfit2 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">glm</span>(outcome <span style="color:#f92672">~</span> .,data<span style="color:#f92672">=</span>outcomes3,family<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;binomial&#34;</span>)
+
+x <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">model.matrix</span>(logfit2)
+x <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">scale</span>(x)
+y <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.matrix</span>(outcomes3<span style="color:#f92672">$</span>outcome)
+
+cv1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cv.glmnet</span>(x[,<span style="color:#ae81ff">-1</span>],y,family<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;binomial&#39;</span>)
+lasso1 <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">glmnet</span>(x[,<span style="color:#ae81ff">-1</span>],y,family<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;binomial&#39;</span>,lambda<span style="color:#f92672">=</span>cv1<span style="color:#f92672">$</span>lambda.1se)
+<span style="color:#a6e22e">coef</span>(lasso1)
+</code></pre></div><pre><code>## 18 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                      s0
+## (Intercept)                -2.022487730
+## age                         1.327803815
+## sexmale                     .          
+## countryChina                0.952312319
+## countryFrance               .          
+## countryGambia               0.048935931
+## countryGermany              .          
+## countryJapan                0.057467923
+## countryNepal                .          
+## countryPhilippines          .          
+## countrySingapore           -0.074420053
+## countrySouth Korea          .          
+## countryThailand             .          
+## countryVietnam              .          
+## latitude                    0.292743809
+## longitude                   .          
+## chronic_disease_binaryTRUE  0.187585465
+## duration                   -0.005629212
+</code></pre><h5 id="the-lasso-results-show-that-the-most-significant-predictors-of-the-patients-outcome-are-their-age-whether-they-have-a-chronic-disease-the-latitude-of-their-location-whether-they-are-from-china-and-whether-they-are-from-gambia-latitude-is-probably-related-to-the-country-predictors-and-the-presence-of-china-as-a-predictor-may-be-due-to-its-overrepresentation-in-the-dataset-using-the-variables-lasso-selected-i-then-performed-a-10-fold-cv-on-a-new-logistic-regression">The LASSO results show that the most significant predictors of the patient&rsquo;s outcome are their age, whether they have a chronic disease, the latitude of their location, whether they are from China, and whether they are from Gambia. Latitude is probably related to the country predictors, and the presence of China as a predictor may be due to its overrepresentation in the dataset. Using the variables LASSO selected, I then performed a 10-fold CV on a new logistic regression:</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">outcomes3 <span style="color:#f92672">&lt;-</span> outcomes3 <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(China<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(country<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;China&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>),Gambia<span style="color:#f92672">=</span><span style="color:#a6e22e">ifelse</span>(country<span style="color:#f92672">==</span><span style="color:#e6db74">&#34;Gambia&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>))
+
+k<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+
+data1 <span style="color:#f92672">&lt;-</span> outcomes3<span style="color:#a6e22e">[sample</span>(<span style="color:#a6e22e">nrow</span>(outcomes3)),] 
+folds <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cut</span>(<span style="color:#a6e22e">seq</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#a6e22e">nrow</span>(outcomes3)),breaks<span style="color:#f92672">=</span>k,labels<span style="color:#f92672">=</span>F) 
+
+diags <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NULL</span>
+<span style="color:#a6e22e">for</span>(i in <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>k){ 
+  train<span style="color:#f92672">&lt;-</span>data1[folds<span style="color:#f92672">!=</span>i,] 
+  test<span style="color:#f92672">&lt;-</span>data1[folds<span style="color:#f92672">==</span>i,] 
+  
+  truth<span style="color:#f92672">&lt;-</span>test<span style="color:#f92672">$</span>outcome
+  
+  fit<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">glm</span>(outcome <span style="color:#f92672">~</span> age<span style="color:#f92672">+</span>chronic_disease_binary<span style="color:#f92672">+</span>latitude<span style="color:#f92672">+</span>China<span style="color:#f92672">+</span>Gambia, data<span style="color:#f92672">=</span>train, family<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;binomial&#34;</span>)
+  probs<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">predict</span>(fit,newdata <span style="color:#f92672">=</span> test,type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;response&#34;</span>)
+  
+  diags<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">rbind</span>(diags,<span style="color:#a6e22e">class_diag</span>(probs,truth)) 
+}
+
+<span style="color:#a6e22e">summarize_all</span>(diags,mean)
+</code></pre></div><pre><code>##         acc      sens     spec    ppv       auc
+## 1 0.9428854 0.8314286 0.978963 0.8875 0.9701424
+</code></pre><h5 id="the-auc-for-the-new-model-using-the-variables-from-lasso-is-09678614-which-is-higher-than-the-auc-from-my-previous-model-that-used-only-age-and-the-chronic-disease-binary-as-predictors-while-this-model-is-more-flexible-it-also-does-a-better-job-of-predicting-based-on-out-of-sample-data">The AUC for the new model using the variables from LASSO is 0.9678614, which is higher than the AUC from my previous model that used only age and the chronic disease binary as predictors. While this model is more flexible, it also does a better job of predicting based on out-of-sample data.</h5>
+<h5 id="it-is-worth-noting-that-all-models-and-analyses-in-this-project-are-limited-by-the-original-covid-19-dataset-in-which-cases-from-china-where-the-focus-was-at-the-beginning-of-the-pandemic-are-overrepresented-and-there-are-many-incomplete-entries-however-it-is-not-surprising-that-my-results-show-age-and-chronic-disease-to-be-significant-predictors-of-outcome-it-would-be-interesting-to-see-how-this-model-would-perform-on-more-current-data">It is worth noting that all models and analyses in this project are limited by the original COVID-19 dataset, in which cases from China, where the focus was at the beginning of the pandemic, are overrepresented, and there are many incomplete entries. However, it is not surprising that my results show age and chronic disease to be significant predictors of outcome; it would be interesting to see how this model would perform on more current data.</h5>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
