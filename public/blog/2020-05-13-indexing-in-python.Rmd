@@ -1,0 +1,50 @@
+---
+title: Indexing in Python
+author: Michelle Mao
+date: '2020-05-13'
+slug: indexing-in-python
+categories: []
+tags: []
+description: ''
+---
+##### Indexing is when you grab certain elements from a vector or list. It's done a little differently in Python compared to R. 
+
+##### First, let's take a look at how indexing is done in R. I've made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I'll grab the second through fourth elements in the list in R:
+
+```{R}
+library(reticulate)
+fruits <- c("mango","apricot","nectarine","dragonfruit","kiwi","fig","raspberry","lychee","loquat","jackfruit")
+fruits[2:4]
+```
+
+##### In R, the first element is at position 1, so positions 2 through 4 correspond to elements 2 through 4. 
+
+##### In Python, however, things are a little bit different. Using reticulate, I can access the list from R in Python by printing "r.fruits." Let's try the same indexing code that we used with R:
+
+```{python}
+print(r.fruits)
+fruits=r.fruits
+fruits[2:4]
+```
+
+##### This time, the code only returns the third and fourth elements. This is because of two reasons: first, Python starts counting at position 0 instead of position 1, so the first element is actually at the 0th position. Second, Python indexes up to but not including the number specified at the stop point. So the element at the fourth position in Python is 'kiwi', but it is not included, leaving us with two elements.
+
+##### Here is an analogy that helps me think about indexing in Python. Indexing is also aptly called "slicing," and it works just like slicing bread.
+
+![](/blog/2020-05-13-indexing-in-python_files/bread.PNG)
+
+##### The blue numbers represent the elements, and the red numbers represent the numbers you would type in the indexing code. If you start at slice 0, where you haven't put your knife to the bread yet, you will be able to include the first piece of bread, or first element. Going back to the previous example, if you want to grab the second through fourth pieces of bread, you'll need to start at slice 1 and stop at slice 4.
+
+##### The syntax for indexing in Python is list[start:stop:step]. Let's try grabbing every other element from the first element through the eighth element. Notice that we can leave the "start" number blank because it defaults to 0. The step number defaults to 1.
+
+```{python}
+fruits[:8:2]
+```
+
+##### You can also index backwards! What's the fifth fruit from the end?
+
+```{python}
+fruits[-5]
+```
+
+##### Indexing in Python can take a little practice to get used to, but it can be very useful!

@@ -13,11 +13,11 @@
     
     <item>
       <title>Indexing in Python</title>
-      <link>/2020/05/13/indexing-in-python/</link>
+      <link>/blog/indexing-in-python/</link>
       <pubDate>Wed, 13 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/05/13/indexing-in-python/</guid>
-      <description></description>
+      <guid>/blog/indexing-in-python/</guid>
+      <description>Indexing is when you grab certain elements from a vector or list. It’s done a little differently in Python compared to R.First, let’s take a look at how indexing is done in R. I’ve made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I’ll grab the second through fourth elements in the list in R:library(reticulate)## Warning: package &amp;#39;reticulate&amp;#39; was built under R version 3.</description>
     </item>
     
     <item>

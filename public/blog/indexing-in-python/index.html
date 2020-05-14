@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Michelle Mao" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Indexing in Python</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/blog/indexing-in-python/">Indexing in Python</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="indexing-is-when-you-grab-certain-elements-from-a-vector-or-list.-its-done-a-little-differently-in-python-compared-to-r." class="section level5">
+<h5>Indexing is when you grab certain elements from a vector or list. It’s done a little differently in Python compared to R.</h5>
+</div>
+<div id="first-lets-take-a-look-at-how-indexing-is-done-in-r.-ive-made-a-list-of-my-favorite-fruits.-i-did-this-in-reticulate-so-that-i-can-access-the-same-list-in-python.-now-ill-grab-the-second-through-fourth-elements-in-the-list-in-r" class="section level5">
+<h5>First, let’s take a look at how indexing is done in R. I’ve made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I’ll grab the second through fourth elements in the list in R:</h5>
+<pre class="r"><code>library(reticulate)</code></pre>
+<pre><code>## Warning: package &#39;reticulate&#39; was built under R version 3.6.3</code></pre>
+<pre class="r"><code>fruits &lt;- c(&quot;mango&quot;,&quot;apricot&quot;,&quot;nectarine&quot;,&quot;dragonfruit&quot;,&quot;kiwi&quot;,&quot;fig&quot;,&quot;raspberry&quot;,&quot;lychee&quot;,&quot;loquat&quot;,&quot;jackfruit&quot;)
+fruits[2:4]</code></pre>
+<pre><code>## [1] &quot;apricot&quot;     &quot;nectarine&quot;   &quot;dragonfruit&quot;</code></pre>
+</div>
+<div id="in-r-the-first-element-is-at-position-1-so-positions-2-through-4-correspond-to-elements-2-through-4." class="section level5">
+<h5>In R, the first element is at position 1, so positions 2 through 4 correspond to elements 2 through 4.</h5>
+</div>
+<div id="in-python-however-things-are-a-little-bit-different.-using-reticulate-i-can-access-the-list-from-r-in-python-by-printing-r.fruits.-lets-try-the-same-indexing-code-that-we-used-with-r" class="section level5">
+<h5>In Python, however, things are a little bit different. Using reticulate, I can access the list from R in Python by printing “r.fruits.” Let’s try the same indexing code that we used with R:</h5>
+<pre class="python"><code>print(r.fruits)</code></pre>
+<pre><code>## [&#39;mango&#39;, &#39;apricot&#39;, &#39;nectarine&#39;, &#39;dragonfruit&#39;, &#39;kiwi&#39;, &#39;fig&#39;, &#39;raspberry&#39;, &#39;lychee&#39;, &#39;loquat&#39;, &#39;jackfruit&#39;]</code></pre>
+<pre class="python"><code>fruits=r.fruits
+fruits[2:4]</code></pre>
+<pre><code>## [&#39;nectarine&#39;, &#39;dragonfruit&#39;]</code></pre>
+</div>
+<div id="this-time-the-code-only-returns-the-third-and-fourth-elements.-this-is-because-of-two-reasons-first-python-starts-counting-at-position-0-instead-of-position-1-so-the-first-element-is-actually-at-the-0th-position.-second-python-indexes-up-to-but-not-including-the-number-specified-at-the-stop-point.-so-the-element-at-the-fourth-position-in-python-is-kiwi-but-it-is-not-included-leaving-us-with-two-elements." class="section level5">
+<h5>This time, the code only returns the third and fourth elements. This is because of two reasons: first, Python starts counting at position 0 instead of position 1, so the first element is actually at the 0th position. Second, Python indexes up to but not including the number specified at the stop point. So the element at the fourth position in Python is ‘kiwi’, but it is not included, leaving us with two elements.</h5>
+</div>
+<div id="here-is-an-analogy-that-helps-me-think-about-indexing-in-python.-indexing-is-also-aptly-called-slicing-and-it-works-just-like-slicing-bread." class="section level5">
+<h5>Here is an analogy that helps me think about indexing in Python. Indexing is also aptly called “slicing,” and it works just like slicing bread.</h5>
+<p><img src="/blog/2020-05-13-indexing-in-python_files/bread.PNG" /></p>
+</div>
+<div id="the-blue-numbers-represent-the-elements-and-the-red-numbers-represent-the-numbers-you-would-type-in-the-indexing-code.-if-you-start-at-slice-0-where-you-havent-put-your-knife-to-the-bread-yet-you-will-be-able-to-include-the-first-piece-of-bread-or-first-element.-going-back-to-the-previous-example-if-you-want-to-grab-the-second-through-fourth-pieces-of-bread-youll-need-to-start-at-slice-1-and-stop-at-slice-4." class="section level5">
+<h5>The blue numbers represent the elements, and the red numbers represent the numbers you would type in the indexing code. If you start at slice 0, where you haven’t put your knife to the bread yet, you will be able to include the first piece of bread, or first element. Going back to the previous example, if you want to grab the second through fourth pieces of bread, you’ll need to start at slice 1 and stop at slice 4.</h5>
+</div>
+<div id="the-syntax-for-indexing-in-python-is-liststartstopstep.-lets-try-grabbing-every-other-element-from-the-first-element-through-the-eighth-element.-notice-that-we-can-leave-the-start-number-blank-because-it-defaults-to-0.-the-step-number-defaults-to-1." class="section level5">
+<h5>The syntax for indexing in Python is list[start:stop:step]. Let’s try grabbing every other element from the first element through the eighth element. Notice that we can leave the “start” number blank because it defaults to 0. The step number defaults to 1.</h5>
+<pre class="python"><code>fruits[:8:2]</code></pre>
+<pre><code>## [&#39;mango&#39;, &#39;nectarine&#39;, &#39;kiwi&#39;, &#39;raspberry&#39;]</code></pre>
+</div>
+<div id="you-can-also-index-backwards-whats-the-fifth-fruit-from-the-end" class="section level5">
+<h5>You can also index backwards! What’s the fifth fruit from the end?</h5>
+<pre class="python"><code>fruits[-5]</code></pre>
+<pre><code>## &#39;fig&#39;</code></pre>
+</div>
+<div id="indexing-in-python-can-take-a-little-practice-to-get-used-to-but-it-can-be-very-useful" class="section level5">
+<h5>Indexing in Python can take a little practice to get used to, but it can be very useful!</h5>
+</div>
+
+              <hr>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
