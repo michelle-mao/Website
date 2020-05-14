@@ -15,8 +15,6 @@ description: ''
 </div>
 <div id="first-lets-take-a-look-at-how-indexing-is-done-in-r.-ive-made-a-list-of-my-favorite-fruits.-i-did-this-in-reticulate-so-that-i-can-access-the-same-list-in-python.-now-ill-grab-the-second-through-fourth-elements-in-the-list-in-r" class="section level5">
 <h5>First, let’s take a look at how indexing is done in R. I’ve made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I’ll grab the second through fourth elements in the list in R:</h5>
-<pre class="r"><code>library(reticulate)</code></pre>
-<pre><code>## Warning: package &#39;reticulate&#39; was built under R version 3.6.3</code></pre>
 <pre class="r"><code>fruits &lt;- c(&quot;mango&quot;,&quot;apricot&quot;,&quot;nectarine&quot;,&quot;dragonfruit&quot;,&quot;kiwi&quot;,&quot;fig&quot;,&quot;raspberry&quot;,&quot;lychee&quot;,&quot;loquat&quot;,&quot;jackfruit&quot;)
 fruits[2:4]</code></pre>
 <pre><code>## [1] &quot;apricot&quot;     &quot;nectarine&quot;   &quot;dragonfruit&quot;</code></pre>
@@ -42,8 +40,8 @@ fruits[2:4]</code></pre>
 <div id="the-blue-numbers-represent-the-elements-and-the-red-numbers-represent-the-numbers-you-would-type-in-the-indexing-code.-if-you-start-at-slice-0-where-you-havent-put-your-knife-to-the-bread-yet-you-will-be-able-to-include-the-first-piece-of-bread-or-first-element.-going-back-to-the-previous-example-if-you-want-to-grab-the-second-through-fourth-pieces-of-bread-youll-need-to-start-at-slice-1-and-stop-at-slice-4." class="section level5">
 <h5>The blue numbers represent the elements, and the red numbers represent the numbers you would type in the indexing code. If you start at slice 0, where you haven’t put your knife to the bread yet, you will be able to include the first piece of bread, or first element. Going back to the previous example, if you want to grab the second through fourth pieces of bread, you’ll need to start at slice 1 and stop at slice 4.</h5>
 </div>
-<div id="the-syntax-for-indexing-in-python-is-liststartstopstep.-lets-try-grabbing-every-other-element-from-the-first-element-through-the-eighth-element.-notice-that-we-can-leave-the-start-number-blank-because-it-defaults-to-0.-the-step-number-defaults-to-1." class="section level5">
-<h5>The syntax for indexing in Python is list[start:stop:step]. Let’s try grabbing every other element from the first element through the eighth element. Notice that we can leave the “start” number blank because it defaults to 0. The step number defaults to 1.</h5>
+<div id="the-syntax-for-indexing-in-python-is-liststartstopstep.-lets-try-grabbing-every-other-element-from-the-first-element-through-the-eighth-element.-we-can-leave-the-start-number-blank-because-it-defaults-to-0.-the-step-number-defaults-to-1." class="section level5">
+<h5>The syntax for indexing in Python is list[start:stop:step]. Let’s try grabbing every other element from the first element through the eighth element. We can leave the “start” number blank because it defaults to 0. The “step” number defaults to 1.</h5>
 <pre class="python"><code>fruits[:8:2]</code></pre>
 <pre><code>## [&#39;mango&#39;, &#39;nectarine&#39;, &#39;kiwi&#39;, &#39;raspberry&#39;]</code></pre>
 </div>

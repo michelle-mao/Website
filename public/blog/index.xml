@@ -17,7 +17,7 @@
       <pubDate>Wed, 13 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/blog/indexing-in-python/</guid>
-      <description>Indexing is when you grab certain elements from a vector or list. It’s done a little differently in Python compared to R.First, let’s take a look at how indexing is done in R. I’ve made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I’ll grab the second through fourth elements in the list in R:library(reticulate)## Warning: package &amp;#39;reticulate&amp;#39; was built under R version 3.</description>
+      <description>Indexing is when you grab certain elements from a vector or list. It’s done a little differently in Python compared to R.First, let’s take a look at how indexing is done in R. I’ve made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I’ll grab the second through fourth elements in the list in R:fruits &amp;lt;- c(&amp;quot;mango&amp;quot;,&amp;quot;apricot&amp;quot;,&amp;quot;nectarine&amp;quot;,&amp;quot;dragonfruit&amp;quot;,&amp;quot;kiwi&amp;quot;,&amp;quot;fig&amp;quot;,&amp;quot;raspberry&amp;quot;,&amp;quot;lychee&amp;quot;,&amp;quot;loquat&amp;quot;,&amp;quot;jackfruit&amp;quot;)fruits[2:4]## [1] &amp;quot;apricot&amp;quot; &amp;quot;nectarine&amp;quot; &amp;quot;dragonfruit&amp;quot;In R, the first element is at position 1, so positions 2 through 4 correspond to elements 2 through 4.</description>
     </item>
     
   </channel>

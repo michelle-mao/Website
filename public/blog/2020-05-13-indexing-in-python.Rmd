@@ -12,7 +12,6 @@ description: ''
 ##### First, let's take a look at how indexing is done in R. I've made a list of my favorite fruits. I did this in reticulate so that I can access the same list in Python. Now, I'll grab the second through fourth elements in the list in R:
 
 ```{R}
-library(reticulate)
 fruits <- c("mango","apricot","nectarine","dragonfruit","kiwi","fig","raspberry","lychee","loquat","jackfruit")
 fruits[2:4]
 ```
@@ -35,7 +34,7 @@ fruits[2:4]
 
 ##### The blue numbers represent the elements, and the red numbers represent the numbers you would type in the indexing code. If you start at slice 0, where you haven't put your knife to the bread yet, you will be able to include the first piece of bread, or first element. Going back to the previous example, if you want to grab the second through fourth pieces of bread, you'll need to start at slice 1 and stop at slice 4.
 
-##### The syntax for indexing in Python is list[start:stop:step]. Let's try grabbing every other element from the first element through the eighth element. Notice that we can leave the "start" number blank because it defaults to 0. The step number defaults to 1.
+##### The syntax for indexing in Python is list[start:stop:step]. Let's try grabbing every other element from the first element through the eighth element. We can leave the "start" number blank because it defaults to 0. The "step" number defaults to 1.
 
 ```{python}
 fruits[:8:2]
