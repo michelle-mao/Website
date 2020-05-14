@@ -20,8 +20,8 @@ theme = "hugo-sustain"
   custom_js  = []
 
 [params.social]
-  Github        = "username"
-  Email         = "Michelle.Mao@UTSouthwestern.edu"
+  Github        = "michelle-mao"
+  Email         = "michellem1078@yahoo.com"
 
 
 ## Main Menu
