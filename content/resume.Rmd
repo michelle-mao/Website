@@ -38,6 +38,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Work Experience
 
+##### UT Southwestern Department of Physical Medicine and Rehabilitation / Department of Orthopedic Surgery - Research Intern
+###### May - Aug 2021
+###### Worked on clinical research related to the intersections of reproductive endocrinology, musculoskeletal health, and neurology
+
 ##### Elite Prep Allen - administrative assistant and teacher
 ###### May - Aug 2019; May - Aug 2020
 ###### Registered and communicated with customers; organized, administered, and graded practice exams and quizzes; taught math, reading, and writing 
@@ -53,6 +57,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ### Volunteering
+
+##### UTSW Hospital Elder Life Program - Outpatient
+###### May 2021 - Dec 2021
+###### Conversed with older adults in the home care program to combat loneliness
+
+##### UTSW Hospital Elder Life Program - Inpatient
+###### Oct 2020 - Dec 2021
+###### Performed delirium intervention and prevention techniques with elderly patients in the inpatient hospital setting
 
 ##### Austin Speech Labs
 ###### Jan 2019 - May 2020
