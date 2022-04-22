@@ -1,0 +1,458 @@
+---
+title: "Love Nikki Stylist's Arena Analysis"
+author: "mangueau"
+date: "4/22/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+```
+
+##### *This analysis is a personal project that is just for fun; I have no affiliation with Love Nikki.*
+
+### Introduction
+
+##### Love Nikki Dress-up Queen (Love Nikki) is the English language ("international") server of Miracle Nikki, a dress-up game centering around a story that players progress through by winning styling battles. Players win styling battles by achieving a score that is higher than their opponent's score. Components of this score include points contributed by each item of clothing the player wears, as well as boosts and deductions conferred by the usage of "skills" upon the player or their opponent. Each styling battle has a theme that corresponds to a set of attributes, according to which the player is expected to dress up using items of clothing that score highly on those attributes. Altogether, the scoring mechanisms of Love Nikki create a significant amount of variability in the final score, even when one plays the same level the same way every time, which has led to much interest in the Love Nikki community regarding how to predict and optimize scores.
+
+##### This styling battle paradigm recurs in various features of the game. One such feature is the Stylist's Arena, in which players battle daily against other players in order to win currency, as well as for a chance to rank on the leaderboard for prizes and prestige. What makes the Stylist's Arena unique is that the game, through the voice of the character Momo, provides an estimate for the opponent's score, something that isn't available in the other parts of the game that involve styling battles (such as storyline battles and events). The opponent's collection percentage, or the proportion of clothing items they own out of the total clothing items in the game, is also visible. Players can evaluate an opponent based on their provided score prediction and collection percentage, compare this to their knowledge of their own scores they typically get on the theme, and decide to either battle with that opponent or request a different random opponent. 
+
+##### Most of the time, the given score prediction helps players win their battles; however, the community also receives fairly frequent reports of the score prediction being totally off. Thus, I wanted to do a bit of a deep dive into the Stylist's Arena and explore the patterns behind the styling battles that players are entering every day.
+
+
+### Methods 
+
+##### I created a survey that asked participants to report the following information for each styling battle: the styling theme, their ("player's") and the opponent's collection percentages, the opponent's predicted score, the player's and opponent's actual scores, and which resources, if any, they used to create their outfit. I shared the survey to Reddit and my in-game association's Discord server. Survey responses were collected from 2/19/22 to 4/6/22 and the data was subsequently downloaded from the automatically generated Google Sheet. Survey responses were solicited from players of the international server.
+
+
+### Code and Results
+
+#### Importing the Dataset
+
+##### Prior to importing, I downloaded the dataset from the Google Form responses and cleaned it up in Excel. The Timestamp column was deleted and the Resources values were renamed ("Nikki's Info" -> "NI" and "None; I dressed up based on my own interpretation of the theme" -> "None"). The column names were edited to be more R-friendly: p_collect = player's collection; o_collect = opponent's collection; o_predicted = opponent's predicted score; p_score = player's score; and o_score = opponent's actual score. The final dataset had a sample size of 674 battles.
+
+```{R}
+library(tidyverse)
+setwd("C:/Users/Michelle/Desktop/Website/content")
+lnsa <- read.csv("220406_stylists_arena.csv",fileEncoding="UTF-8-BOM", header=TRUE)
+glimpse(lnsa)
+```
+
+
+#### Descriptive Statistics
+
+##### Let's start by looking at collection percentages. Below is a histogram of the distribution of both player and opponent collection percentages included in this analysis. 
+
+```{R}
+lnsa %>% pivot_longer(p_collect:o_collect,names_to="Collection",values_to="Percentage") %>%
+  ggplot(aes(Percentage,fill=Collection)) + geom_histogram(alpha=0.5, position="identity",bins=50) +
+  scale_fill_discrete(labels=c("Opponent's Collection","Player's Collection")) + theme_minimal() + 
+  ggtitle("Distribution of Collection Percentages") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### The distribution of opponent's collections is skewed left, implying that players tend to choose opponents with low collection percentages. However, the appearance of the graph is slightly misleading because, for unknown reasons, the opponent's displayed collection is calculated as a percentage out of the total items in the Chinese server, which is older and has more items, rather than the international server. Because these opponents play in the international server despite their collection being displayed in relation to the Chinese server, it is impossible to meet an opponent with a collection displayed as 100%, and in the histogram above, the opponents' collection percentage appears to cap out at 82%. 
+
+##### The distribution of player's collections is scattered because despite the large sample size of reported battles, the number of distinct players who responded to the survey is not actually very large. One of the peaks in the 60's represents a very dedicated survey respondent who submitted responses nearly every day of the data collection period, so shout out to them.
+
+##### Now let's take a look at scores. Below is a bar graph comparing the overall means for the player's score, the opponent's predicted score, and the opponent's actual score (with standard error bars). 
+
+```{R}
+lnsa %>% pivot_longer(o_predicted:o_score,names_to="Value",values_to="Score") %>%
+  ggplot(aes(Value,Score,fill=Value)) + geom_bar(stat="summary",fun.y="mean",width=0.5) +
+  scale_y_continuous(breaks=seq(0,100000,10000)) + geom_errorbar(stat="summary",width=0.25) +
+  geom_text(stat="summary",aes(label=round(..y..,2)), fun.y=mean, vjust=-0.75) +
+  scale_x_discrete(labels=c("Opponent's Predicted Score","Opponent's Actual Score","Player's Actual Score")) +
+  scale_fill_brewer(palette="RdPu", labels=c("Opponent's Predicted Score","Opponent's Actual Score",
+                                             "Player's Actual Score")) + theme_minimal() + 
+  ggtitle("Comparison of Mean Scores") + theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+##### A quick glance at the bar chart makes it apparent that there is some difference between the opponent's predicted and actual scores. Is this difference significant?
+
+```{R}
+t.test(lnsa$o_score,lnsa$o_predicted,paired = TRUE)
+```
+
+##### The above paired t-test gives a p-value of < 2.2e-16, suggesting that for each pair of an opponent's predicted and actual scores, the mean predicted score difference is *NOT* equal to zero - in other words, there *IS* a statistically significant (p<0.05) difference between the predicted score and the actual score.
+
+```{R}
+lnsa %>% na.omit() %>% summarize(mean_diff=mean(o_score - o_predicted), median_diff=median(o_score - o_predicted))
+```
+
+##### The overall mean difference between the opponent's actual score and the predicted score is about 5,297 points while the median difference is 4,687, implying a skewed distribution. Let's see what the distribution of predicted score differences actually looks like.
+
+```{R}
+lnsa %>% mutate(diff=o_score-o_predicted) %>% ggplot(aes(diff,fill="pink")) + geom_histogram(bins=70) +
+  ggtitle("Distribution of the Differences Between Opponent's Predicted and Actual Scores") + theme_minimal() +
+  theme(legend.position="none",plot.title = element_text(hjust = 0.5))
+
+lnsa <- lnsa %>% mutate(o_score_diff=o_score-o_predicted)
+
+lnsa %>% na.omit() %>% summarize(min=min(o_score_diff), lower=mean(o_score_diff) - 2*sd(o_score_diff), 
+                                 upper=mean(o_score_diff) + 2*sd(o_score_diff), max=max(o_score_diff))
+```
+
+##### The distribution looks somewhat normal with a slight left skew. The histogram shows that most of the time, the actual score is greater than the predicted score, with the greatest difference being a frightening 36,140 points greater than the predicted score. However, in some cases, the opponent's actual score is lower than the predicted score, with the greatest difference being an actual score that was 8,886 points less than the predicted score. Overall, 95% of the predicted score differences lie between -6,049 and 16,645.
+
+
+#### Analysis by Theme
+
+##### Let's group the data by styling battle theme to see if there are any patterns that differ between them. First, let's look at some means and sample data. 
+
+```{R}
+meanstheme <- lnsa %>% filter(Theme!="") %>% group_by(Theme) %>% na.omit() %>% 
+  summarize(n=n(), mean_predicted=mean(o_predicted), mean_o_score=mean(o_score), mean_p_score=mean(p_score),  
+            mean_diff=mean(o_score_diff)) %>% mutate(percentage_of_battles=100*(n/(sum(n)))) %>%
+  arrange(percentage_of_battles)
+
+meanstheme
+```
+
+##### "Summer Story" was the theme that appeared most frequently in this sample, making up 7.49% of responses, while "A Growing Lady" was the least frequent, appearing 4.64% of the time. The n for each theme may be too small to generalize this pattern to the population.
+
+##### How do scores differ by theme? This faceted histogram reveals the spread of each score type, as well as the differences between the players' and opponents' scores, for each theme. 
+
+```{R}
+lnsa %>% filter(Theme!="") %>% pivot_longer(o_predicted:o_score,names_to="Value",values_to="Score") %>%
+  ggplot(aes(Score,fill=Value)) + geom_histogram(alpha=0.5,position="identity",bins=50) + 
+  facet_wrap(~Theme,ncol=3) + scale_fill_brewer(palette="Set1",
+                                                labels=c("Opponent's Predicted Score","Opponent's Actual Score",
+                                                         "Player's Actual Score")) + theme_minimal() +
+  ggtitle("Distribution of Reported Scores") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### Although the above histogram appears to show low score outliers for some of the themes, I don't consider them outliers because they represent reasonable scores that a player might earn in a battle; therefore, I will continue to use mean as the measure of center rather than median so that my analysis remains more generalizable to the player population rather than just the sample that responded to my survey.
+
+##### The following is a comparison of mean scores by styling theme and in ascending order of mean player score. 
+
+```{R}
+lnsa %>% filter(Theme!="") %>% pivot_longer(o_predicted:o_score,names_to="Value",values_to="Score") %>%
+  mutate(Theme=factor(Theme,levels=c("Beach Party","Christmas Reunion","Fire in the Winter",
+                                     "A Growing Lady","Summer Story","Summer Party","Great Detective",
+                                     "Ongoing Sports","Where is Spring","Office Star",
+                                     "Fairytale Garden","Spring Outing","The Queen","Imperial Ball",
+                                     "Golden Odeum","Intern Translator","Cloud Lady"),ordered=TRUE)) %>%
+  ggplot(aes(Theme,Score,fill=Value)) + geom_bar(stat="summary",fun.y="mean",position="dodge") +
+  scale_y_continuous(breaks=seq(0,150000,20000)) +
+  scale_fill_brewer(palette="RdPu", labels=c("Opponent's Predicted Score","Opponent's Actual Score",
+                                             "Player's Actual Score")) + theme_minimal() + 
+  ggtitle("Mean Scores by Theme") + 
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle=45, hjust=1), 
+        legend.position="bottom") 
+```
+
+##### Players tend to score lowest on Beach Party (mean = 71,686) and highest on Cloud Lady (mean = 141,666). In contrast, opponents are *predicted* to score lowest on Fire in the Winter (mean = 38,803) and highest on Cloud Lady (mean = 58,386) as expected. The opponents' actual scores are lowest on Great Detective (mean = 42,124) and highest on, again, Cloud Lady (mean = 65,167). 
+
+##### Let's take a closer look at the mean differences between the opponent's predicted and actual score for each theme.
+
+```{R}
+meanstheme %>% ggplot(aes(reorder(Theme,mean_diff),mean_diff,fill="pink")) + geom_bar(stat="identity",width=0.5) +
+  scale_y_continuous(breaks=seq(0,10000,1000)) +
+  ggtitle("Mean Predicted Score Differences by Theme") + 
+  geom_text(stat="identity",aes(label=round(..y..,2)), vjust=-0.5) +
+  scale_fill_brewer(palette="PiYG") + theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle=45, hjust=1),
+        legend.position="none") +
+  xlab("Theme") + ylab("Mean Predicted Score Difference")
+
+```
+
+##### Great Detective has the smallest mean predicted score difference of 3,233, while Intern Translator has the largest mean predicted score difference of 7,384.
+
+##### You may have noticed a pattern with certain themes on the graphs above. Just by eyeballing, there are two particular themes that appear to have a greater spread of scores, greater mean score, and greater mean predicted score difference than the other themes: Cloud Lady and Intern Translator. These happen to be the only two Stylist's Arena themes that have a special tag (in this case, the Modern China tag), which is an extra attribute that can boost scores even further when players dress up in clothes that contain that tag. This is where resources come in handy. The most commonly used resource by far, and the only resource that players recorded in the survey, is Nikki's Info, a third party website that lists the highest scoring items for any given combination of attributes.
+
+##### The usage of Nikki's Info may explain why there is a large jump in mean player score from the other themes to the Modern China themes, and why opponent scores do not show the same jump in mean score but do show a larger spread of scores. This is likely because in most reported battles, players used Nikki's Info as a resource, while it is unknown whether the opponents did the same.
+
+##### Going back to the Modern China themes, now that we know that the special tag influences scores, let's see if there's a significant increase in predicted score difference when the theme has a special tag.
+
+```{R}
+lnsatemp <- lnsa %>% mutate(spetag=ifelse(Theme=="Cloud Lady"|Theme=="Intern Translator","yes","no")) %>%
+  pivot_wider(names_from=spetag,values_from=o_score_diff)
+t.test(lnsatemp$yes,lnsatemp$no)
+```
+
+##### There is in fact a statistically significant (p=0.03718) difference in the score difference between opponents' predicted and actual scores between themes with and without a special tag. In other words, when the theme is Cloud Lady or Intern Translator, one should expect an even greater increase from the opponent's predicted score to their actual score compared to other themes.
+
+##### How about if we subdivide the predicted score distribution into non-special tag themes and special tag themes?
+
+```{R}
+lnsatemp2 <- lnsa %>% mutate(spetag=ifelse(Theme=="Cloud Lady"|Theme=="Intern Translator","yes","no"))
+
+lnsatemp2 %>% na.omit() %>% group_by(spetag) %>% summarize(min=min(o_score_diff), 
+                                                      lower=mean(o_score_diff) - 2*sd(o_score_diff),
+                                                      upper=mean(o_score_diff) + 2*sd(o_score_diff),
+                                                      max=max(o_score_diff))
+```
+
+##### Here we see that the 95% data intervals are now different from the interval reported previously. For non-special tag themes, 95% of predicted score differences fall between -5,247 and 15,353. For the special tag themes Cloud Lady and Intern Translator, 95% of predicted score differences fall between -9,732 and 23,891; this shows greater predicted score differences but also a larger spread.
+
+
+### Fitting and Modeling
+
+##### Let's now turn to the correlations within the numeric information collected. 
+
+```{R}
+lnsa %>% na.omit() %>% select_if(is.numeric) %>% cor() %>% as.data.frame %>% rownames_to_column %>%
+  pivot_longer(-1,names_to="name",values_to="correlation") %>%
+  ggplot(aes(rowname,name,fill=correlation)) + geom_tile() + scale_fill_gradient(low="white", high="pink") +
+  geom_text(aes(label=round(correlation,3))) + xlab("") + ylab("") +
+  ggtitle("Stylist's Arena Correlations") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### The heat map shows a strong correlation (0.95) between the opponent's predicted score and their actual score, implying that predicted scores and actual scores tend to be strongly associated. The 0.729 correlation between "o_score_diff" and "o_score" is non-significant, as "o_score_diff" is a value that was calculated from o_score. 
+
+##### Because the Modern China themes are somewhat outliers due to the special tag inflating player scores, I decided to remove them from the correlation heat map to see if anything would change. 
+
+```{R}
+lnsa %>% na.omit() %>% filter(Theme!="Intern Translator"& Theme!= "Cloud Lady") %>% select_if(is.numeric) %>%
+  cor() %>% as.data.frame %>% rownames_to_column %>%
+  pivot_longer(-1,names_to="name",values_to="correlation") %>%
+  ggplot(aes(rowname,name,fill=correlation)) + geom_tile() + geom_text(aes(label=round(correlation,3))) +
+  scale_fill_gradient(low="white", high="pink") + xlab("") + ylab("") + 
+  ggtitle("Stylist's Arena Correlations (Non-Special Tag)") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### This appeared to increase the correlation between the player's collection and their score and decrease the correlation between player score and both opponent scores. This is consistent with my expectations, as players with low collections, i.e. theoretically less likelihood of owning high-scoring clothes, can still achieve an unusually high score if the theme has a special tag, thereby decreasing the apparent correlation. The opponent's collection and scores remained mildly correlated.
+
+##### Let's further explore the correlation between the player's collection and their score to see if one's collection really matters in determining score. Here is a scatter plot. 
+
+```{R}
+lnsa %>% ggplot(aes(x=p_collect, y=p_score)) + geom_point() + geom_smooth(method=lm) +
+  ggtitle("Player Collection and Score (All Themes)") + theme(plot.title = element_text(hjust = 0.5))
+
+lnsa1 <- lnsa %>% filter(Theme!="Intern Translator"& Theme!= "Cloud Lady") 
+
+lnsa1 %>%
+  ggplot(aes(x=p_collect, y=p_score)) + geom_point() + geom_smooth(method=lm) +
+  ggtitle("Player Collection and Score (Non-Special Tag)") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### Removing the Modern China themes causes the points to be clustered closer together, as well as closer to the regression line, which is consistent with the conclusions of the correlation heat maps above.
+
+##### Let's do a linear regression - one version that includes the Modern China themes and one that omits them - to predict the player's score from their collection.
+
+```{R}
+fit <- lm(p_score ~ p_collect,data=lnsa)
+summary(fit)
+
+# omitting Modern China Themes
+fit1 <- lm(p_score ~ p_collect,data=lnsa1)
+summary(fit1)
+```
+
+##### When including the Modern China themes, the equation for predicting player score using player collection is Player Score = 70674.17 + (264.59 * Player Collection) where Player Collection is the numeric (non-decimal) value of their collection percentage. When omitting the Modern China themes, the equation is Player Score = 66839.81 + (217.85 * Player Collection). Omitting the Modern China themes gives a better R2 of 0.1892 compared to the previous R2 of 0.06451, but both still indicate that the models do not explain much of the variation at all, indicating that player collection may not be a good predictor of player score. This is consistent with the weak correlation we saw previously.
+
+##### I mentioned earlier that resources such as Nikki's Info often help players achieve better scores. Thus, let's make a model to take into account the usage of outside resources. The only responses on the survey for resources used were "NI" and "None," so I created a new binary variable to represent whether the entry used NI or not.
+
+```{R}
+lnsa <- lnsa %>% mutate(UsedNI=ifelse(Resources=="NI",1,0))
+lnsa1 <- lnsa1 %>% mutate(UsedNI=ifelse(Resources=="NI",1,0))
+
+fit2 <- lm(p_score ~ p_collect * UsedNI, data=lnsa)
+summary(fit2)
+
+fit3 <- lm(p_score ~ p_collect * UsedNI, data=lnsa1)
+summary(fit3)
+```
+
+##### While this has resulted in the R2 has increasing in both versions of this model, NI usage does not appear to be a significant predictor of player score, and player collection becomes a non-significant predictor in the first version (which includes the Modern China themes). It should be noted that the major weakness of this model is that the sample size of distinct players who did not use Nikki's Info is very small; therefore, this model cannot be widely applied.
+
+##### Let's check to see if this model meets assumptions of homoskedasticity and normality.
+
+```{R}
+library(lmtest)
+library(sandwich)
+
+bptest(fit3)
+shapiro.test(fit3$residuals)
+```
+
+##### The player score model does not meet both assumptions; while the Breusch-Pagan test shows homoskedasticity, the Shapiro-Wilk test indicates that the model does not meet the assumption of normality (p-value < 2.2e-16; reject null hypothesis that the data is not significantly different from a normal distribution).
+
+##### What other variables are important for predicting player score? 
+
+```{R}
+library(glmnet)
+
+lnsa2 <- lnsa %>%
+  select(-o_score_diff) %>% na.omit()
+
+fit4 <- glm(p_score ~ .,data=lnsa2)
+
+x <- model.matrix(fit4)
+x <- scale(x)
+y <- as.matrix(lnsa2$p_score)
+
+cv1 <- cv.glmnet(x[,-1],y)
+lasso1 <- glmnet(x[,-1],y,lambda=cv1$lambda.1se)
+coef(lasso1)
+```
+
+##### According to the LASSO results, it looks like quite a few themes make a difference in predicting player scores. Including so many themes increases the risk of overfitting, but I still wanted to make a new model just for fun that takes into account all of the relevant themes while excluding interactions. Although the LASSO indicates that the opponents' predicted score is a potentially important factor in predicting the player's score, I did not include it because my guess is that that pattern results from players with higher scores feeling that they are able to choose opponents with higher predicted scores. I also did a log transformation on the numeric variables because the initial model did not meet homoskedasticity.
+
+```{R}
+lnsa2 <- lnsa2 %>% mutate(BeachParty=ifelse(Theme=="Beach Party",1,0),
+                          ChristmasReunion=ifelse(Theme=="Christmas Reunion",1,0),
+                          CloudLady=ifelse(Theme=="Cloud Lady",1,0),GoldenOdeum=ifelse(Theme=="Golden Odeum",1,0),
+                          ImperialBall=ifelse(Theme=="Imperial Ball",1,0), 
+                          InternTranslator=ifelse(Theme=="Intern Translator",1,0),
+                          TheQueen=ifelse(Theme=="The Queen",1,0))
+
+fit5<- lm(log(p_score) ~ log(p_collect) + UsedNI + BeachParty + ChristmasReunion + CloudLady + GoldenOdeum +
+            ImperialBall + InternTranslator + TheQueen, data=lnsa2)
+summary(fit5)
+
+bptest(fit5)
+shapiro.test(fit5$residuals)
+```
+
+##### This new model appears to have a much higher R2 of about 0.68, and all variables have become significant. It still violates normality, but that may not be a big deal for the purposes of using it to predict scores. Based on this model, the equation for predicting player score is log(Player Score) = 10.58936 + (0.10178 * log(Player Collection)) + (sum of adjustments) where the adjustments are as follows:
+
+##### +0.28857 if you used Nikki's Info
+##### -0.09224 if theme is Beach Party
+##### -0.09981 if theme is Christmas Reunion
+##### +0.09564 if theme is Imperial Ball
+##### +0.09669 if theme is Golden Odeum
+##### +0.10216 if theme is The Queen
+##### +0.48383 if theme is Intern Translator
+##### +0.57674 if theme is Cloud Lady
+
+```{R}
+lnsa2 %>% mutate(model_p_score=exp(10.58936 + (0.10178 * log(p_collect)) + 
+                             (0.28857*UsedNI -0.09224*BeachParty-0.09981*ChristmasReunion +
+                                0.57674*CloudLady + 0.09669*GoldenOdeum + 0.09564*ImperialBall +
+                                0.48383*InternTranslator + 0.10216*TheQueen))) %>%
+  ggplot(aes(p_score,model_p_score)) + geom_point() + geom_abline(slope=1)
+```
+
+##### Above, you can see that this model fits the observed data pretty well, as a comparison of predicted and observed values shows that most points fall along a line with a slope of 1. There may be some overfitting with such a detailed model; however, it's also possible that there isn't an extreme degree of overfitting - anecdotally, the specific themes included in the model happen to be ones that are known among the general player population to produce lower (Beach Party and Christmas Reunion) or higher (Cloud Lady, Golden Odeum, Imperial Ball, and the Modern China themes) scores. 
+
+##### Perhaps a more balanced model would be one that takes into account only the Modern China themes, i.e. the obvious outliers.
+
+```{R}
+fit5b<- lm(log(p_score) ~ log(p_collect) + UsedNI + CloudLady + InternTranslator, data=lnsa2)
+summary(fit5b)
+
+bptest(fit5b)
+shapiro.test(fit5b$residuals)
+
+lnsa2 %>% mutate(model_p_score=exp(10.57464 + (0.10407 * log(p_collect)) + 
+                             (0.29922*UsedNI + 0.57206*CloudLady + 0.47929*InternTranslator))) %>%
+  ggplot(aes(p_score,model_p_score)) + geom_point() + geom_abline(slope=1)
+```
+
+##### This looks to be a pretty decent model. The R2, at ~0.64, is not much less than that of the previous model that included more themes, and the regression line still appears to fit the scatter plot. The model passes homoskedasticity and fails normality, similar to previous models. If a player was to use this model to predict their score, they would use the equation log(Player Score) = 10.57464 + (0.10407 * log(Player Collection)) + (sum of adjustments) where the adjustments are as follows:
+
+##### +0.29922 if you used Nikki's Info
+##### +0.47929 if theme is Intern Translator
+##### +0.57206 if theme is Cloud Lady
+
+##### Of course, it's totally impractical for players to be doing all this math for everyday battles anyway, but it is interesting to think about.
+
+
+#### Modeling/Predicting Opponent Scores
+
+##### Let's now take a look at opponent scores. We discovered earlier that, on average, there is a statistically significant difference between the game's prediction of the opponent's score and the opponent's actual score, which makes it hard for a player to know what they're really facing. So then, is it possible to build a better model for estimating the opponent's actual score given the information that's available to us?
+
+##### Firstly, here is a scatter plot to show the correlation between predicted score and actual score. Next, let's build models for the relationship between predicted and actual score. Here is a linear regression that models the opponent's actual score using the predicted score as the only variable.
+
+```{R}
+lnsa %>% ggplot(aes(x=o_predicted, y=o_score)) + geom_point() + geom_smooth(method=lm) +
+  ggtitle("Opponents' Predicted and Actual Scores") + theme(plot.title = element_text(hjust = 0.5))
+
+fit6 <- lm(o_score ~ o_predicted, data=lnsa)
+summary(fit6)
+
+bptest(fit6)
+shapiro.test(fit6$residuals)
+```
+
+##### The linear regression appears to be a good fit for the observed data with an R2 of about 0.9. According to the above model, the equation for predicting the opponent's actual score is Opponent's Score = -4879 + (1.218 * Predicted Score). Most of the time, this would result in an actual opponent score that is slightly higher than the predicted score.
+
+##### Unfortunately, the above model violates assumptions of both homoskedasticity and normality, so I decided to do a log transformation. This time, while the model still violates normality, the QQ plot does not look horrible, and it now meets homoskedasticity.
+
+```{R}
+fit7 <- lm(log(o_score) ~ log(o_predicted), data=lnsa)
+summary(fit7)
+
+bptest(fit7)
+shapiro.test(fit7$residuals)
+ggplot()+geom_qq(aes(sample=fit7$residuals))+geom_qq_line(aes(sample=fit7$residuals), color='red')
+```
+
+##### The new equation for predicting opponent score is log(Opponent Score) = -0.76302 + (1.08027 * log(Predicted Score)). 
+
+##### Does the opponent's collection factor into their score? Let's create a model to see if it does.
+
+```{R}
+fit8 <- lm(log(o_score) ~ log(o_predicted)*o_collect, data=lnsa)
+summary(fit8)
+
+bptest(fit8)
+shapiro.test(fit8$residuals)
+
+fit8b <- lm(log(o_score) ~ log(o_predicted)*o_collect, data=lnsa1)
+summary(fit8b)
+```
+
+##### This suggests that the opponent's collection is not a significant predictor of their score, even when the Modern China themes are excluded. In addition, the LASSO below supports the conclusion that the opponent's predicted score is the only significant predictor of actual score.
+
+```{R}
+fit9 <- glm(o_score ~ .,data=lnsa2)
+
+x <- model.matrix(fit9)
+x <- scale(x)
+y <- as.matrix(lnsa2$o_score)
+
+cv2 <- cv.glmnet(x[,-1],y)
+lasso2 <- glmnet(x[,-1],y,lambda=cv2$lambda.1se)
+coef(lasso2)
+```
+
+
+### Discussion
+
+##### My analysis of Love Nikki Stylist's Arena battles has revealed several interesting discoveries. As discussed earlier, there are two themes with a special tag - Intern Translator and Cloud Lady, which both have the Modern China tag. The score boost provided by the special tag gives an interesting twist to the game. Those who know about the special tag have a significant advantage, as the game interface for the Stylist's Arena does not actually show the attributes and tags that each theme is scored on, unlike other game features that use the styling battle paradigm. However, Nikki's Info gives the attributes and tags for each theme, so players who use resources typically score higher, and we can see that in the models for player score. Therefore, I would definitely recommend using resources to players who want to improve their scores.
+
+##### When comparing mean scores across themes, Cloud Lady is the undisputed highest-scoring theme among both players and opponents, with Intern Translator in second place. Players also tend to score slightly higher on Imperial Ball, Golden Odeum, and The Queen, a conclusion that confirms anecdotal claims of the same. My guess is that this is because the 6-heart clothing items (an indication of great rarity and prestige, as clothing items are normally rated on a scale of 1-5 hearts) in the game happen to score highly on the same attributes that all three of these themes share scoring critera for - namely. the Elegant, Gorgeous, Mature, and Sexy attributes. This is probably why these three themes appeared on the LASSO result for significant predictors of player score. On the other end of the spectrum, players tend to score lowest on Beach Party and Christmas Reunion. The former, despite being low-range on scores, has displayed mid-range differences between the opponent's predicted and actual score, so I would advise that players take special care with Beach Party.
+
+##### Descriptive statistics show that players battle with opponents with a pretty even spread of collection percentages that has a left skew, likely because players associate opponents who have smaller collections with lower predicted and actual scores and are therefore more confident that they can win the battle. However, this may not be a totally valid assumption. The correlation heat map shows that there is only a mild correlation between opponent collection and both opponent scores, and my fitting and modeling work suggests that collection may not be a significant factor in determining score for either players or opponents. Both of these results hold true even when excluding the Modern China themes. This means that players should be careful not to assume that an opponent with a small collection will be one that's easy to beat. 
+
+##### Conversely, the lack of association between collection and score when it comes to player score may be interpreted in a more encouraging way. The scatter plot shows that there is not a steep increase in player score, relatively speaking, for larger collections. I can't rule out the possibility that the entries with small collections are actually from alt accounts of seasoned respondents, but hopefully this discovery gives some encouragement to players who find it difficult to increase their collection percentage as the game is constantly adding new and costly items. 
+
+##### Possibly the most interesting discovery in here is about predicting opponent score. I can finally answer the age-old question of whether Momo's predictions are accurate, and the answer is... no! Statistically speaking, there is a difference between the opponent's score and their actual score, on average. The community's anecdotal suggestion is to pick an opponent whose score is at least 10,000 - 15,000 points below yours if you want a guaranteed win. Based on my analysis, however, not only I would recommend shooting for an even greater score gap than that, but I would also caution players to make note of the theme. Statistical tests show that the average predicted score difference is significantly higher for the Modern China themes compared to the other themes. For non-special tag themes, one has a ~95% chance of winning if they assume that the opponent's actual score will be 15,000 points higher than Momo predicts it will be. For the Modern China themes, one has a ~95% chance of winning if they assume that the opponent's actual score will be 25,000 points higher than Momo predicts it will be. Players beware!
+
+
+#### Limitations
+
+##### Although this analysis has revealed a lot, it also has its weaknesses. Firstly, the methods I used for collecting data are somewhat limited. All entries were self-reported, meaning that the data was susceptible to typos and other errors. Respondents had control over what they reported, so they could choose not to report losing battles (making the survey anonymous may have decreased the likelihood of this happening, but is not a guarantee). In fact, the final dataset only had 16 entries where the player lost the battle, and these entries did not cover all the styling themes, so I wouldn't have been able to do any meaningful analysis on losing battles. 
+
+##### There is an inherent bias in the survey method in that players were sampled from Reddit and Discord. This implies that all data points came from respondents who were invested enough in the game to both join communities outside of it *and* take the time to respond to the survey multiple times. There is a large overlap between players who join these online communities and players who care significantly about their Stylist's Arena Scores, and this is corroborated by the fact that nearly all of the entries reported usage of Nikki's Info, a third party resource that the casual, less-dedicated player would not necessarily be expected to use. The final dataset had a small sample size of distinct players, owing to the small sample pool of Reddit and Discord, and a biased representation of resource usage. Therefore, conclusions drawn from this analysis may not be applicable to the general player base.
+
+##### In the actual game, there are several factors that go into a player or opponent's final score that I was not able to account for. Two mechanisms that I left out of my analysis for the sake of simplicity are souls and skills. Souls are an additional item that a player can dress up in that may increase the score. Skills are boosts that can offensively or defensively influence the player's or opponent's score, and they are either manually or automatically (in the case of the Stylist's Arena) triggered during the battle, as scores are being earned. I didn't include them in my analysis as there is no easy way for a player to tell from the game interface exactly how much souls and skills contributed to their scores (there are calculations that can be done for skills, but it would have been too difficult to capture), much less the opponents' scores. 
+
+##### One thing to note is that, as mentioned earlier, the opponent's collection is displayed in an incongruent manner, as it is taken out of the total items in the Chinese server, whereas the player's collection is displayed as a percentage out of the total items in the international server. The opponents' usage of resources is also unknown, so we don't know how that affects their scores. In general, the amount information that could be collected from the opponents is very limited.
+
+##### These limitations may be addressed by modifying the data collection methods. Incorporating souls and skills into the analysis would increase the robustness of the models and hopefully result in a better way to predict scores; I'm not sure what would be the best way to collect that data, but it would probably not be something that I could ask the everyday player to enter on a survey. I imagine that the best way to collect data would be to pull it directly from the game as players are participating in battles. If someone decides to do that someday, I would be interested to know the results, and would love to see what the best models would be that one could create.
+
+
+### Conclusion
+
+##### In this project, I analyzed 674 styling battles from the Love Nikki Stylist's Arena. I found that both player and opponent scores are determined by a multitude of factors that includes styling theme but surprisingly excludes collection percentage, and I attempted to create models for both out of the limited information available to me. Importantly, I discovered that the game's predictions of opponent score are significantly inaccurate, and that players should plan for an opponent score that is substantially higher than Momo's prediction, confirming a long-held suspicion within the community: that Momo really is a sneaky liar.

@@ -1,0 +1,879 @@
+---
+title: "Love Nikki Stylist's Arena Analysis"
+author: "mangueau"
+date: "4/22/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+<div id="this-analysis-is-a-personal-project-that-is-just-for-fun-i-have-no-affiliation-with-love-nikki." class="section level5">
+<h5><em>This analysis is a personal project that is just for fun; I have no affiliation with Love Nikki.</em></h5>
+</div>
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<div id="love-nikki-dress-up-queen-love-nikki-is-the-english-language-international-server-of-miracle-nikki-a-dress-up-game-centering-around-a-story-that-players-progress-through-by-winning-styling-battles.-players-win-styling-battles-by-achieving-a-score-that-is-higher-than-their-opponents-score.-components-of-this-score-include-points-contributed-by-each-item-of-clothing-the-player-wears-as-well-as-boosts-and-deductions-conferred-by-the-usage-of-skills-upon-the-player-or-their-opponent.-each-styling-battle-has-a-theme-that-corresponds-to-a-set-of-attributes-according-to-which-the-player-is-expected-to-dress-up-using-items-of-clothing-that-score-highly-on-those-attributes.-altogether-the-scoring-mechanisms-of-love-nikki-create-a-significant-amount-of-variability-in-the-final-score-even-when-one-plays-the-same-level-the-same-way-every-time-which-has-led-to-much-interest-in-the-love-nikki-community-regarding-how-to-predict-and-optimize-scores." class="section level5">
+<h5>Love Nikki Dress-up Queen (Love Nikki) is the English language (“international”) server of Miracle Nikki, a dress-up game centering around a story that players progress through by winning styling battles. Players win styling battles by achieving a score that is higher than their opponent’s score. Components of this score include points contributed by each item of clothing the player wears, as well as boosts and deductions conferred by the usage of “skills” upon the player or their opponent. Each styling battle has a theme that corresponds to a set of attributes, according to which the player is expected to dress up using items of clothing that score highly on those attributes. Altogether, the scoring mechanisms of Love Nikki create a significant amount of variability in the final score, even when one plays the same level the same way every time, which has led to much interest in the Love Nikki community regarding how to predict and optimize scores.</h5>
+</div>
+<div id="this-styling-battle-paradigm-recurs-in-various-features-of-the-game.-one-such-feature-is-the-stylists-arena-in-which-players-battle-daily-against-other-players-in-order-to-win-currency-as-well-as-for-a-chance-to-rank-on-the-leaderboard-for-prizes-and-prestige.-what-makes-the-stylists-arena-unique-is-that-the-game-through-the-voice-of-the-character-momo-provides-an-estimate-for-the-opponents-score-something-that-isnt-available-in-the-other-parts-of-the-game-that-involve-styling-battles-such-as-storyline-battles-and-events.-the-opponents-collection-percentage-or-the-proportion-of-clothing-items-they-own-out-of-the-total-clothing-items-in-the-game-is-also-visible.-players-can-evaluate-an-opponent-based-on-their-provided-score-prediction-and-collection-percentage-compare-this-to-their-knowledge-of-their-own-scores-they-typically-get-on-the-theme-and-decide-to-either-battle-with-that-opponent-or-request-a-different-random-opponent." class="section level5">
+<h5>This styling battle paradigm recurs in various features of the game. One such feature is the Stylist’s Arena, in which players battle daily against other players in order to win currency, as well as for a chance to rank on the leaderboard for prizes and prestige. What makes the Stylist’s Arena unique is that the game, through the voice of the character Momo, provides an estimate for the opponent’s score, something that isn’t available in the other parts of the game that involve styling battles (such as storyline battles and events). The opponent’s collection percentage, or the proportion of clothing items they own out of the total clothing items in the game, is also visible. Players can evaluate an opponent based on their provided score prediction and collection percentage, compare this to their knowledge of their own scores they typically get on the theme, and decide to either battle with that opponent or request a different random opponent.</h5>
+</div>
+<div id="most-of-the-time-the-given-score-prediction-helps-players-win-their-battles-however-the-community-also-receives-fairly-frequent-reports-of-the-score-prediction-being-totally-off.-thus-i-wanted-to-do-a-bit-of-a-deep-dive-into-the-stylists-arena-and-explore-the-patterns-behind-the-styling-battles-that-players-are-entering-every-day." class="section level5">
+<h5>Most of the time, the given score prediction helps players win their battles; however, the community also receives fairly frequent reports of the score prediction being totally off. Thus, I wanted to do a bit of a deep dive into the Stylist’s Arena and explore the patterns behind the styling battles that players are entering every day.</h5>
+</div>
+</div>
+<div id="methods" class="section level3">
+<h3>Methods</h3>
+<div id="i-created-a-survey-that-asked-participants-to-report-the-following-information-for-each-styling-battle-the-styling-theme-their-players-and-the-opponents-collection-percentages-the-opponents-predicted-score-the-players-and-opponents-actual-scores-and-which-resources-if-any-they-used-to-create-their-outfit.-i-shared-the-survey-to-reddit-and-my-in-game-associations-discord-server.-survey-responses-were-collected-from-21922-to-4622-and-the-data-was-subsequently-downloaded-from-the-automatically-generated-google-sheet.-survey-responses-were-solicited-from-players-of-the-international-server." class="section level5">
+<h5>I created a survey that asked participants to report the following information for each styling battle: the styling theme, their (“player’s”) and the opponent’s collection percentages, the opponent’s predicted score, the player’s and opponent’s actual scores, and which resources, if any, they used to create their outfit. I shared the survey to Reddit and my in-game association’s Discord server. Survey responses were collected from 2/19/22 to 4/6/22 and the data was subsequently downloaded from the automatically generated Google Sheet. Survey responses were solicited from players of the international server.</h5>
+</div>
+</div>
+<div id="code-and-results" class="section level3">
+<h3>Code and Results</h3>
+<div id="importing-the-dataset" class="section level4">
+<h4>Importing the Dataset</h4>
+<div id="prior-to-importing-i-downloaded-the-dataset-from-the-google-form-responses-and-cleaned-it-up-in-excel.-the-timestamp-column-was-deleted-and-the-resources-values-were-renamed-nikkis-info---ni-and-none-i-dressed-up-based-on-my-own-interpretation-of-the-theme---none.-the-column-names-were-edited-to-be-more-r-friendly-p_collect-players-collection-o_collect-opponents-collection-o_predicted-opponents-predicted-score-p_score-players-score-and-o_score-opponents-actual-score.-the-final-dataset-had-a-sample-size-of-674-battles." class="section level5">
+<h5>Prior to importing, I downloaded the dataset from the Google Form responses and cleaned it up in Excel. The Timestamp column was deleted and the Resources values were renamed (“Nikki’s Info” -&gt; “NI” and “None; I dressed up based on my own interpretation of the theme” -&gt; “None”). The column names were edited to be more R-friendly: p_collect = player’s collection; o_collect = opponent’s collection; o_predicted = opponent’s predicted score; p_score = player’s score; and o_score = opponent’s actual score. The final dataset had a sample size of 674 battles.</h5>
+<pre class="r"><code>library(tidyverse)
+setwd(&quot;C:/Users/Michelle/Desktop/Website/content&quot;)
+lnsa &lt;- read.csv(&quot;220406_stylists_arena.csv&quot;,fileEncoding=&quot;UTF-8-BOM&quot;, header=TRUE)
+glimpse(lnsa)</code></pre>
+<pre><code>## Rows: 674
+## Columns: 7
+## $ Theme &lt;chr&gt; &quot;Fairytale Garden&quot;, &quot;Golden Odeum&quot;, &quot;Beach
+Party&quot;, &quot;Summer Story&quot;, &quot;Office Sta~
+## $ p_collect &lt;int&gt; 97, 97, 97, 84, 97, 84, 84, 84, 84,
+20, 71, 71, 71, 62, 62, 62, 62, 62, 14, 14~
+## $ o_collect &lt;int&gt; 70, 23, 52, 40, 11, 48, 50, 5, 52, 29,
+4, 19, 44, 36, 6, 4, 12, 12, 6, 36, 67,~
+## $ o_predicted &lt;int&gt; 62660, 61063, 43289, 57891, 45982,
+51531, 58567, 54364, 56095, 49590, 67938, 5~
+## $ p_score &lt;int&gt; 85870, 98236, 85806, 76189, 84177,
+78477, 86262, 85743, 83662, 10604, 153848, ~
+## $ o_score &lt;int&gt; 64856, 69594, 47358, 57450, 51966,
+58996, 58576, 58003, 62754, 59854, 63122, 6~
+## $ Resources &lt;chr&gt; &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;,
+&quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, &quot;NI&quot;, ~</code></pre>
+</div>
+</div>
+<div id="descriptive-statistics" class="section level4">
+<h4>Descriptive Statistics</h4>
+<div id="lets-start-by-looking-at-collection-percentages.-below-is-a-histogram-of-the-distribution-of-both-player-and-opponent-collection-percentages-included-in-this-analysis." class="section level5">
+<h5>Let’s start by looking at collection percentages. Below is a histogram of the distribution of both player and opponent collection percentages included in this analysis.</h5>
+<pre class="r"><code>lnsa %&gt;% pivot_longer(p_collect:o_collect,names_to=&quot;Collection&quot;,values_to=&quot;Percentage&quot;) %&gt;%
+  ggplot(aes(Percentage,fill=Collection)) + geom_histogram(alpha=0.5, position=&quot;identity&quot;,bins=50) +
+  scale_fill_discrete(labels=c(&quot;Opponent&#39;s Collection&quot;,&quot;Player&#39;s Collection&quot;)) + theme_minimal() + 
+  ggtitle(&quot;Distribution of Collection Percentages&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-distribution-of-opponents-collections-is-skewed-left-implying-that-players-tend-to-choose-opponents-with-low-collection-percentages.-however-the-appearance-of-the-graph-is-slightly-misleading-because-for-unknown-reasons-the-opponents-displayed-collection-is-calculated-as-a-percentage-out-of-the-total-items-in-the-chinese-server-which-is-older-and-has-more-items-rather-than-the-international-server.-because-these-opponents-play-in-the-international-server-despite-their-collection-being-displayed-in-relation-to-the-chinese-server-it-is-impossible-to-meet-an-opponent-with-a-collection-displayed-as-100-and-in-the-histogram-above-the-opponents-collection-percentage-appears-to-cap-out-at-82." class="section level5">
+<h5>The distribution of opponent’s collections is skewed left, implying that players tend to choose opponents with low collection percentages. However, the appearance of the graph is slightly misleading because, for unknown reasons, the opponent’s displayed collection is calculated as a percentage out of the total items in the Chinese server, which is older and has more items, rather than the international server. Because these opponents play in the international server despite their collection being displayed in relation to the Chinese server, it is impossible to meet an opponent with a collection displayed as 100%, and in the histogram above, the opponents’ collection percentage appears to cap out at 82%.</h5>
+</div>
+<div id="the-distribution-of-players-collections-is-scattered-because-despite-the-large-sample-size-of-reported-battles-the-number-of-distinct-players-who-responded-to-the-survey-is-not-actually-very-large.-one-of-the-peaks-in-the-60s-represents-a-very-dedicated-survey-respondent-who-submitted-responses-nearly-every-day-of-the-data-collection-period-so-shout-out-to-them." class="section level5">
+<h5>The distribution of player’s collections is scattered because despite the large sample size of reported battles, the number of distinct players who responded to the survey is not actually very large. One of the peaks in the 60’s represents a very dedicated survey respondent who submitted responses nearly every day of the data collection period, so shout out to them.</h5>
+</div>
+<div id="now-lets-take-a-look-at-scores.-below-is-a-bar-graph-comparing-the-overall-means-for-the-players-score-the-opponents-predicted-score-and-the-opponents-actual-score-with-standard-error-bars." class="section level5">
+<h5>Now let’s take a look at scores. Below is a bar graph comparing the overall means for the player’s score, the opponent’s predicted score, and the opponent’s actual score (with standard error bars).</h5>
+<pre class="r"><code>lnsa %&gt;% pivot_longer(o_predicted:o_score,names_to=&quot;Value&quot;,values_to=&quot;Score&quot;) %&gt;%
+  ggplot(aes(Value,Score,fill=Value)) + geom_bar(stat=&quot;summary&quot;,fun.y=&quot;mean&quot;,width=0.5) +
+  scale_y_continuous(breaks=seq(0,100000,10000)) + geom_errorbar(stat=&quot;summary&quot;,width=0.25) +
+  geom_text(stat=&quot;summary&quot;,aes(label=round(..y..,2)), fun.y=mean, vjust=-0.75) +
+  scale_x_discrete(labels=c(&quot;Opponent&#39;s Predicted Score&quot;,&quot;Opponent&#39;s Actual Score&quot;,&quot;Player&#39;s Actual Score&quot;)) +
+  scale_fill_brewer(palette=&quot;RdPu&quot;, labels=c(&quot;Opponent&#39;s Predicted Score&quot;,&quot;Opponent&#39;s Actual Score&quot;,
+                                             &quot;Player&#39;s Actual Score&quot;)) + theme_minimal() + 
+  ggtitle(&quot;Comparison of Mean Scores&quot;) + theme(plot.title = element_text(hjust = 0.5)) </code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="a-quick-glance-at-the-bar-chart-makes-it-apparent-that-there-is-some-difference-between-the-opponents-predicted-and-actual-scores.-is-this-difference-significant" class="section level5">
+<h5>A quick glance at the bar chart makes it apparent that there is some difference between the opponent’s predicted and actual scores. Is this difference significant?</h5>
+<pre class="r"><code>t.test(lnsa$o_score,lnsa$o_predicted,paired = TRUE)</code></pre>
+<pre><code>##
+## Paired t-test
+##
+## data: lnsa$o_score and lnsa$o_predicted
+## t = 24.186, df = 670, p-value &lt; 2.2e-16
+## alternative hypothesis: true difference in means is not
+equal to 0
+## 95 percent confidence interval:
+## 4867.377 5727.499
+## sample estimates:
+## mean of the differences
+## 5297.438</code></pre>
+</div>
+<div id="the-above-paired-t-test-gives-a-p-value-of-2.2e-16-suggesting-that-for-each-pair-of-an-opponents-predicted-and-actual-scores-the-mean-predicted-score-difference-is-not-equal-to-zero---in-other-words-there-is-a-statistically-significant-p0.05-difference-between-the-predicted-score-and-the-actual-score." class="section level5">
+<h5>The above paired t-test gives a p-value of &lt; 2.2e-16, suggesting that for each pair of an opponent’s predicted and actual scores, the mean predicted score difference is <em>NOT</em> equal to zero - in other words, there <em>IS</em> a statistically significant (p&lt;0.05) difference between the predicted score and the actual score.</h5>
+<pre class="r"><code>lnsa %&gt;% na.omit() %&gt;% summarize(mean_diff=mean(o_score - o_predicted), median_diff=median(o_score - o_predicted))</code></pre>
+<pre><code>##   mean_diff median_diff
+## 1  5297.438        4687</code></pre>
+</div>
+<div id="the-overall-mean-difference-between-the-opponents-actual-score-and-the-predicted-score-is-about-5297-points-while-the-median-difference-is-4687-implying-a-skewed-distribution.-lets-see-what-the-distribution-of-predicted-score-differences-actually-looks-like." class="section level5">
+<h5>The overall mean difference between the opponent’s actual score and the predicted score is about 5,297 points while the median difference is 4,687, implying a skewed distribution. Let’s see what the distribution of predicted score differences actually looks like.</h5>
+<pre class="r"><code>lnsa %&gt;% mutate(diff=o_score-o_predicted) %&gt;% ggplot(aes(diff,fill=&quot;pink&quot;)) + geom_histogram(bins=70) +
+  ggtitle(&quot;Distribution of the Differences Between Opponent&#39;s Predicted and Actual Scores&quot;) + theme_minimal() +
+  theme(legend.position=&quot;none&quot;,plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lnsa &lt;- lnsa %&gt;% mutate(o_score_diff=o_score-o_predicted)
+
+lnsa %&gt;% na.omit() %&gt;% summarize(min=min(o_score_diff), lower=mean(o_score_diff) - 2*sd(o_score_diff), 
+                                 upper=mean(o_score_diff) + 2*sd(o_score_diff), max=max(o_score_diff))</code></pre>
+<pre><code>##     min     lower    upper   max
+## 1 -8886 -6049.741 16644.62 36140</code></pre>
+</div>
+<div id="the-distribution-looks-somewhat-normal-with-a-slight-left-skew.-the-histogram-shows-that-most-of-the-time-the-actual-score-is-greater-than-the-predicted-score-with-the-greatest-difference-being-a-frightening-36140-points-greater-than-the-predicted-score.-however-in-some-cases-the-opponents-actual-score-is-lower-than-the-predicted-score-with-the-greatest-difference-being-an-actual-score-that-was-8886-points-less-than-the-predicted-score.-overall-95-of-the-predicted-score-differences-lie-between--6049-and-16645." class="section level5">
+<h5>The distribution looks somewhat normal with a slight left skew. The histogram shows that most of the time, the actual score is greater than the predicted score, with the greatest difference being a frightening 36,140 points greater than the predicted score. However, in some cases, the opponent’s actual score is lower than the predicted score, with the greatest difference being an actual score that was 8,886 points less than the predicted score. Overall, 95% of the predicted score differences lie between -6,049 and 16,645.</h5>
+</div>
+</div>
+<div id="analysis-by-theme" class="section level4">
+<h4>Analysis by Theme</h4>
+<div id="lets-group-the-data-by-styling-battle-theme-to-see-if-there-are-any-patterns-that-differ-between-them.-first-lets-look-at-some-means-and-sample-data." class="section level5">
+<h5>Let’s group the data by styling battle theme to see if there are any patterns that differ between them. First, let’s look at some means and sample data.</h5>
+<pre class="r"><code>meanstheme &lt;- lnsa %&gt;% filter(Theme!=&quot;&quot;) %&gt;% group_by(Theme) %&gt;% na.omit() %&gt;% 
+  summarize(n=n(), mean_predicted=mean(o_predicted), mean_o_score=mean(o_score), mean_p_score=mean(p_score),  
+            mean_diff=mean(o_score_diff)) %&gt;% mutate(percentage_of_battles=100*(n/(sum(n)))) %&gt;%
+  arrange(percentage_of_battles)
+
+meanstheme</code></pre>
+<pre><code>## # A tibble: 17 x 7
+## Theme n mean_predicted mean_o_score mean_p_score
+mean_diff percentage_of_battles
+## &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 A Growing Lady 31 42351.  47991.  77234.  5640.  4.64
+## 2 Imperial Ball 32 50144.  56168.  88975.  6025.  4.79
+## 3 Great Detective 34 38891.  42124.  78572.  3233 5.09
+## 4 Spring Outing 35 45020.  49323.  83065.  4303.  5.24
+## 5 Office Star 36 48318.  54702.  82036.  6384.  5.39
+## 6 Fire in the Winter 37 38803.  44224.  77101.  5421.
+5.54
+## 7 Golden Odeum 38 48096.  54724.  89086.  6627.  5.69
+## 8 Ongoing Sports 39 44440.  48998.  80163.  4557.  5.84
+## 9 Intern Translator 40 57173.  64557.  129748.  7384.
+5.99
+## 10 Cloud Lady 41 58386.  65167.  141666.  6781.  6.14
+## 11 Summer Party 41 46025.  50531.  77632.  4506.  6.14
+## 12 Beach Party 42 41954.  46793.  71686.  4839.  6.29
+## 13 The Queen 42 52198.  59091.  87753.  6893.  6.29
+## 14 Where is Spring 42 46426.  51610.  80712.  5185.
+6.29
+## 15 Christmas Reunion 44 42525.  46572.  73917.  4047.
+6.59
+## 16 Fairytale Garden 44 47305.  51678.  82767.  4372.
+6.59
+## 17 Summer Story 50 42805.  47071.  77386.  4266.  7.49</code></pre>
+</div>
+<div id="summer-story-was-the-theme-that-appeared-most-frequently-in-this-sample-making-up-7.49-of-responses-while-a-growing-lady-was-the-least-frequent-appearing-4.64-of-the-time.-the-n-for-each-theme-may-be-too-small-to-generalize-this-pattern-to-the-population." class="section level5">
+<h5>“Summer Story” was the theme that appeared most frequently in this sample, making up 7.49% of responses, while “A Growing Lady” was the least frequent, appearing 4.64% of the time. The n for each theme may be too small to generalize this pattern to the population.</h5>
+</div>
+<div id="how-do-scores-differ-by-theme-this-faceted-histogram-reveals-the-spread-of-each-score-type-as-well-as-the-differences-between-the-players-and-opponents-scores-for-each-theme." class="section level5">
+<h5>How do scores differ by theme? This faceted histogram reveals the spread of each score type, as well as the differences between the players’ and opponents’ scores, for each theme.</h5>
+<pre class="r"><code>lnsa %&gt;% filter(Theme!=&quot;&quot;) %&gt;% pivot_longer(o_predicted:o_score,names_to=&quot;Value&quot;,values_to=&quot;Score&quot;) %&gt;%
+  ggplot(aes(Score,fill=Value)) + geom_histogram(alpha=0.5,position=&quot;identity&quot;,bins=50) + 
+  facet_wrap(~Theme,ncol=3) + scale_fill_brewer(palette=&quot;Set1&quot;,
+                                                labels=c(&quot;Opponent&#39;s Predicted Score&quot;,&quot;Opponent&#39;s Actual Score&quot;,
+                                                         &quot;Player&#39;s Actual Score&quot;)) + theme_minimal() +
+  ggtitle(&quot;Distribution of Reported Scores&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="although-the-above-histogram-appears-to-show-low-score-outliers-for-some-of-the-themes-i-dont-consider-them-outliers-because-they-represent-reasonable-scores-that-a-player-might-earn-in-a-battle-therefore-i-will-continue-to-use-mean-as-the-measure-of-center-rather-than-median-so-that-my-analysis-remains-more-generalizable-to-the-player-population-rather-than-just-the-sample-that-responded-to-my-survey." class="section level5">
+<h5>Although the above histogram appears to show low score outliers for some of the themes, I don’t consider them outliers because they represent reasonable scores that a player might earn in a battle; therefore, I will continue to use mean as the measure of center rather than median so that my analysis remains more generalizable to the player population rather than just the sample that responded to my survey.</h5>
+</div>
+<div id="the-following-is-a-comparison-of-mean-scores-by-styling-theme-and-in-ascending-order-of-mean-player-score." class="section level5">
+<h5>The following is a comparison of mean scores by styling theme and in ascending order of mean player score.</h5>
+<pre class="r"><code>lnsa %&gt;% filter(Theme!=&quot;&quot;) %&gt;% pivot_longer(o_predicted:o_score,names_to=&quot;Value&quot;,values_to=&quot;Score&quot;) %&gt;%
+  mutate(Theme=factor(Theme,levels=c(&quot;Beach Party&quot;,&quot;Christmas Reunion&quot;,&quot;Fire in the Winter&quot;,
+                                     &quot;A Growing Lady&quot;,&quot;Summer Story&quot;,&quot;Summer Party&quot;,&quot;Great Detective&quot;,
+                                     &quot;Ongoing Sports&quot;,&quot;Where is Spring&quot;,&quot;Office Star&quot;,
+                                     &quot;Fairytale Garden&quot;,&quot;Spring Outing&quot;,&quot;The Queen&quot;,&quot;Imperial Ball&quot;,
+                                     &quot;Golden Odeum&quot;,&quot;Intern Translator&quot;,&quot;Cloud Lady&quot;),ordered=TRUE)) %&gt;%
+  ggplot(aes(Theme,Score,fill=Value)) + geom_bar(stat=&quot;summary&quot;,fun.y=&quot;mean&quot;,position=&quot;dodge&quot;) +
+  scale_y_continuous(breaks=seq(0,150000,20000)) +
+  scale_fill_brewer(palette=&quot;RdPu&quot;, labels=c(&quot;Opponent&#39;s Predicted Score&quot;,&quot;Opponent&#39;s Actual Score&quot;,
+                                             &quot;Player&#39;s Actual Score&quot;)) + theme_minimal() + 
+  ggtitle(&quot;Mean Scores by Theme&quot;) + 
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle=45, hjust=1), 
+        legend.position=&quot;bottom&quot;) </code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-9-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="players-tend-to-score-lowest-on-beach-party-mean-71686-and-highest-on-cloud-lady-mean-141666.-in-contrast-opponents-are-predicted-to-score-lowest-on-fire-in-the-winter-mean-38803-and-highest-on-cloud-lady-mean-58386-as-expected.-the-opponents-actual-scores-are-lowest-on-great-detective-mean-42124-and-highest-on-again-cloud-lady-mean-65167." class="section level5">
+<h5>Players tend to score lowest on Beach Party (mean = 71,686) and highest on Cloud Lady (mean = 141,666). In contrast, opponents are <em>predicted</em> to score lowest on Fire in the Winter (mean = 38,803) and highest on Cloud Lady (mean = 58,386) as expected. The opponents’ actual scores are lowest on Great Detective (mean = 42,124) and highest on, again, Cloud Lady (mean = 65,167).</h5>
+</div>
+<div id="lets-take-a-closer-look-at-the-mean-differences-between-the-opponents-predicted-and-actual-score-for-each-theme." class="section level5">
+<h5>Let’s take a closer look at the mean differences between the opponent’s predicted and actual score for each theme.</h5>
+<pre class="r"><code>meanstheme %&gt;% ggplot(aes(reorder(Theme,mean_diff),mean_diff,fill=&quot;pink&quot;)) + geom_bar(stat=&quot;identity&quot;,width=0.5) +
+  scale_y_continuous(breaks=seq(0,10000,1000)) +
+  ggtitle(&quot;Mean Predicted Score Differences by Theme&quot;) + 
+  geom_text(stat=&quot;identity&quot;,aes(label=round(..y..,2)), vjust=-0.5) +
+  scale_fill_brewer(palette=&quot;PiYG&quot;) + theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle=45, hjust=1),
+        legend.position=&quot;none&quot;) +
+  xlab(&quot;Theme&quot;) + ylab(&quot;Mean Predicted Score Difference&quot;)</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="great-detective-has-the-smallest-mean-predicted-score-difference-of-3233-while-intern-translator-has-the-largest-mean-predicted-score-difference-of-7384." class="section level5">
+<h5>Great Detective has the smallest mean predicted score difference of 3,233, while Intern Translator has the largest mean predicted score difference of 7,384.</h5>
+</div>
+<div id="you-may-have-noticed-a-pattern-with-certain-themes-on-the-graphs-above.-just-by-eyeballing-there-are-two-particular-themes-that-appear-to-have-a-greater-spread-of-scores-greater-mean-score-and-greater-mean-predicted-score-difference-than-the-other-themes-cloud-lady-and-intern-translator.-these-happen-to-be-the-only-two-stylists-arena-themes-that-have-a-special-tag-in-this-case-the-modern-china-tag-which-is-an-extra-attribute-that-can-boost-scores-even-further-when-players-dress-up-in-clothes-that-contain-that-tag.-this-is-where-resources-come-in-handy.-the-most-commonly-used-resource-by-far-and-the-only-resource-that-players-recorded-in-the-survey-is-nikkis-info-a-third-party-website-that-lists-the-highest-scoring-items-for-any-given-combination-of-attributes." class="section level5">
+<h5>You may have noticed a pattern with certain themes on the graphs above. Just by eyeballing, there are two particular themes that appear to have a greater spread of scores, greater mean score, and greater mean predicted score difference than the other themes: Cloud Lady and Intern Translator. These happen to be the only two Stylist’s Arena themes that have a special tag (in this case, the Modern China tag), which is an extra attribute that can boost scores even further when players dress up in clothes that contain that tag. This is where resources come in handy. The most commonly used resource by far, and the only resource that players recorded in the survey, is Nikki’s Info, a third party website that lists the highest scoring items for any given combination of attributes.</h5>
+</div>
+<div id="the-usage-of-nikkis-info-may-explain-why-there-is-a-large-jump-in-mean-player-score-from-the-other-themes-to-the-modern-china-themes-and-why-opponent-scores-do-not-show-the-same-jump-in-mean-score-but-do-show-a-larger-spread-of-scores.-this-is-likely-because-in-most-reported-battles-players-used-nikkis-info-as-a-resource-while-it-is-unknown-whether-the-opponents-did-the-same." class="section level5">
+<h5>The usage of Nikki’s Info may explain why there is a large jump in mean player score from the other themes to the Modern China themes, and why opponent scores do not show the same jump in mean score but do show a larger spread of scores. This is likely because in most reported battles, players used Nikki’s Info as a resource, while it is unknown whether the opponents did the same.</h5>
+</div>
+<div id="going-back-to-the-modern-china-themes-now-that-we-know-that-the-special-tag-influences-scores-lets-see-if-theres-a-significant-increase-in-predicted-score-difference-when-the-theme-has-a-special-tag." class="section level5">
+<h5>Going back to the Modern China themes, now that we know that the special tag influences scores, let’s see if there’s a significant increase in predicted score difference when the theme has a special tag.</h5>
+<pre class="r"><code>lnsatemp &lt;- lnsa %&gt;% mutate(spetag=ifelse(Theme==&quot;Cloud Lady&quot;|Theme==&quot;Intern Translator&quot;,&quot;yes&quot;,&quot;no&quot;)) %&gt;%
+  pivot_wider(names_from=spetag,values_from=o_score_diff)
+t.test(lnsatemp$yes,lnsatemp$no)</code></pre>
+<pre><code>##
+## Welch Two Sample t-test
+##
+## data: lnsatemp$yes and lnsatemp$no
+## t = 2.1157, df = 88.426, p-value = 0.03718
+## alternative hypothesis: true difference in means is not
+equal to 0
+## 95 percent confidence interval:
+## 123.0802 3929.3866
+## sample estimates:
+## mean of x mean of y
+## 7079.074 5052.841</code></pre>
+</div>
+<div id="there-is-in-fact-a-statistically-significant-p0.03718-difference-in-the-score-difference-between-opponents-predicted-and-actual-scores-between-themes-with-and-without-a-special-tag.-in-other-words-when-the-theme-is-cloud-lady-or-intern-translator-one-should-expect-an-even-greater-increase-from-the-opponents-predicted-score-to-their-actual-score-compared-to-other-themes." class="section level5">
+<h5>There is in fact a statistically significant (p=0.03718) difference in the score difference between opponents’ predicted and actual scores between themes with and without a special tag. In other words, when the theme is Cloud Lady or Intern Translator, one should expect an even greater increase from the opponent’s predicted score to their actual score compared to other themes.</h5>
+</div>
+<div id="how-about-if-we-subdivide-the-predicted-score-distribution-into-non-special-tag-themes-and-special-tag-themes" class="section level5">
+<h5>How about if we subdivide the predicted score distribution into non-special tag themes and special tag themes?</h5>
+<pre class="r"><code>lnsatemp2 &lt;- lnsa %&gt;% mutate(spetag=ifelse(Theme==&quot;Cloud Lady&quot;|Theme==&quot;Intern Translator&quot;,&quot;yes&quot;,&quot;no&quot;))
+
+lnsatemp2 %&gt;% na.omit() %&gt;% group_by(spetag) %&gt;% summarize(min=min(o_score_diff), 
+                                                      lower=mean(o_score_diff) - 2*sd(o_score_diff),
+                                                      upper=mean(o_score_diff) + 2*sd(o_score_diff),
+                                                      max=max(o_score_diff))</code></pre>
+<pre><code>## # A tibble: 2 x 5
+##   spetag   min  lower  upper   max
+##   &lt;chr&gt;  &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+## 1 no     -8886 -5247. 15353. 36140
+## 2 yes    -6933 -9732. 23890. 27777</code></pre>
+</div>
+<div id="here-we-see-that-the-95-data-intervals-are-now-different-from-the-interval-reported-previously.-for-non-special-tag-themes-95-of-predicted-score-differences-fall-between--5247-and-15353.-for-the-special-tag-themes-cloud-lady-and-intern-translator-95-of-predicted-score-differences-fall-between--9732-and-23891-this-shows-greater-predicted-score-differences-but-also-a-larger-spread." class="section level5">
+<h5>Here we see that the 95% data intervals are now different from the interval reported previously. For non-special tag themes, 95% of predicted score differences fall between -5,247 and 15,353. For the special tag themes Cloud Lady and Intern Translator, 95% of predicted score differences fall between -9,732 and 23,891; this shows greater predicted score differences but also a larger spread.</h5>
+</div>
+</div>
+</div>
+<div id="fitting-and-modeling" class="section level3">
+<h3>Fitting and Modeling</h3>
+<div id="lets-now-turn-to-the-correlations-within-the-numeric-information-collected." class="section level5">
+<h5>Let’s now turn to the correlations within the numeric information collected.</h5>
+<pre class="r"><code>lnsa %&gt;% na.omit() %&gt;% select_if(is.numeric) %&gt;% cor() %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;%
+  pivot_longer(-1,names_to=&quot;name&quot;,values_to=&quot;correlation&quot;) %&gt;%
+  ggplot(aes(rowname,name,fill=correlation)) + geom_tile() + scale_fill_gradient(low=&quot;white&quot;, high=&quot;pink&quot;) +
+  geom_text(aes(label=round(correlation,3))) + xlab(&quot;&quot;) + ylab(&quot;&quot;) +
+  ggtitle(&quot;Stylist&#39;s Arena Correlations&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-heat-map-shows-a-strong-correlation-0.95-between-the-opponents-predicted-score-and-their-actual-score-implying-that-predicted-scores-and-actual-scores-tend-to-be-strongly-associated.-the-0.729-correlation-between-o_score_diff-and-o_score-is-non-significant-as-o_score_diff-is-a-value-that-was-calculated-from-o_score." class="section level5">
+<h5>The heat map shows a strong correlation (0.95) between the opponent’s predicted score and their actual score, implying that predicted scores and actual scores tend to be strongly associated. The 0.729 correlation between “o_score_diff” and “o_score” is non-significant, as “o_score_diff” is a value that was calculated from o_score.</h5>
+</div>
+<div id="because-the-modern-china-themes-are-somewhat-outliers-due-to-the-special-tag-inflating-player-scores-i-decided-to-remove-them-from-the-correlation-heat-map-to-see-if-anything-would-change." class="section level5">
+<h5>Because the Modern China themes are somewhat outliers due to the special tag inflating player scores, I decided to remove them from the correlation heat map to see if anything would change.</h5>
+<pre class="r"><code>lnsa %&gt;% na.omit() %&gt;% filter(Theme!=&quot;Intern Translator&quot;&amp; Theme!= &quot;Cloud Lady&quot;) %&gt;% select_if(is.numeric) %&gt;%
+  cor() %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;%
+  pivot_longer(-1,names_to=&quot;name&quot;,values_to=&quot;correlation&quot;) %&gt;%
+  ggplot(aes(rowname,name,fill=correlation)) + geom_tile() + geom_text(aes(label=round(correlation,3))) +
+  scale_fill_gradient(low=&quot;white&quot;, high=&quot;pink&quot;) + xlab(&quot;&quot;) + ylab(&quot;&quot;) + 
+  ggtitle(&quot;Stylist&#39;s Arena Correlations (Non-Special Tag)&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="this-appeared-to-increase-the-correlation-between-the-players-collection-and-their-score-and-decrease-the-correlation-between-player-score-and-both-opponent-scores.-this-is-consistent-with-my-expectations-as-players-with-low-collections-i.e.-theoretically-less-likelihood-of-owning-high-scoring-clothes-can-still-achieve-an-unusually-high-score-if-the-theme-has-a-special-tag-thereby-decreasing-the-apparent-correlation.-the-opponents-collection-and-scores-remained-mildly-correlated." class="section level5">
+<h5>This appeared to increase the correlation between the player’s collection and their score and decrease the correlation between player score and both opponent scores. This is consistent with my expectations, as players with low collections, i.e. theoretically less likelihood of owning high-scoring clothes, can still achieve an unusually high score if the theme has a special tag, thereby decreasing the apparent correlation. The opponent’s collection and scores remained mildly correlated.</h5>
+</div>
+<div id="lets-further-explore-the-correlation-between-the-players-collection-and-their-score-to-see-if-ones-collection-really-matters-in-determining-score.-here-is-a-scatter-plot." class="section level5">
+<h5>Let’s further explore the correlation between the player’s collection and their score to see if one’s collection really matters in determining score. Here is a scatter plot.</h5>
+<pre class="r"><code>lnsa %&gt;% ggplot(aes(x=p_collect, y=p_score)) + geom_point() + geom_smooth(method=lm) +
+  ggtitle(&quot;Player Collection and Score (All Themes)&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-15-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>lnsa1 &lt;- lnsa %&gt;% filter(Theme!=&quot;Intern Translator&quot;&amp; Theme!= &quot;Cloud Lady&quot;) 
+
+lnsa1 %&gt;%
+  ggplot(aes(x=p_collect, y=p_score)) + geom_point() + geom_smooth(method=lm) +
+  ggtitle(&quot;Player Collection and Score (Non-Special Tag)&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-15-2.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="removing-the-modern-china-themes-causes-the-points-to-be-clustered-closer-together-as-well-as-closer-to-the-regression-line-which-is-consistent-with-the-conclusions-of-the-correlation-heat-maps-above." class="section level5">
+<h5>Removing the Modern China themes causes the points to be clustered closer together, as well as closer to the regression line, which is consistent with the conclusions of the correlation heat maps above.</h5>
+</div>
+<div id="lets-do-a-linear-regression---one-version-that-includes-the-modern-china-themes-and-one-that-omits-them---to-predict-the-players-score-from-their-collection." class="section level5">
+<h5>Let’s do a linear regression - one version that includes the Modern China themes and one that omits them - to predict the player’s score from their collection.</h5>
+<pre class="r"><code>fit &lt;- lm(p_score ~ p_collect,data=lnsa)
+summary(fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = p_score ~ p_collect, data = lnsa)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -75733 -10448 -4944 1814 67692
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 70674.17 2496.48 28.31 &lt; 2e-16 ***
+## p_collect 264.59 38.51 6.87 1.47e-11 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 20920 on 669 degrees of freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.0659, Adjusted R-squared: 0.06451
+## F-statistic: 47.2 on 1 and 669 DF, p-value: 1.468e-11</code></pre>
+<pre class="r"><code># omitting Modern China Themes
+fit1 &lt;- lm(p_score ~ p_collect,data=lnsa1)
+summary(fit1)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = p_score ~ p_collect, data = lnsa1)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -68907 -4149 576 5265 24725
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 66839.81 1198.05 55.79 &lt;2e-16 ***
+## p_collect 217.85 18.51 11.77 &lt;2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 9327 on 588 degrees of freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.1906, Adjusted R-squared: 0.1892
+## F-statistic: 138.5 on 1 and 588 DF, p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="when-including-the-modern-china-themes-the-equation-for-predicting-player-score-using-player-collection-is-player-score-70674.17-264.59-player-collection-where-player-collection-is-the-numeric-non-decimal-value-of-their-collection-percentage.-when-omitting-the-modern-china-themes-the-equation-is-player-score-66839.81-217.85-player-collection.-omitting-the-modern-china-themes-gives-a-better-r2-of-0.1892-compared-to-the-previous-r2-of-0.06451-but-both-still-indicate-that-the-models-do-not-explain-much-of-the-variation-at-all-indicating-that-player-collection-may-not-be-a-good-predictor-of-player-score.-this-is-consistent-with-the-weak-correlation-we-saw-previously." class="section level5">
+<h5>When including the Modern China themes, the equation for predicting player score using player collection is Player Score = 70674.17 + (264.59 * Player Collection) where Player Collection is the numeric (non-decimal) value of their collection percentage. When omitting the Modern China themes, the equation is Player Score = 66839.81 + (217.85 * Player Collection). Omitting the Modern China themes gives a better R2 of 0.1892 compared to the previous R2 of 0.06451, but both still indicate that the models do not explain much of the variation at all, indicating that player collection may not be a good predictor of player score. This is consistent with the weak correlation we saw previously.</h5>
+</div>
+<div id="i-mentioned-earlier-that-resources-such-as-nikkis-info-often-help-players-achieve-better-scores.-thus-lets-make-a-model-to-take-into-account-the-usage-of-outside-resources.-the-only-responses-on-the-survey-for-resources-used-were-ni-and-none-so-i-created-a-new-binary-variable-to-represent-whether-the-entry-used-ni-or-not." class="section level5">
+<h5>I mentioned earlier that resources such as Nikki’s Info often help players achieve better scores. Thus, let’s make a model to take into account the usage of outside resources. The only responses on the survey for resources used were “NI” and “None,” so I created a new binary variable to represent whether the entry used NI or not.</h5>
+<pre class="r"><code>lnsa &lt;- lnsa %&gt;% mutate(UsedNI=ifelse(Resources==&quot;NI&quot;,1,0))
+lnsa1 &lt;- lnsa1 %&gt;% mutate(UsedNI=ifelse(Resources==&quot;NI&quot;,1,0))
+
+fit2 &lt;- lm(p_score ~ p_collect * UsedNI, data=lnsa)
+summary(fit2)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = p_score ~ p_collect * UsedNI, data = lnsa)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -76459 -10363 -5570 1038 70087
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 85286 48248 1.768 0.0776 .
+## p_collect -1539 2764 -0.557 0.5779
+## UsedNI -7591 48330 -0.157 0.8752
+## p_collect:UsedNI 1705 2765 0.617 0.5376
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 20540 on 667 degrees of freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.1019, Adjusted R-squared: 0.09787
+## F-statistic: 25.23 on 3 and 667 DF, p-value: 1.805e-15</code></pre>
+<pre class="r"><code>fit3 &lt;- lm(p_score ~ p_collect * UsedNI, data=lnsa1)
+summary(fit3)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = p_score ~ p_collect * UsedNI, data = lnsa1)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -69654 -4375 38 4117 23560
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 103933 20740 5.011 7.18e-07 ***
+## p_collect -2930 1187 -2.469 0.0138 *
+## UsedNI -29661 20776 -1.428 0.1539
+## p_collect:UsedNI 3043 1187 2.564 0.0106 *
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 8252 on 586 degrees of freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.3686, Adjusted R-squared: 0.3653
+## F-statistic: 114 on 3 and 586 DF, p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="while-this-has-resulted-in-the-r2-has-increasing-in-both-versions-of-this-model-ni-usage-does-not-appear-to-be-a-significant-predictor-of-player-score-and-player-collection-becomes-a-non-significant-predictor-in-the-first-version-which-includes-the-modern-china-themes.-it-should-be-noted-that-the-major-weakness-of-this-model-is-that-the-sample-size-of-distinct-players-who-did-not-use-nikkis-info-is-very-small-therefore-this-model-cannot-be-widely-applied." class="section level5">
+<h5>While this has resulted in the R2 has increasing in both versions of this model, NI usage does not appear to be a significant predictor of player score, and player collection becomes a non-significant predictor in the first version (which includes the Modern China themes). It should be noted that the major weakness of this model is that the sample size of distinct players who did not use Nikki’s Info is very small; therefore, this model cannot be widely applied.</h5>
+</div>
+<div id="lets-check-to-see-if-this-model-meets-assumptions-of-homoskedasticity-and-normality." class="section level5">
+<h5>Let’s check to see if this model meets assumptions of homoskedasticity and normality.</h5>
+<pre class="r"><code>library(lmtest)
+library(sandwich)
+
+bptest(fit3)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit3
+## BP = 3.1574, df = 3, p-value = 0.368</code></pre>
+<pre class="r"><code>shapiro.test(fit3$residuals)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fit3$residuals
+## W = 0.87277, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div id="the-player-score-model-does-not-meet-both-assumptions-while-the-breusch-pagan-test-shows-homoskedasticity-the-shapiro-wilk-test-indicates-that-the-model-does-not-meet-the-assumption-of-normality-p-value-2.2e-16-reject-null-hypothesis-that-the-data-is-not-significantly-different-from-a-normal-distribution." class="section level5">
+<h5>The player score model does not meet both assumptions; while the Breusch-Pagan test shows homoskedasticity, the Shapiro-Wilk test indicates that the model does not meet the assumption of normality (p-value &lt; 2.2e-16; reject null hypothesis that the data is not significantly different from a normal distribution).</h5>
+</div>
+<div id="what-other-variables-are-important-for-predicting-player-score" class="section level5">
+<h5>What other variables are important for predicting player score?</h5>
+<pre class="r"><code>library(glmnet)
+
+lnsa2 &lt;- lnsa %&gt;%
+  select(-o_score_diff) %&gt;% na.omit()
+
+fit4 &lt;- glm(p_score ~ .,data=lnsa2)
+
+x &lt;- model.matrix(fit4)
+x &lt;- scale(x)
+y &lt;- as.matrix(lnsa2$p_score)
+
+cv1 &lt;- cv.glmnet(x[,-1],y)
+lasso1 &lt;- glmnet(x[,-1],y,lambda=cv1$lambda.1se)
+coef(lasso1)</code></pre>
+<pre><code>## 24 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                 s0
+## (Intercept)             86903.8942
+## ThemeA Growing Lady         .     
+## ThemeBeach Party         -877.6161
+## ThemeChristmas Reunion   -762.4046
+## ThemeCloud Lady         13437.7167
+## ThemeFairytale Garden       .     
+## ThemeFire in the Winter     .     
+## ThemeGolden Odeum         519.3407
+## ThemeGreat Detective        .     
+## ThemeImperial Ball        379.0000
+## ThemeIntern Translator  10524.5174
+## ThemeOffice Star            .     
+## ThemeOngoing Sports         .     
+## ThemeSpring Outing          .     
+## ThemeSummer Party           .     
+## ThemeSummer Story         -62.3656
+## ThemeThe Queen            614.0747
+## ThemeWhere is Spring        .     
+## p_collect                2408.5217
+## o_collect                   .     
+## o_predicted               164.9256
+## o_score                     .     
+## ResourcesNone           -3961.6566
+## UsedNI                      .</code></pre>
+</div>
+<div id="according-to-the-lasso-results-it-looks-like-quite-a-few-themes-make-a-difference-in-predicting-player-scores.-including-so-many-themes-increases-the-risk-of-overfitting-but-i-still-wanted-to-make-a-new-model-just-for-fun-that-takes-into-account-all-of-the-relevant-themes-while-excluding-interactions.-although-the-lasso-indicates-that-the-opponents-predicted-score-is-a-potentially-important-factor-in-predicting-the-players-score-i-did-not-include-it-because-my-guess-is-that-that-pattern-results-from-players-with-higher-scores-feeling-that-they-are-able-to-choose-opponents-with-higher-predicted-scores.-i-also-did-a-log-transformation-on-the-numeric-variables-because-the-initial-model-did-not-meet-homoskedasticity." class="section level5">
+<h5>According to the LASSO results, it looks like quite a few themes make a difference in predicting player scores. Including so many themes increases the risk of overfitting, but I still wanted to make a new model just for fun that takes into account all of the relevant themes while excluding interactions. Although the LASSO indicates that the opponents’ predicted score is a potentially important factor in predicting the player’s score, I did not include it because my guess is that that pattern results from players with higher scores feeling that they are able to choose opponents with higher predicted scores. I also did a log transformation on the numeric variables because the initial model did not meet homoskedasticity.</h5>
+<pre class="r"><code>lnsa2 &lt;- lnsa2 %&gt;% mutate(BeachParty=ifelse(Theme==&quot;Beach Party&quot;,1,0),
+                          ChristmasReunion=ifelse(Theme==&quot;Christmas Reunion&quot;,1,0),
+                          CloudLady=ifelse(Theme==&quot;Cloud Lady&quot;,1,0),GoldenOdeum=ifelse(Theme==&quot;Golden Odeum&quot;,1,0),
+                          ImperialBall=ifelse(Theme==&quot;Imperial Ball&quot;,1,0), 
+                          InternTranslator=ifelse(Theme==&quot;Intern Translator&quot;,1,0),
+                          TheQueen=ifelse(Theme==&quot;The Queen&quot;,1,0))
+
+fit5&lt;- lm(log(p_score) ~ log(p_collect) + UsedNI + BeachParty + ChristmasReunion + CloudLady + GoldenOdeum +
+            ImperialBall + InternTranslator + TheQueen, data=lnsa2)
+summary(fit5)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = log(p_score) ~ log(p_collect) + UsedNI +
+BeachParty +
+## ChristmasReunion + CloudLady + GoldenOdeum +
+ImperialBall +
+## InternTranslator + TheQueen, data = lnsa2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -1.91386 -0.03400 0.01502 0.05638 0.24917
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 10.58936 0.04655 227.471 &lt; 2e-16 ***
+## log(p_collect) 0.10178 0.01363 7.470 2.55e-13 ***
+## UsedNI 0.28857 0.03093 9.329 &lt; 2e-16 ***
+## BeachParty -0.09224 0.02253 -4.094 4.77e-05 ***
+## ChristmasReunion -0.09981 0.02204 -4.529 7.03e-06 ***
+## CloudLady 0.57674 0.02275 25.354 &lt; 2e-16 ***
+## GoldenOdeum 0.09669 0.02358 4.100 4.65e-05 ***
+## ImperialBall 0.09564 0.02552 3.748 0.000194 ***
+## InternTranslator 0.48383 0.02300 21.037 &lt; 2e-16 ***
+## TheQueen 0.10216 0.02250 4.541 6.64e-06 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 0.1386 on 661 degrees of
+freedom
+## Multiple R-squared: 0.6881, Adjusted R-squared: 0.6838
+## F-statistic: 162 on 9 and 661 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>bptest(fit5)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit5
+## BP = 12.471, df = 9, p-value = 0.188</code></pre>
+<pre class="r"><code>shapiro.test(fit5$residuals)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fit5$residuals
+## W = 0.51945, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div id="this-new-model-appears-to-have-a-much-higher-r2-of-about-0.68-and-all-variables-have-become-significant.-it-still-violates-normality-but-that-may-not-be-a-big-deal-for-the-purposes-of-using-it-to-predict-scores.-based-on-this-model-the-equation-for-predicting-player-score-is-logplayer-score-10.58936-0.10178-logplayer-collection-sum-of-adjustments-where-the-adjustments-are-as-follows" class="section level5">
+<h5>This new model appears to have a much higher R2 of about 0.68, and all variables have become significant. It still violates normality, but that may not be a big deal for the purposes of using it to predict scores. Based on this model, the equation for predicting player score is log(Player Score) = 10.58936 + (0.10178 * log(Player Collection)) + (sum of adjustments) where the adjustments are as follows:</h5>
+</div>
+<div id="if-you-used-nikkis-info" class="section level5">
+<h5>+0.28857 if you used Nikki’s Info</h5>
+</div>
+<div id="if-theme-is-beach-party" class="section level5">
+<h5>-0.09224 if theme is Beach Party</h5>
+</div>
+<div id="if-theme-is-christmas-reunion" class="section level5">
+<h5>-0.09981 if theme is Christmas Reunion</h5>
+</div>
+<div id="if-theme-is-imperial-ball" class="section level5">
+<h5>+0.09564 if theme is Imperial Ball</h5>
+</div>
+<div id="if-theme-is-golden-odeum" class="section level5">
+<h5>+0.09669 if theme is Golden Odeum</h5>
+</div>
+<div id="if-theme-is-the-queen" class="section level5">
+<h5>+0.10216 if theme is The Queen</h5>
+</div>
+<div id="if-theme-is-intern-translator" class="section level5">
+<h5>+0.48383 if theme is Intern Translator</h5>
+</div>
+<div id="if-theme-is-cloud-lady" class="section level5">
+<h5>+0.57674 if theme is Cloud Lady</h5>
+<pre class="r"><code>lnsa2 %&gt;% mutate(model_p_score=exp(10.58936 + (0.10178 * log(p_collect)) + 
+                             (0.28857*UsedNI -0.09224*BeachParty-0.09981*ChristmasReunion +
+                                0.57674*CloudLady + 0.09669*GoldenOdeum + 0.09564*ImperialBall +
+                                0.48383*InternTranslator + 0.10216*TheQueen))) %&gt;%
+  ggplot(aes(p_score,model_p_score)) + geom_point() + geom_abline(slope=1)</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-21-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="above-you-can-see-that-this-model-fits-the-observed-data-pretty-well-as-a-comparison-of-predicted-and-observed-values-shows-that-most-points-fall-along-a-line-with-a-slope-of-1.-there-may-be-some-overfitting-with-such-a-detailed-model-however-its-also-possible-that-there-isnt-an-extreme-degree-of-overfitting---anecdotally-the-specific-themes-included-in-the-model-happen-to-be-ones-that-are-known-among-the-general-player-population-to-produce-lower-beach-party-and-christmas-reunion-or-higher-cloud-lady-golden-odeum-imperial-ball-and-the-modern-china-themes-scores." class="section level5">
+<h5>Above, you can see that this model fits the observed data pretty well, as a comparison of predicted and observed values shows that most points fall along a line with a slope of 1. There may be some overfitting with such a detailed model; however, it’s also possible that there isn’t an extreme degree of overfitting - anecdotally, the specific themes included in the model happen to be ones that are known among the general player population to produce lower (Beach Party and Christmas Reunion) or higher (Cloud Lady, Golden Odeum, Imperial Ball, and the Modern China themes) scores.</h5>
+</div>
+<div id="perhaps-a-more-balanced-model-would-be-one-that-takes-into-account-only-the-modern-china-themes-i.e.-the-obvious-outliers." class="section level5">
+<h5>Perhaps a more balanced model would be one that takes into account only the Modern China themes, i.e. the obvious outliers.</h5>
+<pre class="r"><code>fit5b&lt;- lm(log(p_score) ~ log(p_collect) + UsedNI + CloudLady + InternTranslator, data=lnsa2)
+summary(fit5b)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = log(p_score) ~ log(p_collect) + UsedNI +
+CloudLady +
+## InternTranslator, data = lnsa2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -1.92448 -0.04470 0.01138 0.06383 0.30896
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 10.57464 0.04951 213.603 &lt; 2e-16 ***
+## log(p_collect) 0.10407 0.01452 7.165 2.07e-12 ***
+## UsedNI 0.29922 0.03291 9.091 &lt; 2e-16 ***
+## CloudLady 0.57206 0.02388 23.957 &lt; 2e-16 ***
+## InternTranslator 0.47929 0.02416 19.842 &lt; 2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 0.1478 on 666 degrees of
+freedom
+## Multiple R-squared: 0.6423, Adjusted R-squared: 0.6401
+## F-statistic: 298.9 on 4 and 666 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>bptest(fit5b)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit5b
+## BP = 6.4084, df = 4, p-value = 0.1707</code></pre>
+<pre class="r"><code>shapiro.test(fit5b$residuals)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fit5b$residuals
+## W = 0.58005, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>lnsa2 %&gt;% mutate(model_p_score=exp(10.57464 + (0.10407 * log(p_collect)) + 
+                             (0.29922*UsedNI + 0.57206*CloudLady + 0.47929*InternTranslator))) %&gt;%
+  ggplot(aes(p_score,model_p_score)) + geom_point() + geom_abline(slope=1)</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="this-looks-to-be-a-pretty-decent-model.-the-r2-at-0.64-is-not-much-less-than-that-of-the-previous-model-that-included-more-themes-and-the-regression-line-still-appears-to-fit-the-scatter-plot.-the-model-passes-homoskedasticity-and-fails-normality-similar-to-previous-models.-if-a-player-was-to-use-this-model-to-predict-their-score-they-would-use-the-equation-logplayer-score-10.57464-0.10407-logplayer-collection-sum-of-adjustments-where-the-adjustments-are-as-follows" class="section level5">
+<h5>This looks to be a pretty decent model. The R2, at ~0.64, is not much less than that of the previous model that included more themes, and the regression line still appears to fit the scatter plot. The model passes homoskedasticity and fails normality, similar to previous models. If a player was to use this model to predict their score, they would use the equation log(Player Score) = 10.57464 + (0.10407 * log(Player Collection)) + (sum of adjustments) where the adjustments are as follows:</h5>
+</div>
+<div id="if-you-used-nikkis-info-1" class="section level5">
+<h5>+0.29922 if you used Nikki’s Info</h5>
+</div>
+<div id="if-theme-is-intern-translator-1" class="section level5">
+<h5>+0.47929 if theme is Intern Translator</h5>
+</div>
+<div id="if-theme-is-cloud-lady-1" class="section level5">
+<h5>+0.57206 if theme is Cloud Lady</h5>
+</div>
+<div id="of-course-its-totally-impractical-for-players-to-be-doing-all-this-math-for-everyday-battles-anyway-but-it-is-interesting-to-think-about." class="section level5">
+<h5>Of course, it’s totally impractical for players to be doing all this math for everyday battles anyway, but it is interesting to think about.</h5>
+</div>
+<div id="modelingpredicting-opponent-scores" class="section level4">
+<h4>Modeling/Predicting Opponent Scores</h4>
+<div id="lets-now-take-a-look-at-opponent-scores.-we-discovered-earlier-that-on-average-there-is-a-statistically-significant-difference-between-the-games-prediction-of-the-opponents-score-and-the-opponents-actual-score-which-makes-it-hard-for-a-player-to-know-what-theyre-really-facing.-so-then-is-it-possible-to-build-a-better-model-for-estimating-the-opponents-actual-score-given-the-information-thats-available-to-us" class="section level5">
+<h5>Let’s now take a look at opponent scores. We discovered earlier that, on average, there is a statistically significant difference between the game’s prediction of the opponent’s score and the opponent’s actual score, which makes it hard for a player to know what they’re really facing. So then, is it possible to build a better model for estimating the opponent’s actual score given the information that’s available to us?</h5>
+</div>
+<div id="firstly-here-is-a-scatter-plot-to-show-the-correlation-between-predicted-score-and-actual-score.-next-lets-build-models-for-the-relationship-between-predicted-and-actual-score.-here-is-a-linear-regression-that-models-the-opponents-actual-score-using-the-predicted-score-as-the-only-variable." class="section level5">
+<h5>Firstly, here is a scatter plot to show the correlation between predicted score and actual score. Next, let’s build models for the relationship between predicted and actual score. Here is a linear regression that models the opponent’s actual score using the predicted score as the only variable.</h5>
+<pre class="r"><code>lnsa %&gt;% ggplot(aes(x=o_predicted, y=o_score)) + geom_point() + geom_smooth(method=lm) +
+  ggtitle(&quot;Opponents&#39; Predicted and Actual Scores&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-23-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit6 &lt;- lm(o_score ~ o_predicted, data=lnsa)
+summary(fit6)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = o_score ~ o_predicted, data = lnsa)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -16995 -3294 -23 3099 32317
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -4.879e+03 7.450e+02 -6.548 1.16e-10 ***
+## o_predicted 1.218e+00 1.545e-02 78.852 &lt; 2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 4982 on 669 degrees of freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.9029, Adjusted R-squared: 0.9027
+## F-statistic: 6218 on 1 and 669 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>bptest(fit6)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit6
+## BP = 7.5614, df = 1, p-value = 0.005963</code></pre>
+<pre class="r"><code>shapiro.test(fit6$residuals)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fit6$residuals
+## W = 0.9623, p-value = 4.151e-12</code></pre>
+</div>
+<div id="the-linear-regression-appears-to-be-a-good-fit-for-the-observed-data-with-an-r2-of-about-0.9.-according-to-the-above-model-the-equation-for-predicting-the-opponents-actual-score-is-opponents-score--4879-1.218-predicted-score.-most-of-the-time-this-would-result-in-an-actual-opponent-score-that-is-slightly-higher-than-the-predicted-score." class="section level5">
+<h5>The linear regression appears to be a good fit for the observed data with an R2 of about 0.9. According to the above model, the equation for predicting the opponent’s actual score is Opponent’s Score = -4879 + (1.218 * Predicted Score). Most of the time, this would result in an actual opponent score that is slightly higher than the predicted score.</h5>
+</div>
+<div id="unfortunately-the-above-model-violates-assumptions-of-both-homoskedasticity-and-normality-so-i-decided-to-do-a-log-transformation.-this-time-while-the-model-still-violates-normality-the-qq-plot-does-not-look-horrible-and-it-now-meets-homoskedasticity." class="section level5">
+<h5>Unfortunately, the above model violates assumptions of both homoskedasticity and normality, so I decided to do a log transformation. This time, while the model still violates normality, the QQ plot does not look horrible, and it now meets homoskedasticity.</h5>
+<pre class="r"><code>fit7 &lt;- lm(log(o_score) ~ log(o_predicted), data=lnsa)
+summary(fit7)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = log(o_score) ~ log(o_predicted), data =
+lnsa)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -0.28130 -0.06876 0.00293 0.06411 0.55846
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -0.76302 0.13096 -5.826 8.8e-09 ***
+## log(o_predicted) 1.08027 0.01222 88.377 &lt; 2e-16 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 0.09388 on 669 degrees of
+freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.9211, Adjusted R-squared: 0.921
+## F-statistic: 7810 on 1 and 669 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>bptest(fit7)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit7
+## BP = 1.0248, df = 1, p-value = 0.3114</code></pre>
+<pre class="r"><code>shapiro.test(fit7$residuals)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fit7$residuals
+## W = 0.97351, p-value = 1.155e-09</code></pre>
+<pre class="r"><code>ggplot()+geom_qq(aes(sample=fit7$residuals))+geom_qq_line(aes(sample=fit7$residuals), color=&#39;red&#39;)</code></pre>
+<p><img src="/220406lnsa_files/figure-html/unnamed-chunk-24-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-new-equation-for-predicting-opponent-score-is-logopponent-score--0.76302-1.08027-logpredicted-score." class="section level5">
+<h5>The new equation for predicting opponent score is log(Opponent Score) = -0.76302 + (1.08027 * log(Predicted Score)).</h5>
+</div>
+<div id="does-the-opponents-collection-factor-into-their-score-lets-create-a-model-to-see-if-it-does." class="section level5">
+<h5>Does the opponent’s collection factor into their score? Let’s create a model to see if it does.</h5>
+<pre class="r"><code>fit8 &lt;- lm(log(o_score) ~ log(o_predicted)*o_collect, data=lnsa)
+summary(fit8)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = log(o_score) ~ log(o_predicted) *
+o_collect, data = lnsa)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -0.27413 -0.06638 0.00303 0.06476 0.56640
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -0.5262509 0.2371091 -2.219 0.0268 *
+## log(o_predicted) 1.0565508 0.0222727 47.437 &lt;2e-16 ***
+## o_collect -0.0048300 0.0083378 -0.579 0.5626
+## log(o_predicted):o_collect 0.0005123 0.0007756 0.660
+0.5092
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 0.09344 on 667 degrees of
+freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.9221, Adjusted R-squared: 0.9217
+## F-statistic: 2631 on 3 and 667 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>bptest(fit8)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit8
+## BP = 3.7254, df = 3, p-value = 0.2927</code></pre>
+<pre class="r"><code>shapiro.test(fit8$residuals)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  fit8$residuals
+## W = 0.97258, p-value = 6.894e-10</code></pre>
+<pre class="r"><code>fit8b &lt;- lm(log(o_score) ~ log(o_predicted)*o_collect, data=lnsa1)
+summary(fit8b)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = log(o_score) ~ log(o_predicted) *
+o_collect, data = lnsa1)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -0.27558 -0.06701 0.00249 0.06279 0.56486
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -0.5254524 0.2512503 -2.091 0.0369 *
+## log(o_predicted) 1.0565801 0.0236589 44.659 &lt;2e-16 ***
+## o_collect -0.0041763 0.0090886 -0.460 0.6460
+## log(o_predicted):o_collect 0.0004543 0.0008474 0.536
+0.5921
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 0.09198 on 586 degrees of
+freedom
+## (3 observations deleted due to missingness)
+## Multiple R-squared: 0.9182, Adjusted R-squared: 0.9178
+## F-statistic: 2193 on 3 and 586 DF, p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="this-suggests-that-the-opponents-collection-is-not-a-significant-predictor-of-their-score-even-when-the-modern-china-themes-are-excluded.-in-addition-the-lasso-below-supports-the-conclusion-that-the-opponents-predicted-score-is-the-only-significant-predictor-of-actual-score." class="section level5">
+<h5>This suggests that the opponent’s collection is not a significant predictor of their score, even when the Modern China themes are excluded. In addition, the LASSO below supports the conclusion that the opponent’s predicted score is the only significant predictor of actual score.</h5>
+<pre class="r"><code>fit9 &lt;- glm(o_score ~ .,data=lnsa2)
+
+x &lt;- model.matrix(fit9)
+x &lt;- scale(x)
+y &lt;- as.matrix(lnsa2$o_score)
+
+cv2 &lt;- cv.glmnet(x[,-1],y)
+lasso2 &lt;- glmnet(x[,-1],y,lambda=cv2$lambda.1se)
+coef(lasso2)</code></pre>
+<pre><code>## 31 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                               s0
+## (Intercept)             51878.88
+## ThemeA Growing Lady         .   
+## ThemeBeach Party            .   
+## ThemeChristmas Reunion      .   
+## ThemeCloud Lady             .   
+## ThemeFairytale Garden       .   
+## ThemeFire in the Winter     .   
+## ThemeGolden Odeum           .   
+## ThemeGreat Detective        .   
+## ThemeImperial Ball          .   
+## ThemeIntern Translator      .   
+## ThemeOffice Star            .   
+## ThemeOngoing Sports         .   
+## ThemeSpring Outing          .   
+## ThemeSummer Party           .   
+## ThemeSummer Story           .   
+## ThemeThe Queen              .   
+## ThemeWhere is Spring        .   
+## p_collect                   .   
+## o_collect                   .   
+## o_predicted             13826.21
+## p_score                     .   
+## ResourcesNone               .   
+## UsedNI                      .   
+## BeachParty                  .   
+## ChristmasReunion            .   
+## CloudLady                   .   
+## GoldenOdeum                 .   
+## ImperialBall                .   
+## InternTranslator            .   
+## TheQueen                    .</code></pre>
+</div>
+</div>
+</div>
+<div id="discussion" class="section level3">
+<h3>Discussion</h3>
+<div id="my-analysis-of-love-nikki-stylists-arena-battles-has-revealed-several-interesting-discoveries.-as-discussed-earlier-there-are-two-themes-with-a-special-tag---intern-translator-and-cloud-lady-which-both-have-the-modern-china-tag.-the-score-boost-provided-by-the-special-tag-gives-an-interesting-twist-to-the-game.-those-who-know-about-the-special-tag-have-a-significant-advantage-as-the-game-interface-for-the-stylists-arena-does-not-actually-show-the-attributes-and-tags-that-each-theme-is-scored-on-unlike-other-game-features-that-use-the-styling-battle-paradigm.-however-nikkis-info-gives-the-attributes-and-tags-for-each-theme-so-players-who-use-resources-typically-score-higher-and-we-can-see-that-in-the-models-for-player-score.-therefore-i-would-definitely-recommend-using-resources-to-players-who-want-to-improve-their-scores." class="section level5">
+<h5>My analysis of Love Nikki Stylist’s Arena battles has revealed several interesting discoveries. As discussed earlier, there are two themes with a special tag - Intern Translator and Cloud Lady, which both have the Modern China tag. The score boost provided by the special tag gives an interesting twist to the game. Those who know about the special tag have a significant advantage, as the game interface for the Stylist’s Arena does not actually show the attributes and tags that each theme is scored on, unlike other game features that use the styling battle paradigm. However, Nikki’s Info gives the attributes and tags for each theme, so players who use resources typically score higher, and we can see that in the models for player score. Therefore, I would definitely recommend using resources to players who want to improve their scores.</h5>
+</div>
+<div id="when-comparing-mean-scores-across-themes-cloud-lady-is-the-undisputed-highest-scoring-theme-among-both-players-and-opponents-with-intern-translator-in-second-place.-players-also-tend-to-score-slightly-higher-on-imperial-ball-golden-odeum-and-the-queen-a-conclusion-that-confirms-anecdotal-claims-of-the-same.-my-guess-is-that-this-is-because-the-6-heart-clothing-items-an-indication-of-great-rarity-and-prestige-as-clothing-items-are-normally-rated-on-a-scale-of-1-5-hearts-in-the-game-happen-to-score-highly-on-the-same-attributes-that-all-three-of-these-themes-share-scoring-critera-for---namely.-the-elegant-gorgeous-mature-and-sexy-attributes.-this-is-probably-why-these-three-themes-appeared-on-the-lasso-result-for-significant-predictors-of-player-score.-on-the-other-end-of-the-spectrum-players-tend-to-score-lowest-on-beach-party-and-christmas-reunion.-the-former-despite-being-low-range-on-scores-has-displayed-mid-range-differences-between-the-opponents-predicted-and-actual-score-so-i-would-advise-that-players-take-special-care-with-beach-party." class="section level5">
+<h5>When comparing mean scores across themes, Cloud Lady is the undisputed highest-scoring theme among both players and opponents, with Intern Translator in second place. Players also tend to score slightly higher on Imperial Ball, Golden Odeum, and The Queen, a conclusion that confirms anecdotal claims of the same. My guess is that this is because the 6-heart clothing items (an indication of great rarity and prestige, as clothing items are normally rated on a scale of 1-5 hearts) in the game happen to score highly on the same attributes that all three of these themes share scoring critera for - namely. the Elegant, Gorgeous, Mature, and Sexy attributes. This is probably why these three themes appeared on the LASSO result for significant predictors of player score. On the other end of the spectrum, players tend to score lowest on Beach Party and Christmas Reunion. The former, despite being low-range on scores, has displayed mid-range differences between the opponent’s predicted and actual score, so I would advise that players take special care with Beach Party.</h5>
+</div>
+<div id="descriptive-statistics-show-that-players-battle-with-opponents-with-a-pretty-even-spread-of-collection-percentages-that-has-a-left-skew-likely-because-players-associate-opponents-who-have-smaller-collections-with-lower-predicted-and-actual-scores-and-are-therefore-more-confident-that-they-can-win-the-battle.-however-this-may-not-be-a-totally-valid-assumption.-the-correlation-heat-map-shows-that-there-is-only-a-mild-correlation-between-opponent-collection-and-both-opponent-scores-and-my-fitting-and-modeling-work-suggests-that-collection-may-not-be-a-significant-factor-in-determining-score-for-either-players-or-opponents.-both-of-these-results-hold-true-even-when-excluding-the-modern-china-themes.-this-means-that-players-should-be-careful-not-to-assume-that-an-opponent-with-a-small-collection-will-be-one-thats-easy-to-beat." class="section level5">
+<h5>Descriptive statistics show that players battle with opponents with a pretty even spread of collection percentages that has a left skew, likely because players associate opponents who have smaller collections with lower predicted and actual scores and are therefore more confident that they can win the battle. However, this may not be a totally valid assumption. The correlation heat map shows that there is only a mild correlation between opponent collection and both opponent scores, and my fitting and modeling work suggests that collection may not be a significant factor in determining score for either players or opponents. Both of these results hold true even when excluding the Modern China themes. This means that players should be careful not to assume that an opponent with a small collection will be one that’s easy to beat.</h5>
+</div>
+<div id="conversely-the-lack-of-association-between-collection-and-score-when-it-comes-to-player-score-may-be-interpreted-in-a-more-encouraging-way.-the-scatter-plot-shows-that-there-is-not-a-steep-increase-in-player-score-relatively-speaking-for-larger-collections.-i-cant-rule-out-the-possibility-that-the-entries-with-small-collections-are-actually-from-alt-accounts-of-seasoned-respondents-but-hopefully-this-discovery-gives-some-encouragement-to-players-who-find-it-difficult-to-increase-their-collection-percentage-as-the-game-is-constantly-adding-new-and-costly-items." class="section level5">
+<h5>Conversely, the lack of association between collection and score when it comes to player score may be interpreted in a more encouraging way. The scatter plot shows that there is not a steep increase in player score, relatively speaking, for larger collections. I can’t rule out the possibility that the entries with small collections are actually from alt accounts of seasoned respondents, but hopefully this discovery gives some encouragement to players who find it difficult to increase their collection percentage as the game is constantly adding new and costly items.</h5>
+</div>
+<div id="possibly-the-most-interesting-discovery-in-here-is-about-predicting-opponent-score.-i-can-finally-answer-the-age-old-question-of-whether-momos-predictions-are-accurate-and-the-answer-is-no-statistically-speaking-there-is-a-difference-between-the-opponents-score-and-their-actual-score-on-average.-the-communitys-anecdotal-suggestion-is-to-pick-an-opponent-whose-score-is-at-least-10000---15000-points-below-yours-if-you-want-a-guaranteed-win.-based-on-my-analysis-however-not-only-i-would-recommend-shooting-for-an-even-greater-score-gap-than-that-but-i-would-also-caution-players-to-make-note-of-the-theme.-statistical-tests-show-that-the-average-predicted-score-difference-is-significantly-higher-for-the-modern-china-themes-compared-to-the-other-themes.-for-non-special-tag-themes-one-has-a-95-chance-of-winning-if-they-assume-that-the-opponents-actual-score-will-be-15000-points-higher-than-momo-predicts-it-will-be.-for-the-modern-china-themes-one-has-a-95-chance-of-winning-if-they-assume-that-the-opponents-actual-score-will-be-25000-points-higher-than-momo-predicts-it-will-be.-players-beware" class="section level5">
+<h5>Possibly the most interesting discovery in here is about predicting opponent score. I can finally answer the age-old question of whether Momo’s predictions are accurate, and the answer is… no! Statistically speaking, there is a difference between the opponent’s score and their actual score, on average. The community’s anecdotal suggestion is to pick an opponent whose score is at least 10,000 - 15,000 points below yours if you want a guaranteed win. Based on my analysis, however, not only I would recommend shooting for an even greater score gap than that, but I would also caution players to make note of the theme. Statistical tests show that the average predicted score difference is significantly higher for the Modern China themes compared to the other themes. For non-special tag themes, one has a ~95% chance of winning if they assume that the opponent’s actual score will be 15,000 points higher than Momo predicts it will be. For the Modern China themes, one has a ~95% chance of winning if they assume that the opponent’s actual score will be 25,000 points higher than Momo predicts it will be. Players beware!</h5>
+</div>
+<div id="limitations" class="section level4">
+<h4>Limitations</h4>
+<div id="although-this-analysis-has-revealed-a-lot-it-also-has-its-weaknesses.-firstly-the-methods-i-used-for-collecting-data-are-somewhat-limited.-all-entries-were-self-reported-meaning-that-the-data-was-susceptible-to-typos-and-other-errors.-respondents-had-control-over-what-they-reported-so-they-could-choose-not-to-report-losing-battles-making-the-survey-anonymous-may-have-decreased-the-likelihood-of-this-happening-but-is-not-a-guarantee.-in-fact-the-final-dataset-only-had-16-entries-where-the-player-lost-the-battle-and-these-entries-did-not-cover-all-the-styling-themes-so-i-wouldnt-have-been-able-to-do-any-meaningful-analysis-on-losing-battles." class="section level5">
+<h5>Although this analysis has revealed a lot, it also has its weaknesses. Firstly, the methods I used for collecting data are somewhat limited. All entries were self-reported, meaning that the data was susceptible to typos and other errors. Respondents had control over what they reported, so they could choose not to report losing battles (making the survey anonymous may have decreased the likelihood of this happening, but is not a guarantee). In fact, the final dataset only had 16 entries where the player lost the battle, and these entries did not cover all the styling themes, so I wouldn’t have been able to do any meaningful analysis on losing battles.</h5>
+</div>
+<div id="there-is-an-inherent-bias-in-the-survey-method-in-that-players-were-sampled-from-reddit-and-discord.-this-implies-that-all-data-points-came-from-respondents-who-were-invested-enough-in-the-game-to-both-join-communities-outside-of-it-and-take-the-time-to-respond-to-the-survey-multiple-times.-there-is-a-large-overlap-between-players-who-join-these-online-communities-and-players-who-care-significantly-about-their-stylists-arena-scores-and-this-is-corroborated-by-the-fact-that-nearly-all-of-the-entries-reported-usage-of-nikkis-info-a-third-party-resource-that-the-casual-less-dedicated-player-would-not-necessarily-be-expected-to-use.-the-final-dataset-had-a-small-sample-size-of-distinct-players-owing-to-the-small-sample-pool-of-reddit-and-discord-and-a-biased-representation-of-resource-usage.-therefore-conclusions-drawn-from-this-analysis-may-not-be-applicable-to-the-general-player-base." class="section level5">
+<h5>There is an inherent bias in the survey method in that players were sampled from Reddit and Discord. This implies that all data points came from respondents who were invested enough in the game to both join communities outside of it <em>and</em> take the time to respond to the survey multiple times. There is a large overlap between players who join these online communities and players who care significantly about their Stylist’s Arena Scores, and this is corroborated by the fact that nearly all of the entries reported usage of Nikki’s Info, a third party resource that the casual, less-dedicated player would not necessarily be expected to use. The final dataset had a small sample size of distinct players, owing to the small sample pool of Reddit and Discord, and a biased representation of resource usage. Therefore, conclusions drawn from this analysis may not be applicable to the general player base.</h5>
+</div>
+<div id="in-the-actual-game-there-are-several-factors-that-go-into-a-player-or-opponents-final-score-that-i-was-not-able-to-account-for.-two-mechanisms-that-i-left-out-of-my-analysis-for-the-sake-of-simplicity-are-souls-and-skills.-souls-are-an-additional-item-that-a-player-can-dress-up-in-that-may-increase-the-score.-skills-are-boosts-that-can-offensively-or-defensively-influence-the-players-or-opponents-score-and-they-are-either-manually-or-automatically-in-the-case-of-the-stylists-arena-triggered-during-the-battle-as-scores-are-being-earned.-i-didnt-include-them-in-my-analysis-as-there-is-no-easy-way-for-a-player-to-tell-from-the-game-interface-exactly-how-much-souls-and-skills-contributed-to-their-scores-there-are-calculations-that-can-be-done-for-skills-but-it-would-have-been-too-difficult-to-capture-much-less-the-opponents-scores." class="section level5">
+<h5>In the actual game, there are several factors that go into a player or opponent’s final score that I was not able to account for. Two mechanisms that I left out of my analysis for the sake of simplicity are souls and skills. Souls are an additional item that a player can dress up in that may increase the score. Skills are boosts that can offensively or defensively influence the player’s or opponent’s score, and they are either manually or automatically (in the case of the Stylist’s Arena) triggered during the battle, as scores are being earned. I didn’t include them in my analysis as there is no easy way for a player to tell from the game interface exactly how much souls and skills contributed to their scores (there are calculations that can be done for skills, but it would have been too difficult to capture), much less the opponents’ scores.</h5>
+</div>
+<div id="one-thing-to-note-is-that-as-mentioned-earlier-the-opponents-collection-is-displayed-in-an-incongruent-manner-as-it-is-taken-out-of-the-total-items-in-the-chinese-server-whereas-the-players-collection-is-displayed-as-a-percentage-out-of-the-total-items-in-the-international-server.-the-opponents-usage-of-resources-is-also-unknown-so-we-dont-know-how-that-affects-their-scores.-in-general-the-amount-information-that-could-be-collected-from-the-opponents-is-very-limited." class="section level5">
+<h5>One thing to note is that, as mentioned earlier, the opponent’s collection is displayed in an incongruent manner, as it is taken out of the total items in the Chinese server, whereas the player’s collection is displayed as a percentage out of the total items in the international server. The opponents’ usage of resources is also unknown, so we don’t know how that affects their scores. In general, the amount information that could be collected from the opponents is very limited.</h5>
+</div>
+<div id="these-limitations-may-be-addressed-by-modifying-the-data-collection-methods.-incorporating-souls-and-skills-into-the-analysis-would-increase-the-robustness-of-the-models-and-hopefully-result-in-a-better-way-to-predict-scores-im-not-sure-what-would-be-the-best-way-to-collect-that-data-but-it-would-probably-not-be-something-that-i-could-ask-the-everyday-player-to-enter-on-a-survey.-i-imagine-that-the-best-way-to-collect-data-would-be-to-pull-it-directly-from-the-game-as-players-are-participating-in-battles.-if-someone-decides-to-do-that-someday-i-would-be-interested-to-know-the-results-and-would-love-to-see-what-the-best-models-would-be-that-one-could-create." class="section level5">
+<h5>These limitations may be addressed by modifying the data collection methods. Incorporating souls and skills into the analysis would increase the robustness of the models and hopefully result in a better way to predict scores; I’m not sure what would be the best way to collect that data, but it would probably not be something that I could ask the everyday player to enter on a survey. I imagine that the best way to collect data would be to pull it directly from the game as players are participating in battles. If someone decides to do that someday, I would be interested to know the results, and would love to see what the best models would be that one could create.</h5>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<div id="in-this-project-i-analyzed-674-styling-battles-from-the-love-nikki-stylists-arena.-i-found-that-both-player-and-opponent-scores-are-determined-by-a-multitude-of-factors-that-includes-styling-theme-but-surprisingly-excludes-collection-percentage-and-i-attempted-to-create-models-for-both-out-of-the-limited-information-available-to-me.-importantly-i-discovered-that-the-games-predictions-of-opponent-score-are-significantly-inaccurate-and-that-players-should-plan-for-an-opponent-score-that-is-substantially-higher-than-momos-prediction-confirming-a-long-held-suspicion-within-the-community-that-momo-really-is-a-sneaky-liar." class="section level5">
+<h5>In this project, I analyzed 674 styling battles from the Love Nikki Stylist’s Arena. I found that both player and opponent scores are determined by a multitude of factors that includes styling theme but surprisingly excludes collection percentage, and I attempted to create models for both out of the limited information available to me. Importantly, I discovered that the game’s predictions of opponent score are significantly inaccurate, and that players should plan for an opponent score that is substantially higher than Momo’s prediction, confirming a long-held suspicion within the community: that Momo really is a sneaky liar.</h5>
+</div>
+</div>

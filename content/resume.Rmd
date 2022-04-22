@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### About Me
 
-##### I am an incoming MS1 at UT Southwestern. After attending TAMS from 2015 to 2017, I graduated from the University of Texas at Austin in 2020 with a BS in Human Biology and a minor in Spanish. This website serves as a portfolio for my projects where I use R to analyze data that interests me. I am also interested in linguistics and worked with stroke and TBI survivors at Austin Speech Labs on their language recovery. Outside of academics, I enjoy making art, reading, playing violin/piano, and spending time outdoors.
+##### I am a medical student (Class of 2024) at UT Southwestern. After attending TAMS from 2015 to 2017, I graduated from the University of Texas at Austin in 2020 with a BS in Human Biology and a minor in Spanish. This website serves as a portfolio for my projects where I use R to analyze data that interests me. I am also interested in linguistics and worked with stroke and TBI survivors at Austin Speech Labs on their language recovery. Outside of academics, I enjoy making art, reading, spending time outdoors, and making friends.
 
 
 
@@ -79,6 +79,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Research
 
+##### University of Texas Southwestern Medical Center - Department of Physical Medicine & Rehabilitation / Department of Orthopedic Surgery
+##### Abstract published in 2021 Medical Student Research Forum
+
 ##### University of North Texas - plasmonics
 ###### *Localized surface plasmon polariton resonance in holographically structured Al-doped ZnO*
 ###### George, D., Li, L., Jiang, Y., Lowell, D., **Mao, M.**, Hassan, S., ... & Lin, Y. (2016).
@@ -87,6 +90,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Leadership
 
+##### Therapeutic arts Relieving Adverse Childhood Experiences (TRACE) - Art Activities Coordinator (2021)
+##### UTSW HELP Longitudinal Geriatric Medicine Elective - Student Liaison (2021)
+##### UTSW Hospital Elder Life Program (HELP) - Outpatient Volunteer Coordinator (2020-2021)
 ##### Texas Crohn's and Colitis Initiative - Vice President (2018)
 ##### TAMS Research Organization - Competitions Director (2016-2017)
 
