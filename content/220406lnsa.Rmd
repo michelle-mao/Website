@@ -386,6 +386,17 @@ shapiro.test(fit6$residuals)
 
 ##### The linear regression appears to be a good fit for the observed data with an R2 of about 0.9. According to the above model, the equation for predicting the opponent's actual score is Opponent's Score = -4879 + (1.218 * Predicted Score). Most of the time, this would result in an actual opponent score that is slightly higher than the predicted score.
 
+##### Here is a comparison of how well the game's prediction vs my model fit the data.
+
+```{R}
+lnsa %>% mutate(model_o_score= -4879 + (1.218 * o_predicted)) %>%
+  pivot_longer(c(o_predicted,model_o_score),names_to="model",values_to="prediction") %>%
+  ggplot(aes(o_score,prediction,color=model)) + geom_point() + geom_abline(slope=1) +
+  ggtitle("Comparison of Models for Predicting Opponent Score") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### You can see that the game's prediction underestimates opponent score at high scores.
+
 ##### Unfortunately, the above model violates assumptions of both homoskedasticity and normality, so I decided to do a log transformation. This time, while the model still violates normality, the QQ plot does not look horrible, and it now meets homoskedasticity.
 
 ```{R}
@@ -398,6 +409,17 @@ ggplot()+geom_qq(aes(sample=fit7$residuals))+geom_qq_line(aes(sample=fit7$residu
 ```
 
 ##### The new equation for predicting opponent score is log(Opponent Score) = -0.76302 + (1.08027 * log(Predicted Score)). 
+
+##### Here is a comparison again.
+
+```{R}
+lnsa %>% mutate(model_o_score= exp(-0.76302 + (1.08027 * log(o_predicted)))) %>% 
+  pivot_longer(c(o_predicted,model_o_score),names_to="model",values_to="prediction") %>%
+  ggplot(aes(o_score,prediction,color=model)) + geom_point() + geom_abline(slope=1) +
+  ggtitle("Comparison of Models for Predicting Opponent Score") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+##### The log transform has improved my model's accuracy at lower scores.
 
 ##### Does the opponent's collection factor into their score? Let's create a model to see if it does.
 
