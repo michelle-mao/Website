@@ -3,8 +3,8 @@ title: "Love Nikki Stylist's Arena Analysis"
 author: "mangueau"
 date: "4/22/2022"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
