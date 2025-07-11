@@ -1,6 +1,6 @@
 baseurl = "/"
 languageCode = "en-US"
-title = "Computational Biology Portfolio"
+title = "Michelle Mao Portfolio"
 # Enable comments by entering your Disqus shortname
 disqusShortname = ""
 # Enable Google Analytics by entering your tracking code
@@ -22,6 +22,7 @@ theme = "hugo-sustain"
 [params.social]
   Github        = "michelle-mao"
   Email         = "michellem1078@yahoo.com"
+  Linkedin      = "michelle-mao-m78"
 
 
 ## Main Menu

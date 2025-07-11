@@ -1,7 +1,7 @@
 ---
-title: "Michelle Mao Resume"
+title: "Michelle Mao, MD Resume"
 author: "Michelle Mao"
-date: "5/13/2020"
+date: "7/10/2025"
 output: html_document
 ---
 
@@ -11,133 +11,110 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### About Me
 
-##### I am a medical student (Class of 2024) at UT Southwestern. After attending TAMS from 2015 to 2017, I graduated from the University of Texas at Austin in 2020 with a BS in Human Biology and a minor in Spanish. This website serves as a portfolio for my projects where I use R to analyze data that interests me. I am also interested in linguistics and worked with stroke and TBI survivors at Austin Speech Labs on their language recovery. Outside of academics, I enjoy making art, reading, spending time outdoors, and making friends.
+##### I am a physician with a passion for education, data, and art. After attending TAMS from 2015 to 2017, I graduated from the University of Texas at Austin in 2020 with a BS in Human Biology and a minor in Spanish. I earned my MD from UT Southwestern Medical Center in 2024, and then completed one year of neurology residency at the University of Maryland before pivoting to a nonclinical career. This website serves as a portfolio for my projects related to my many interests. Outside of work, I enjoy making art, spending time outdoors, and exploring new places with friends.
 
 
 
 ### Contact Info
 
 ##### Email: <michellem1078@yahoo.com>
-##### [Github](github.com/michelle-mao)
+##### [Linkedin](linkedin.com/in/michelle-mao-m78)
 
 
 
 ### Education
 
-##### UT Southwestern Medical School
+##### Doctor of Medicine - UT Southwestern Medical School
 ###### 2020-2024
 
-##### University of Texas at Austin
+##### B.S. Human Biology | Spanish minor - University of Texas at Austin
 ###### 2017-2020
-###### B.S. Human Biology | Spanish minor
 
 ##### University of North Texas (Texas Academy of Math and Science)
 ###### 2015-2017
 
 
 
+### Post-Graduate Training
+
+##### Neurology Residency - University of Maryland
+###### 2024-2025
+
+
+
 ### Work Experience
 
-##### UT Southwestern Department of Physical Medicine and Rehabilitation / Department of Orthopedic Surgery - Research Intern
+##### Resident Physician - University of Maryland Medical Center
+###### Jun 2024 - Jul 2025
+###### Cared for patients with complex acute and chronic medical conditions in several different contexts including inpatient wards, clinic, consults, and ICU
+
+##### Medical Student Research Fellow - UT Southwestern Department of Physical Medicine and Rehabilitation / Department of Orthopedic Surgery 
 ###### May - Aug 2021
-###### Worked on clinical research related to the intersections of reproductive endocrinology, musculoskeletal health, and neurology
+###### Collaboratively designed, recruited for, and executed a project studying the effect of sex-specific endocrine state on the joint inflammatory response to mechanical loading, resulting in a publication in Cartilage and an abstract for the 60th Annual Medical Student Research Forum
 
-##### Elite Prep Allen - administrative assistant and teacher
-###### May - Aug 2019; May - Aug 2020
-###### Registered and communicated with customers; organized, administered, and graded practice exams and quizzes; taught math, reading, and writing 
-
-##### University of Texas at Austin CNS - undergraduate teaching assistant for biochemistry
+##### Teaching Assistant - University of Texas Biochemistry Department
 ###### Jan 2019 - May 2020
-###### Assisted students during and outside of lecture; held office hours; created study materials; graded student responses
-
-##### Texas Academy of Math and Science Summer Math Institute - teaching assistant
-###### Jul - Aug 2016
-###### Organized lessons and taught geometry students; graded assignments; supervised study hall; assisted with recreational activities
+###### Assisted with lectures, lesson planning, and grading for BCH 369; tutored students during individual office hours; led group review sessions and moderated exams
 
 
 
-### Volunteering
+### Publications
 
-##### UTSW Hospital Elder Life Program - Outpatient
-###### May 2021 - Dec 2021
-###### Conversed with older adults in the home care program to combat loneliness
+###### Mao M, Doyle A. Coxsackie B virus myositis in a healthy young man with mumps co-infection. IDCases. 2023 Jan 17;31:e01691. doi: 10.1016/j.idcr.2023.e01691. PMID: 36704025; PMCID: PMC9871301.
 
-##### UTSW Hospital Elder Life Program - Inpatient
-###### Oct 2020 - Dec 2021
-###### Performed delirium intervention and prevention techniques with elderly patients in the inpatient hospital setting
+###### Hutcherson C, Mao M, Thakur B, Dhaher Y. Low-grade inflammatory mediators and metalloproteinases yield synchronous and delayed responses to mechanical joint loading. Cartilage. 2024 Dec;15(4):417-27.
 
-##### Austin Speech Labs
-###### Jan 2019 - May 2020
-###### Worked with stroke and TBI survivors in one-on-one and group therapy for speech and language recovery
+###### George D, Li L, Jiang Y, Lowell D, Mao M, Hassan S, Ding J, Cui J, Zhang H, Philipose U, Lin Y. Localized surface plasmon polariton resonance in holographically structured Al-doped ZnO. Journal of Applied Physics. 2016 Jul 28;120(4):043109
 
-##### Medical City McKinney
-###### Jun - Dec 2018
-###### Surgery floor and front desk
-
-##### The Legacy Senior Community
-###### May 2015 - Aug 2018
-###### Socialized with memory care patients; led recreational activities; made well wishes cards and performed violin
-
-##### UNT Learning Center Calculus Tutor
-###### Jan - May 2017
-
-##### McNair Elementary Tutor
-###### Jan - May 2016
-
-##### TAMS Teach and Learn Calculus Tutor
-###### Sep 2016 - Jan 2017
+##### Other - Magazine Publications
+###### Doctor’s Daydream. 2021. Colored pencil. Scope UT Southwestern’s Art & Humanities Journal, Vol XI, 2021, p. 18. https://www.utsouthwestern.edu/life-at/scope/20
 
 
 
-### Research
+### Leadership and Activities
 
-##### University of Texas Southwestern Medical Center - Department of Physical Medicine & Rehabilitation / Department of Orthopedic Surgery
-##### Abstract published in 2021 Medical Student Research Forum
+##### Co-Founder – Patient Education Initiative
+###### Jan 2023 - present
+###### Founded an initiative to improve health literacy by redesigning patient handouts to be more accessible
 
-##### University of North Texas - plasmonics
-###### *Localized surface plasmon polariton resonance in holographically structured Al-doped ZnO*
-###### George, D., Li, L., Jiang, Y., Lowell, D., **Mao, M.**, Hassan, S., ... & Lin, Y. (2016).
+##### Committee Chair – Gold Humanism Honor Society
+###### Mar 2023 - May 2024
+###### Led a campaign to highlight the lives of Parkland Hospital patients via projects for sharing their stories; worked with other committees to promote wellness, ethics, and humanism at UT Southwestern
 
+##### Committee Chair – United to Serve Community Health Fair
+###### Sep 2020 - May 2024
+###### Led the task force for creating the graphic design surrounding the annual Carnaval de Salud community health fair; hand-crafted virtual and physical design elements and designed the official t-shirt for the 2022 and 2024 fairs
 
+##### Art Activities Coordinator - Therapeutic Arts Relieving Adverse Childhood Experiences (TRACE)
+###### Jun 2021 – Jan 2022
+###### Worked with art therapists to build an art activity curriculum, design activities, and coordinate supplies for TRACE, a medical student volunteering program that worked with children at the Dallas Juvenile Detention Center on therapeutic art projects informed by adverse childhood experiences
 
-### Leadership
-
-##### Therapeutic arts Relieving Adverse Childhood Experiences (TRACE) - Art Activities Coordinator (2021)
-##### UTSW HELP Longitudinal Geriatric Medicine Elective - Student Liaison (2021)
-##### UTSW Hospital Elder Life Program (HELP) - Outpatient Volunteer Coordinator (2020-2021)
-##### Texas Crohn's and Colitis Initiative - Vice President (2018)
-##### TAMS Research Organization - Competitions Director (2016-2017)
+##### Co-Founder, Volunteering Coordinator – Longitudinal Geriatric Medicine Elective
+###### Nov 2020 - Dec 2021
+###### Built the outpatient volunteering curriculum for a medical school elective on aging and geriatric medicine and served as a student liaison leading the elective with faculty
 
 
 
 ### Awards and Honors
 
+##### Gold Humanism Honor Society Member (2023)
+##### UTSW Medical Student Summer Research Fellow (2021)
 ##### UT College of Natural Sciences Distinction in Service and Leadership (2019-2020)
 ##### UT Honors – College Scholar	(2019)
-##### National Merit Finalist	(2017)
-##### UNT Undergraduate Research Fellow	(2016)
-##### Texas State Science and Engineering Fair finalist	(2016)
-##### FWRSEF Lockheed Martin Leadership Award – 1st place (2016)
-##### UNT Scholar’s Day – 1st place poster presentation	(2016)
 
 
 
 ### Skills
 
-##### Knowledge of R and Python
+##### Programming languages
+###### R 
+###### Python
 ##### Languages
 ###### English - native
 ###### Chinese (Mandarin) - read, write, and speak with fluency
 ###### Spanish - read, write, and speak with fluency
-##### Experienced in teaching students of all ages, learning styles, and subjects
+##### Electronic health records
+###### Epic
+###### CPRS
 
-
-
-### Interests
-
-##### Biology, biochemistry, and physics
-##### Medicine; philosophy
-##### Linguistics; Spanish linguistics and cultures; East Asian languages, linguistics, and cultures
-##### Visual arts
-##### Classical music; music production
 
